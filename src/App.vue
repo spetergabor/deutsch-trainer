@@ -701,420 +701,351 @@ export default {
 </script>
 
 <style scoped>
-.app-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 14px 20px;
-  background: #1a1a1a;
-  border-bottom: 1px solid #333;
-}
+/* =========================
+   GLOBAL LAYOUT
+========================= */
 
-.logo-btn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 40px;
-  height: 40px;
-  border: 0;
-  border-radius: 10px;
-  background-color: #6c5ce7;
-  color: #fff;
-  font-size: 1.2rem;
-  font-weight: 700;
-  cursor: pointer;
-  transition: 0.2s ease;
-  user-select: none;
-}
-
-.logo-btn:hover {
-  background-color: #5b4bc4;
-  transform: scale(1.05);
-}
-
-.current-task-title {
-  color: #fff;
-  font-size: 1.2rem;
-  font-weight: 700;
-}
-
-.header-spacer {
-  width: 50px;
-}
-
-.btn-logout-small {
-  padding: 6px 15px;
-  border: 1px solid #e74c3c;
-  border-radius: 8px;
-  background: transparent;
-  color: #e74c3c;
-  font-weight: 700;
-  cursor: pointer;
-  transition: 0.2s ease;
-}
-
-.btn-logout-small:hover {
-  background: #e74c3c;
-  color: #fff;
-}
-
-.welcome-screen,
-.dashboard-layout {
+.dashboard-layout,
+.welcome-screen {
   width: 100%;
-  max-width: 1000px;
+  max-width: 1150px;
   margin: 0 auto;
-  padding: 24px 15px;
+  padding: 20px 16px 50px;
   box-sizing: border-box;
 }
 
+/* =========================
+   APPLE IOS HEADER
+========================= */
+
+.app-header {
+  position: sticky;
+  top: 14px;
+  z-index: 999;
+
+  width: calc(100% - 30px);
+  max-width: 1180px;
+
+  margin: 16px auto 28px;
+  padding: 14px 20px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+
+  border-radius: 999px;
+
+  background: rgba(255, 255, 255, 0.08);
+
+  backdrop-filter: blur(28px) saturate(180%);
+  -webkit-backdrop-filter: blur(28px) saturate(180%);
+
+  border: 1px solid rgba(255, 255, 255, 0.14);
+
+  box-shadow:
+    0 10px 40px rgba(0, 0, 0, 0.28),
+    inset 0 1px 0 rgba(255,255,255,0.12);
+
+  transition: all 0.3s ease;
+}
+
+.logo-btn {
+  width: 44px;
+  height: 44px;
+  border: none;
+  border-radius: 15px;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  background:
+    linear-gradient(135deg, rgba(255,255,255,0.25), rgba(255,255,255,0.08)),
+    linear-gradient(135deg, #667eea, #764ba2);
+
+  color: white;
+  font-size: 1.2rem;
+  font-weight: 900;
+
+  cursor: pointer;
+  transition: all 0.25s ease;
+
+  box-shadow:
+    0 8px 24px rgba(102,126,234,0.35),
+    inset 0 1px 1px rgba(255,255,255,0.2);
+}
+
+.logo-btn:hover {
+  transform: scale(1.06);
+}
+
+.current-task-title {
+  flex: 1;
+  text-align: center;
+
+  color: white;
+  font-size: 1rem;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+}
+
+.header-spacer {
+  width: 70px;
+}
+
+.btn-logout-small {
+  padding: 10px 16px;
+
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,0.15);
+
+  background: rgba(255,255,255,0.08);
+
+  color: white;
+  font-weight: 700;
+
+  cursor: pointer;
+  transition: all 0.25s ease;
+
+  backdrop-filter: blur(12px);
+}
+
+.btn-logout-small:hover {
+  background: rgba(231, 76, 60, 0.9);
+  border-color: transparent;
+}
+
+/* =========================
+   TITLES
+========================= */
+
 .dashboard-header {
-  margin-bottom: 30px;
-  color: #fff;
+  margin-bottom: 35px;
   text-align: center;
 }
 
 .dashboard-header h1 {
-  margin-bottom: 5px;
+  margin-bottom: 8px;
+
+  color: white;
+  font-size: clamp(2rem, 5vw, 3rem);
+  font-weight: 900;
+  letter-spacing: -1px;
 }
 
 .subtitle {
-  color: #aaa;
+  color: rgba(255,255,255,0.65);
 }
 
 .section-title {
   display: inline-block;
-  margin-bottom: 20px;
-  padding-bottom: 5px;
-  border-bottom: 2px solid #6c5ce7;
-  color: #fff;
-  font-size: 1.2rem;
-  text-align: left;
+
+  margin-bottom: 24px;
+  padding-bottom: 6px;
+
+  border-bottom: 2px solid rgba(255,255,255,0.15);
+
+  color: white;
+  font-size: 1.15rem;
+  font-weight: 800;
 }
 
 .section-title-spaced {
-  margin-top: 40px;
+  margin-top: 50px;
 }
 
+/* =========================
+   LOGIN CARD
+========================= */
+
 .login-card {
-  max-width: 400px;
+  max-width: 430px;
   margin: 0 auto;
+
+  padding: 35px 28px;
+
+  border-radius: 30px;
+
+  background: rgba(255,255,255,0.06);
+
+  backdrop-filter: blur(22px);
+  -webkit-backdrop-filter: blur(22px);
+
+  border: 1px solid rgba(255,255,255,0.1);
+
+  box-shadow:
+    0 18px 40px rgba(0,0,0,0.25);
+
   text-align: center;
 }
 
 .login-card h2 {
-  margin-bottom: 25px;
-  color: #fff;
+  margin-bottom: 28px;
+  color: white;
 }
+
+/* =========================
+   INPUTS
+========================= */
 
 .simple-input,
 .simple-textarea {
   width: 100%;
-  border: 1px solid #444;
-  border-radius: 8px;
-  background: #222;
-  color: #fff;
+
+  border-radius: 18px;
+
+  border: 1px solid rgba(255,255,255,0.1);
+
+  background: rgba(255,255,255,0.06);
+
+  color: white;
+
   box-sizing: border-box;
+
   font-size: 1rem;
+
+  transition: all 0.25s ease;
 }
 
 .simple-input {
+  padding: 15px;
   margin-bottom: 15px;
-  padding: 14px;
+}
+
+.simple-textarea {
+  padding: 15px;
+  min-height: 90px;
+  resize: vertical;
+}
+
+.simple-input::placeholder,
+.simple-textarea::placeholder {
+  color: rgba(255,255,255,0.35);
 }
 
 .simple-input:focus,
 .simple-textarea:focus {
   outline: none;
-  border-color: #6c5ce7;
-  background: #2a2a2a;
+
+  border-color: rgba(255,255,255,0.2);
+
+  background: rgba(255,255,255,0.09);
+
+  box-shadow:
+    0 0 0 4px rgba(255,255,255,0.05);
 }
 
-.simple-textarea {
-  height: 70px;
-  margin-bottom: 10px;
-  padding: 10px;
-  resize: vertical;
+/* =========================
+   BUTTONS
+========================= */
+
+.select-btn,
+.upload-btn,
+.btn-back,
+.btn-login,
+.btn-register,
+.btn-save-note {
+  transition: all 0.25s ease;
+}
+
+.select-btn,
+.btn-login,
+.btn-register,
+.btn-save-note {
+  width: 100%;
+
+  padding: 13px;
+
+  border: none;
+  border-radius: 18px;
+
+  color: white;
+  font-weight: 800;
+
+  cursor: pointer;
 }
 
 .btn-login {
-  background-color: #2ecc71;
-}
-
-.btn-login:hover {
-  background-color: #27ae60;
+  background: linear-gradient(135deg, #43cea2, #185a9d);
 }
 
 .btn-register {
-  background-color: #3498db;
+  background: linear-gradient(135deg, #667eea, #764ba2);
 }
 
-.btn-register:hover {
-  background-color: #2980b9;
+.select-btn,
+.btn-save-note {
+  background: linear-gradient(135deg, #2ecc71, #27ae60);
 }
+
+.select-btn:hover,
+.btn-login:hover,
+.btn-register:hover,
+.btn-save-note:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.05);
+}
+
+.btn-back {
+  width: 100%;
+
+  padding: 12px;
+
+  border-radius: 16px;
+
+  border: 1px solid rgba(255,255,255,0.15);
+
+  background: rgba(255,255,255,0.05);
+
+  color: rgba(255,255,255,0.7);
+
+  cursor: pointer;
+}
+
+.btn-back:hover {
+  background: rgba(255,255,255,0.1);
+  color: white;
+}
+
+/* =========================
+   AUTH
+========================= */
 
 .auth-toggle {
-  margin-top: 20px;
-  color: #aaa;
+  margin-top: 22px;
+
+  color: rgba(255,255,255,0.55);
   font-size: 0.9rem;
 }
 
 .auth-toggle a {
-  color: #6c5ce7;
+  color: white;
   font-weight: 700;
   text-decoration: none;
 }
 
 .auth-toggle a:hover {
-  text-decoration: underline;
+  opacity: 0.8;
 }
 
 .divider {
-  margin: 25px 0;
-  border: 0;
-  border-top: 1px solid #444;
+  margin: 24px 0;
+  border: none;
+  border-top: 1px solid rgba(255,255,255,0.1);
 }
 
-.btn-back {
-  width: 100%;
-  padding: 10px;
-  border: 1px solid #888;
-  border-radius: 8px;
-  background: transparent;
-  color: #aaa;
-  cursor: pointer;
-  transition: 0.2s ease;
-}
-
-.btn-back:hover {
-  border-color: #fff;
-  color: #fff;
-}
-
-.menu-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 15px;
-  margin-bottom: 40px;
-}
-
-.menu-card {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 20px;
-  border: 2px solid transparent;
-  border-radius: 20px;
-  background: #2a2a2a;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-  text-align: center;
-  cursor: pointer;
-  transition: 0.3s ease;
-}
-
-.menu-card:hover {
-  border-color: #2ecc71;
-  transform: translateY(-5px);
-}
-
-.card-icon {
-  margin-bottom: 10px;
-  font-size: 35px;
-}
-
-.menu-card h2 {
-  margin: 5px 0;
-  color: #fff;
-  font-size: 1.2rem;
-}
-
-.menu-card p {
-  margin-bottom: 15px;
-  color: #aaa;
-  font-size: 0.9rem;
-}
-
-.select-btn {
-  width: 100%;
-  margin-top: auto;
-  padding: 12px;
-  border: 0;
-  border-radius: 10px;
-  color: #fff;
-  font-weight: 700;
-  cursor: pointer;
-  transition: 0.2s ease;
-}
-
-.select-btn:disabled,
-.upload-btn:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-
-.menu-card .select-btn,
-.btn-save-note {
-  background-color: #2ecc71;
-}
-
-.dashboard-widgets-auto {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 20px;
-}
-
-.widget-card {
-  display: flex;
-  flex-direction: column;
-  padding: 20px;
-  border-radius: 15px;
-  background: #2a2a2a;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-  color: #fff;
-}
-
-.widget-card h3 {
-  margin-top: 0;
-  margin-bottom: 15px;
-  padding-bottom: 10px;
-  border-bottom: 1px solid #444;
-  color: #fff;
-  font-size: 1.1rem;
-}
-
-.profile-info {
-  display: flex;
-  align-items: center;
-  gap: 15px;
-}
-
-.profile-avatar {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 70px;
-  height: 70px;
-  border-radius: 50%;
-  background: #444;
-  font-size: 40px;
-}
-
-.profile-info p {
-  margin: 5px 0;
-  color: #ccc;
-  font-size: 0.9rem;
-}
-
-.profile-info strong {
-  color: #fff;
-}
-
-.stat-row {
-  display: flex;
-  justify-content: space-between;
-  padding: 10px 0;
-  border-bottom: 1px dashed #444;
-}
-
-.stat-row:last-child {
-  border-bottom: 0;
-}
-
-.stat-row strong,
-.recent-task-row strong {
-  color: #2ecc71;
-  font-size: 1.1rem;
-}
-
-.recent-task-row {
-  display: flex;
-  justify-content: space-between;
-  padding: 8px 0;
-  border-bottom: 1px solid #333;
-  color: #ddd;
-  font-size: 0.9rem;
-}
-
-.recent-task-row:last-child {
-  border-bottom: 0;
-}
-
-.mini-note-list {
-  margin-top: 15px;
-  padding: 10px;
-  border-radius: 8px;
-  background: #1a1a1a;
-}
-
-.mini-note {
-  margin-bottom: 5px;
-  padding-bottom: 5px;
-  border-bottom: 1px solid #333;
-}
-
-.mini-note:last-child {
-  border-bottom: 0;
-}
-
-.mini-note small {
-  color: #888;
-  font-size: 0.75rem;
-}
-
-.mini-note p {
-  margin: 2px 0 0;
-  color: #ddd;
-  font-size: 0.85rem;
-}
-
-.upload-btn {
-  width: 100%;
-  margin-bottom: 15px;
-  padding: 10px;
-  border: 1px solid #2ecc71;
-  border-radius: 8px;
-  background: transparent;
-  color: #2ecc71;
-  font-weight: 700;
-  cursor: pointer;
-  transition: 0.2s ease;
-}
-
-.upload-btn:hover:not(:disabled) {
-  background: #2ecc71;
-  color: #fff;
-}
-
-.hidden-file-input {
-  display: none;
-}
-
-.file-list {
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.file-list li {
-  margin-bottom: 5px;
-  padding: 8px;
-  border-radius: 6px;
-  background: #1a1a1a;
-  font-size: 0.9rem;
-}
-
-.empty-text {
-  padding: 10px 0;
-  color: #888;
-  font-size: 0.9rem;
-  font-style: italic;
-  text-align: left;
-}
+/* =========================
+   IOS LESSON GRID
+========================= */
 
 .lessons-ios-grid {
   display: flex;
-  align-items: flex-start;
-  gap: 35px;
   flex-wrap: wrap;
+  align-items: flex-start;
+
+  gap: 34px;
+
   margin-top: 30px;
 }
 
@@ -1122,8 +1053,11 @@ export default {
   display: flex;
   flex-direction: column;
   align-items: center;
+
   gap: 12px;
+
   cursor: pointer;
+
   transition: transform 0.25s ease;
 }
 
@@ -1132,9 +1066,10 @@ export default {
 }
 
 .ios-icon {
-  width: 90px;
-  height: 90px;
-  border-radius: 28px;
+  width: 92px;
+  height: 92px;
+
+  border-radius: 30px;
 
   display: flex;
   justify-content: center;
@@ -1145,20 +1080,21 @@ export default {
 
   backdrop-filter: blur(20px);
 
-  border: 1px solid rgba(255,255,255,0.15);
+  border: 1px solid rgba(255,255,255,0.16);
 
   box-shadow:
-    0 10px 30px rgba(0,0,0,0.35),
-    inset 0 1px 1px rgba(255,255,255,0.15);
+    0 14px 34px rgba(0,0,0,0.35),
+    inset 0 1px 1px rgba(255,255,255,0.2);
 
-  transition: all 0.3s ease;
+  transition: all 0.28s ease;
 }
 
 .ios-icon:hover {
   transform: scale(1.08);
 }
 
-/* Színek */
+/* ICON COLORS */
+
 .ios-icon.perfekt {
   background: linear-gradient(135deg, #ff9966, #ff5e62);
 }
@@ -1175,37 +1111,244 @@ export default {
   background: linear-gradient(135deg, #43cea2, #185a9d);
 }
 
-.ios-app span {
-  color: white;
-  font-size: 0.95rem;
-  font-weight: 600;
-  text-align: center;
-}
-
-/* Mobil */
-@media (max-width: 700px) {
-  .lessons-ios-grid {
-    justify-content: center;
-    gap: 25px;
-  }
-
-  .ios-icon {
-    width: 75px;
-    height: 75px;
-    border-radius: 24px;
-    font-size: 1.8rem;
-  }
-
-  .ios-app span {
-    font-size: 0.85rem;
-  }
-}
-
 .ios-icon.praeposition {
   background: linear-gradient(135deg, #f7971e, #ffd200);
 }
 
 .ios-icon.konnektoren {
   background: linear-gradient(135deg, #667eea, #764ba2);
+}
+
+.ios-app span {
+  color: white;
+  font-size: 0.92rem;
+  font-weight: 700;
+  text-align: center;
+}
+
+/* =========================
+   WIDGETS
+========================= */
+
+.dashboard-widgets-auto {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+
+  gap: 22px;
+}
+
+.widget-card {
+  padding: 24px;
+
+  border-radius: 28px;
+
+  background: rgba(255,255,255,0.06);
+
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+
+  border: 1px solid rgba(255,255,255,0.1);
+
+  box-shadow:
+    0 18px 36px rgba(0,0,0,0.24);
+
+  color: white;
+}
+
+.widget-card h3 {
+  margin-top: 0;
+  margin-bottom: 18px;
+
+  padding-bottom: 12px;
+
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+
+  font-size: 1.05rem;
+}
+
+/* =========================
+   PROFILE
+========================= */
+
+.profile-info {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.profile-avatar {
+  width: 72px;
+  height: 72px;
+
+  border-radius: 24px;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  background: linear-gradient(135deg, #667eea, #764ba2);
+
+  font-size: 2rem;
+
+  box-shadow:
+    0 10px 30px rgba(102,126,234,0.35);
+}
+
+.profile-info p {
+  margin: 5px 0;
+
+  color: rgba(255,255,255,0.7);
+}
+
+.profile-info strong {
+  color: white;
+}
+
+/* =========================
+   STATS
+========================= */
+
+.stat-row,
+.recent-task-row {
+  display: flex;
+  justify-content: space-between;
+
+  padding: 12px 0;
+
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+
+.stat-row:last-child,
+.recent-task-row:last-child {
+  border-bottom: none;
+}
+
+.stat-row strong,
+.recent-task-row strong {
+  color: #2ecc71;
+}
+
+/* =========================
+   NOTES
+========================= */
+
+.mini-note-list {
+  margin-top: 15px;
+
+  padding: 12px;
+
+  border-radius: 18px;
+
+  background: rgba(0,0,0,0.2);
+}
+
+.mini-note {
+  padding-bottom: 8px;
+  margin-bottom: 8px;
+
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+
+.mini-note:last-child {
+  border-bottom: none;
+}
+
+.mini-note small {
+  color: rgba(255,255,255,0.4);
+}
+
+.mini-note p {
+  margin-top: 4px;
+  color: rgba(255,255,255,0.8);
+}
+
+/* =========================
+   FILES
+========================= */
+
+.upload-btn {
+  width: 100%;
+
+  margin-bottom: 15px;
+
+  padding: 12px;
+
+  border-radius: 18px;
+
+  border: 1px solid rgba(46,204,113,0.35);
+
+  background: rgba(46,204,113,0.08);
+
+  color: #2ecc71;
+
+  font-weight: 700;
+
+  cursor: pointer;
+}
+
+.upload-btn:hover {
+  background: rgba(46,204,113,0.16);
+}
+
+.hidden-file-input {
+  display: none;
+}
+
+.file-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.file-list li {
+  margin-bottom: 8px;
+
+  padding: 10px 12px;
+
+  border-radius: 14px;
+
+  background: rgba(0,0,0,0.2);
+
+  color: rgba(255,255,255,0.8);
+}
+
+.empty-text {
+  color: rgba(255,255,255,0.45);
+  font-style: italic;
+}
+
+/* =========================
+   MOBILE
+========================= */
+
+@media (max-width: 700px) {
+  .lessons-ios-grid {
+    justify-content: center;
+    gap: 24px;
+  }
+
+  .ios-icon {
+    width: 76px;
+    height: 76px;
+    border-radius: 24px;
+    font-size: 1.8rem;
+  }
+
+  .ios-app span {
+    font-size: 0.82rem;
+  }
+
+  .current-task-title {
+    font-size: 0.82rem;
+  }
+
+  .app-header {
+    padding: 12px 16px;
+  }
+
+  .dashboard-layout,
+  .welcome-screen {
+    padding: 16px 12px 40px;
+  }
 }
 </style>
