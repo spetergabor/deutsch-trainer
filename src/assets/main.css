@@ -1,0 +1,453 @@
+/* =========================================================
+   GLOBAL DESIGN SYSTEM
+========================================================= */
+
+:root {
+  --color-bg-dark: #051937;
+  --color-bg-black: #000000;
+
+  --color-primary: #6c5ce7;
+  --color-primary-hover: #5b4bc4;
+
+  --color-success: #2ecc71;
+  --color-success-hover: #27ae60;
+
+  --color-info: #3498db;
+  --color-info-hover: #2980b9;
+
+  --color-danger: #e74c3c;
+
+  --color-white: #ffffff;
+  --color-text: #ffffff;
+  --color-muted: #bdc3c7;
+  --color-muted-dark: #7f8c8d;
+
+  --color-card-dark: #2a2a2a;
+  --color-card-darker: #1a1a1a;
+  --color-border: rgba(255, 255, 255, 0.18);
+
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 20px;
+  --radius-pill: 999px;
+
+  --shadow-card: 0 10px 30px rgba(0, 0, 0, 0.3);
+
+  --container-practice: 500px;
+  --container-ui: 400px;
+  --container-menu: 600px;
+}
+
+/* =========================================================
+   BASE
+========================================================= */
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  min-height: 100%;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  background-image: linear-gradient(
+    to right top,
+    #051937,
+    #171228,
+    #190a1a,
+    #12040d,
+    #000000
+  );
+  background-attachment: fixed;
+  color: var(--color-text);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+button,
+input,
+textarea {
+  font-family: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+h1 {
+  margin: 0 0 25px;
+  font-size: 1.8rem;
+}
+
+p {
+  line-height: 1.5;
+}
+
+/* =========================================================
+   LAYOUT
+========================================================= */
+
+.content-wrapper {
+  width: 100%;
+  padding-top: 100px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.welcome-screen {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Gyakorló oldalak fő kerete */
+.practice-screen,
+.practice-container,
+.verb-practice {
+  width: 100%;
+  max-width: var(--container-practice);
+  margin: 0 auto;
+  padding: 20px;
+  text-align: center;
+}
+
+/* Egységes belső szélesség */
+.ui-width,
+.ui-unit,
+.ui-elements-container,
+.progress-container,
+.input-wrapper,
+.button-group,
+.feedback-box,
+.feedback-area {
+  width: 100%;
+  max-width: var(--container-ui);
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+.current-task-title {
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.header-spacer {
+  width: 75px;
+}
+
+.btn-header-back {
+  padding: 7px 18px;
+  border: 0;
+  border-radius: var(--radius-pill);
+  background: rgba(255, 255, 255, 0.15);
+  color: var(--color-white);
+  font-weight: 700;
+}
+
+/* =========================================================
+   MENU / CARDS
+========================================================= */
+
+.menu-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+  width: 100%;
+  max-width: var(--container-menu);
+  padding: 20px;
+}
+
+.menu-card {
+  padding: 25px;
+  border-radius: var(--radius-lg);
+  background: var(--color-white);
+  box-shadow: var(--shadow-card);
+  text-align: center;
+  transition: transform 0.3s ease;
+}
+
+.menu-card:hover {
+  transform: translateY(-5px);
+}
+
+.menu-card h2 {
+  margin: 10px 0;
+  color: #2c3e50;
+  font-size: 1.1rem;
+}
+
+.menu-card p {
+  margin-bottom: 15px;
+  color: var(--color-muted-dark);
+  font-size: 0.85rem;
+}
+
+.card-icon {
+  margin-bottom: 10px;
+  font-size: 40px;
+}
+
+/* =========================================================
+   TYPOGRAPHY / DISPLAY WORDS
+========================================================= */
+
+.verb-display,
+.nomen-display,
+.display-word {
+  margin: 10px 0;
+  color: var(--color-white);
+  font-size: 2.5rem;
+  font-weight: 700;
+}
+
+.meaning,
+.display-meaning {
+  margin-bottom: 25px;
+  color: var(--color-muted);
+  font-size: 1.2rem;
+  font-style: italic;
+}
+
+/* =========================================================
+   PROGRESS BAR
+========================================================= */
+
+.progress-bar {
+  width: 100%;
+  height: 8px;
+  margin: 20px 0 8px;
+  overflow: hidden;
+  border-radius: var(--radius-pill);
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.progress-fill {
+  height: 100%;
+  background: var(--color-success);
+  transition: width 0.3s ease;
+}
+
+.progress-text {
+  color: var(--color-white);
+  font-size: 0.9rem;
+}
+
+/* =========================================================
+   INPUTS
+========================================================= */
+
+input[type="text"],
+.pill-input,
+input[type="text"].pill-input {
+  display: block;
+  width: 100%;
+  max-width: var(--container-ui);
+  margin: 0 auto 15px;
+  padding: 15px 20px;
+  border: 2px solid rgba(223, 230, 233, 0.3);
+  border-radius: var(--radius-pill);
+  outline: none;
+  background: var(--color-white);
+  color: #2c3e50;
+  font-size: 18px;
+  transition: 0.2s ease;
+}
+
+input[type="text"]:focus,
+.pill-input:focus {
+  border-color: var(--color-primary);
+}
+
+.input-correct {
+  border-color: var(--color-success) !important;
+  background: #eafaf1 !important;
+}
+
+.input-wrong {
+  border-color: var(--color-danger) !important;
+  background: #fdf2f2 !important;
+}
+
+/* =========================================================
+   BUTTONS
+========================================================= */
+
+.btn-check,
+.btn-next,
+.btn-pill,
+.pill-button {
+  display: block;
+  width: 100%;
+  max-width: var(--container-ui);
+  margin: 0 auto 10px;
+  padding: 15px 35px;
+  border: 0;
+  border-radius: var(--radius-pill);
+  color: var(--color-white);
+  font-size: 16px;
+  font-weight: 700;
+  transition: 0.2s ease;
+}
+
+.btn-check,
+.btn-green {
+  background: var(--color-success);
+}
+
+.btn-next,
+.btn-blue {
+  background: var(--color-info);
+}
+
+.btn-dark {
+  background: #2c3e50;
+}
+
+.btn-pill:hover,
+.pill-button:hover,
+.btn-check:hover,
+.btn-next:hover {
+  opacity: 0.9;
+}
+
+.pill-button:active,
+.btn-pill:active {
+  transform: scale(0.98);
+}
+
+/* =========================================================
+   FEEDBACK
+========================================================= */
+
+.feedback-box,
+.feedback-area {
+  margin-top: 25px;
+  padding: 20px;
+  border-radius: 15px;
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+}
+
+.feedback-area {
+  text-align: left;
+}
+
+.fb-correct {
+  border: 1px solid var(--color-success);
+  background: rgba(46, 204, 113, 0.2);
+}
+
+.fb-wrong {
+  border: 1px solid var(--color-danger);
+  background: rgba(231, 76, 60, 0.2);
+}
+
+.wrong-highlight {
+  margin-bottom: 15px;
+  padding: 10px;
+  border-radius: 10px;
+  background: var(--color-danger);
+  color: var(--color-white);
+  font-weight: 700;
+}
+
+.wrong-highlight span {
+  color: #ff7675;
+  font-weight: 700;
+  text-decoration: underline;
+}
+
+.feedback-box strong {
+  color: var(--color-white);
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  opacity: 0.8;
+}
+
+/* =========================================================
+   EXAMPLES IN FEEDBACK
+========================================================= */
+
+.example-box {
+  margin-top: 15px;
+  text-align: left;
+  font-size: 0.95rem;
+}
+
+.german-example {
+  margin-bottom: 10px;
+}
+
+.german-example p,
+.hungarian-translation p {
+  margin: 5px 0;
+  line-height: 1.4;
+}
+
+.hungarian-translation {
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px dotted rgba(255, 255, 255, 0.3);
+  color: var(--color-muted);
+}
+
+.hungarian-translation p {
+  font-style: italic;
+}
+
+/* =========================================================
+   MODAL / OVERLAY
+========================================================= */
+
+.ui-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.85);
+}
+
+.ui-modal {
+  width: min(400px, calc(100% - 32px));
+  padding: 40px;
+  border-radius: var(--radius-lg);
+  background: var(--color-white);
+  color: #2c3e50;
+  text-align: center;
+}
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 650px) {
+  .menu-grid {
+    grid-template-columns: 1fr;
+    max-width: 320px;
+  }
+
+  .content-wrapper {
+    padding-top: 80px;
+  }
+
+  .verb-display,
+  .nomen-display,
+  .display-word {
+    font-size: 2rem;
+  }
+}
