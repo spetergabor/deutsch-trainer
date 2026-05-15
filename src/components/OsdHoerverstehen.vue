@@ -443,19 +443,16 @@ export default {
   },
 
   computed: {
-    audioSource() {
-      const baseUrl =
-        window.wpAppVars && window.wpAppVars.pluginUrl
-          ? window.wpAppVars.pluginUrl
-          : "/";
+audioSource() {
+  const baseUrl = import.meta.env.BASE_URL;
 
-      const fileName =
-        this.currentAufgabe === 1
-          ? "audio/ZB2_MS_A1_270917.mp3"
-          : "audio/ZB2_MS_A2_270917.mp3";
+  const fileName =
+    this.currentAufgabe === 1
+      ? "audio/ZB2_MS_A1_270917.mp3"
+      : "audio/ZB2_MS_A2_270917.mp3";
 
-      return `${baseUrl}${fileName}`;
-    },
+  return `${baseUrl}${fileName}`;
+},
 
     scoreA1() {
       let correctCount = 0;
@@ -596,169 +593,504 @@ export default {
 </script>
 
 <style scoped>
-/* --- 1. ALAP ELRENDEZÉS ÉS KONSTRUKCIÓ --- */
-.hoeren-layout { 
-  display: flex; flex-direction: column; gap: 20px; 
-  width: 100%; max-width: 900px; margin: 0 auto; 
-  color: white; box-sizing: border-box !important;
-}
+/* --- 1. ALAP ELRENDEZÉS --- */
+.hoeren-layout {
+  width: min(1100px, 92vw) !important;
+  max-width: 1100px !important;
 
-.hoeren-tabs { display: flex; justify-content: center; gap: 10px; margin-bottom: 10px; }
-.tab-btn { background: rgba(255,255,255,0.1); border: none; color: #bdc3c7; padding: 12px 30px; border-radius: 30px; cursor: pointer; font-weight: bold; transition: 0.3s; }
-.tab-btn.active { background: #3498db; color: white; }
+  padding: 0 !important;
 
-/* --- 2. EGYSÉGES PANELEK --- */
-.audio-panel, .task-panel { 
-  background: rgba(255, 255, 255, 0.05); border-radius: 20px; 
-  border: 1px solid rgba(255, 255, 255, 0.1); overflow: hidden; 
-  backdrop-filter: blur(10px); width: 100%; box-sizing: border-box !important;
-}
-
-.panel-header { 
-  background: rgba(52, 152, 219, 0.2); padding: 15px 20px; font-weight: bold; 
-  color: #3498db; border-bottom: 1px solid rgba(255, 255, 255, 0.1); text-transform: uppercase; 
-}
-
-.audio-container, .content-box { padding: 20px; width: 100%; box-sizing: border-box !important; }
-.custom-audio { width: 100%; border-radius: 50px; }
-
-/* --- 3. AUFGABE 1 (R/F) STÍLUSOK --- */
-.tf-list { display: flex; flex-direction: column; gap: 15px; width: 100%; box-sizing: border-box !important; }
-.tf-item { 
-  display: flex; align-items: center; justify-content: space-between;
-  background: rgba(0, 0, 0, 0.2); padding: 15px; border-radius: 20px; 
-  border: 1px solid rgba(255, 255, 255, 0.05); box-sizing: border-box !important; width: 100%;
-}
-.tf-num { width: 30px; font-weight: bold; color: #3498db; flex-shrink: 0; }
-.tf-text { flex: 1; text-align: left; padding-right: 15px; }
-.tf-btns { display: flex; gap: 10px; flex-shrink: 0; }
-
-.tf-btn { 
-  width: 40px; height: 40px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2); 
-  background: rgba(255,255,255,0.1); color: white; cursor: pointer; font-weight: bold; transition: 0.2s;
-}
-.tf-btn.active { background: #3498db; border-color: #3498db; }
-.tf-btn.correct { background: #2ecc71 !important; border-color: #2ecc71 !important; color: white !important; }
-.tf-btn.wrong { background: #e74c3c !important; border-color: #e74c3c !important; color: white !important; }
-
-/* --- 4. AUFGABE 2 TÁBLÁZAT (ASZTALI) --- */
-.table-scroll-wrapper { width: 100%; overflow-x: auto; margin-bottom: 20px; box-sizing: border-box !important; }
-.hv-table { width: 100%; border-collapse: collapse; min-width: 700px; box-sizing: border-box !important; }
-.hv-table th, .hv-table td { border: 1px solid rgba(255,255,255,0.1); padding: 15px; text-align: left; background: rgba(0,0,0,0.2); vertical-align: top; }
-.hv-table th { background: rgba(52, 152, 219, 0.2); color: #3498db; }
-
-/* --- 5. INPUTOK ÉS ELLENŐRZÉS SZÍNEZÉSE --- */
-.sm-input { 
-  background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.3); 
-  color: white; padding: 8px; width: 60px; border-radius: 8px; text-align: center; outline: none; 
-}
-.correct-input { border: 2px solid #2ecc71 !important; background: rgba(46, 204, 113, 0.1) !important; color: white !important; }
-.wrong-input { border: 2px solid #e74c3c !important; background: rgba(231, 76, 60, 0.1) !important; color: white !important; }
-.error-label, .correct-label { font-size: 0.75rem; margin-top: 5px; font-weight: bold; display: block; }
-.error-label { color: #e74c3c; } .correct-label { color: #2ecc71; } 
-.correction-badge { color: #e74c3c; font-weight: bold; margin-left: 10px; }
-
-/* --- 6. GOMBOK ÉS EREDMÉNY --- */
-.btn-check, .btn-next { background: #3498db; color: white; border: none; padding: 12px 25px; border-radius: 25px; cursor: pointer; font-weight: bold; margin-top: 10px; }
-.result-display { margin-top: 20px; padding: 20px; background: rgba(52, 152, 219, 0.1); border-radius: 20px; border: 1px solid #3498db; text-align: center; box-sizing: border-box; width: 100%; }
-.score-value { font-size: 1.5rem; font-weight: bold; color: #3498db; margin-left: 10px; }
-.pass { color: #2ecc71; font-weight: bold; }
-.fail { color: #e74c3c; font-weight: bold; }
-
-/* --- 7. MOBIL NÉZET --- */
-@media (max-width: 600px) {
-  /* Alap konténerek fixálása */
-  .hoeren-layout, .task-panel, .content-box, .audio-panel {
-    width: 100% !important;
-    max-width: 100% !important;
-    padding: 10px !important;
-    box-sizing: border-box !important;
-    overflow-x: hidden !important;
-  }
-
-  /* Aufgabe 1 Fix */
-  .tf-item { flex-direction: row !important; align-items: flex-start !important; padding: 12px !important; }
-  .tf-text { font-size: 0.9rem !important; word-wrap: break-word !important; padding-right: 5px !important; }
-  .tf-btns { flex-direction: column !important; gap: 5px !important; flex-shrink: 0 !important; }
-  .tf-btn { width: 38px !important; height: 32px !important; }
-
-  /* Aufgabe 2 - EZ OKOZTA A KILÓGÁST: a min-width felülírása! */
-  .table-scroll-wrapper { width: 100% !important; margin: 0 !important; padding: 0 !important; }
-  .hv-table, .hv-table tbody { 
-    display: flex !important; 
-    flex-direction: column !important; 
-    width: 100% !important; 
-    min-width: 0 !important; /* <---- ITT A MEGOLDÁS A 700PX-ES KILÓGÁSRA */
-    gap: 20px !important; 
-  }
-  .hv-table thead { display: none !important; }
-
-  /* A KÁRTYA (tr) */
-  .hv-table tr {
-    display: flex !important;
-    flex-direction: column !important;
-    width: 100% !important;
-    min-width: 0 !important; /* Biztosíték */
-    border: 1px solid rgba(255, 255, 255, 0.15) !important;
-    border-radius: 20px !important; 
-    background: rgba(0, 0, 0, 0.3) !important;
-    overflow: hidden !important; 
-    padding-bottom: 10px !important;
-    margin: 0 !important;
-    /* Safari Fix a kerekítésre */
-    -webkit-transform: translateZ(0) !important;
-    transform: translateZ(0) !important;
-    -webkit-mask-image: -webkit-radial-gradient(white, black) !important;
-  }
-
-  .hv-table td { 
-    display: block !important; 
-    width: 100% !important; 
-    box-sizing: border-box !important; 
-    border-radius: 0 !important; 
-  }
-
-  /* Kék Címsor (Kosten, stb.) */
-  .hv-table td:first-child {
-    background: rgba(52, 152, 219, 0.25) !important;
-    color: #3498db !important;
-    font-weight: bold !important;
-    padding: 12px 15px !important;
-    border-bottom: 1px solid rgba(52, 152, 219, 0.3) !important;
-    margin-bottom: 5px !important;
-  }
-
-  .hv-table td:not(:first-child) { padding: 10px 15px !important; border: none !important; }
-
-  /* Könyvtárak nevei mobilon */
-  .hv-table td:nth-child(2)::before { content: "Universitätsbibliothek:"; display: block !important; color: #3498db !important; font-size: 0.75rem !important; margin-bottom: 5px !important; }
-  .hv-table td:nth-child(3)::before { content: "ZB (Zentralbib.):"; display: block !important; color: #3498db !important; font-size: 0.75rem !important; margin-bottom: 5px !important; }
-  .hv-table td:nth-child(4)::before { content: "Literaturarchiv:"; display: block !important; color: #3498db !important; font-size: 0.75rem !important; margin-bottom: 5px !important; }
-
-  /* Inputok tördelése */
-  .sm-input { 
-    width: 100% !important; max-width: 120px !important; text-align: left !important; 
-    display: inline-block !important; margin-bottom: 5px !important; 
-  }
-  label { display: block !important; margin-bottom: 8px !important; font-size: 0.85rem !important; word-wrap: break-word !important; }
-  .error-label, .correct-label { word-wrap: break-word !important; }
-}
-
-/* A fő konténer, ami összefogja a feladatokat */
-.hoeren-container {
   display: flex;
   flex-direction: column;
-  width: 100%;
-  max-width: 1200px; /* Vagy amennyit jónak látsz */
-  margin: 0 auto;
+  gap: 28px;
+
+  color: white;
   box-sizing: border-box;
 }
 
-/* A konkrét feladatblokkok (Aufgabe 1 és 2) */
-.task-block {
-  width: 100% !important; /* Kényszerítjük, hogy töltse ki a rendelkezésre álló helyet */
-  display: block;
-  margin-bottom: 30px;
+/* --- 2. TABS --- */
+.hoeren-tabs {
+  display: flex;
+  justify-content: center;
+  gap: 14px;
+  margin: 0 auto 6px;
+}
+
+.tab-btn {
+  min-width: 160px;
+  padding: 14px 34px;
+  border: none;
+  border-radius: 999px;
+
+  background: rgba(255, 255, 255, 0.1);
+  color: #bdc3c7;
+
+  cursor: pointer;
+  font-weight: 900;
+  transition: 0.25s ease;
+}
+
+.tab-btn.active {
+  background: #3498db;
+  color: white;
+}
+
+/* --- 3. EGYSÉGES PANELEK --- */
+.audio-panel,
+.task-panel {
+  width: 100% !important;
+  max-width: 100% !important;
+  margin: 0 auto !important;
+
+  background: rgba(255, 255, 255, 0.055);
+  border-radius: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  overflow: hidden;
+
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+
+  box-shadow: 0 18px 45px rgba(0, 0, 0, 0.25);
   box-sizing: border-box;
+}
+
+.panel-header {
+  background: rgba(52, 152, 219, 0.22);
+  padding: 16px 24px;
+
+  color: #3498db;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+
+  font-weight: 900;
+  text-transform: uppercase;
+  text-align: center;
+  letter-spacing: 0.5px;
+}
+
+.audio-container,
+.content-box {
+  width: 100% !important;
+  padding: 28px !important;
+  box-sizing: border-box !important;
+}
+
+.custom-audio {
+  width: 100%;
+  border-radius: 999px;
+}
+
+.audio-info {
+  max-width: 720px;
+  margin: 22px auto 0;
+  color: rgba(255, 255, 255, 0.9);
+  text-align: center;
+  line-height: 1.55;
+}
+
+.instruction {
+  max-width: 760px;
+  margin: 0 auto 28px;
+  color: rgba(255, 255, 255, 0.9);
+  text-align: center;
+  line-height: 1.55;
+  font-size: 1.05rem;
+}
+
+/* --- 4. AUFGABE 1 --- */
+.tf-list {
+  width: 100%;
+  max-width: 920px;
+  margin: 0 auto;
+
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+
+  box-sizing: border-box;
+}
+
+.tf-item {
+  width: 100%;
+  min-height: 120px;
+
+  display: grid;
+  grid-template-columns: 34px 1fr auto;
+  align-items: center;
+  gap: 14px;
+
+  padding: 18px;
+  border-radius: 22px;
+
+  background: rgba(0, 0, 0, 0.22);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+
+  box-sizing: border-box;
+}
+
+.tf-num {
+  color: #3498db;
+  font-weight: 900;
+  font-size: 1.1rem;
+  text-align: center;
+}
+
+.tf-text {
+  text-align: left;
+  line-height: 1.35;
+  color: rgba(255, 255, 255, 0.94);
+}
+
+.tf-btns {
+  display: flex;
+  gap: 10px;
+}
+
+.tf-btn {
+  width: 44px;
+  height: 44px;
+
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+
+  cursor: pointer;
+  font-weight: 900;
+  transition: 0.2s ease;
+}
+
+.tf-btn.active {
+  background: #3498db;
+  border-color: #3498db;
+}
+
+.tf-btn.correct {
+  background: #2ecc71 !important;
+  border-color: #2ecc71 !important;
+  color: white !important;
+}
+
+.tf-btn.wrong {
+  background: #e74c3c !important;
+  border-color: #e74c3c !important;
+  color: white !important;
+}
+
+.correction-badge {
+  grid-column: 1 / -1;
+  color: #e74c3c;
+  font-weight: 900;
+  font-size: 0.85rem;
+}
+
+/* --- 5. AUFGABE 2 TÁBLÁZAT --- */
+.table-scroll-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  margin-bottom: 20px;
+  box-sizing: border-box;
+}
+
+.hv-table {
+  width: 100%;
+  min-width: 900px;
+  border-collapse: collapse;
+  box-sizing: border-box;
+}
+
+.hv-table th,
+.hv-table td {
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 16px;
+  text-align: left;
+  vertical-align: top;
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.hv-table th {
+  background: rgba(52, 152, 219, 0.22);
+  color: #3498db;
+  font-weight: 900;
+}
+
+/* --- 6. INPUTOK --- */
+.sm-input {
+  width: 70px;
+  padding: 8px;
+
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+
+  text-align: center;
+  outline: none;
+}
+
+.correct-input {
+  border: 2px solid #2ecc71 !important;
+  background: rgba(46, 204, 113, 0.1) !important;
+  color: white !important;
+}
+
+.wrong-input {
+  border: 2px solid #e74c3c !important;
+  background: rgba(231, 76, 60, 0.1) !important;
+  color: white !important;
+}
+
+.error-label,
+.correct-label {
+  display: block;
+  margin-top: 5px;
+  font-size: 0.75rem;
+  font-weight: 900;
+}
+
+.error-label {
+  color: #e74c3c;
+}
+
+.correct-label {
+  color: #2ecc71;
+}
+
+/* --- 7. GOMBOK / EREDMÉNY --- */
+.button-group {
+  display: flex;
+  justify-content: center;
+  margin-top: 24px;
+}
+
+.btn-check,
+.btn-next {
+  min-width: 180px;
+  padding: 14px 28px;
+
+  border: none;
+  border-radius: 999px;
+
+  background: #3498db;
+  color: white;
+
+  cursor: pointer;
+  font-weight: 900;
+  transition: 0.25s ease;
+}
+
+.btn-check:hover,
+.btn-next:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.05);
+}
+
+.result-display {
+  width: 100%;
+  margin-top: 24px;
+  padding: 22px;
+
+  border-radius: 22px;
+  border: 1px solid #3498db;
+
+  background: rgba(52, 152, 219, 0.1);
+
+  text-align: center;
+  box-sizing: border-box;
+}
+
+.score-value {
+  margin-left: 10px;
+  color: #3498db;
+  font-size: 1.5rem;
+  font-weight: 900;
+}
+
+.pass {
+  color: #2ecc71;
+  font-weight: 900;
+}
+
+.fail {
+  color: #e74c3c;
+  font-weight: 900;
+}
+
+/* --- 8. TABLET --- */
+@media (max-width: 900px) {
+  .hoeren-layout {
+    width: min(760px, 94vw) !important;
+  }
+
+  .tf-list {
+    grid-template-columns: 1fr;
+    max-width: 680px;
+  }
+}
+
+/* --- 9. MOBIL --- */
+
+@media (max-width: 600px) {
+  .hoeren-layout {
+    width: 100% !important;
+    max-width: 100% !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    gap: 20px;
+    overflow-x: hidden;
+  }
+
+  .audio-panel,
+  .task-panel {
+    width: 100% !important;
+    max-width: 100% !important;
+    border-radius: 20px;
+    overflow: hidden;
+  }
+
+  .audio-container,
+  .content-box {
+    padding: 18px !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  .hoeren-tabs {
+    width: 100%;
+    gap: 10px;
+  }
+
+  .tab-btn {
+    flex: 1;
+    min-width: 0;
+    padding: 12px 10px;
+  }
+
+  .tf-list {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .tf-item {
+    min-height: unset;
+    grid-template-columns: 28px 1fr auto;
+    padding: 14px;
+  }
+
+  .tf-text {
+    font-size: 0.92rem;
+  }
+
+  .tf-btns {
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .tf-btn {
+    width: 38px;
+    height: 34px;
+  }
+
+  .table-scroll-wrapper {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+  }
+
+  .hv-table,
+  .hv-table tbody {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    min-width: 0 !important;
+    gap: 20px;
+  }
+
+  .hv-table thead {
+    display: none;
+  }
+
+  .hv-table tr {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    min-width: 0;
+    overflow: hidden;
+
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 20px;
+    background: rgba(0, 0, 0, 0.3);
+
+    padding-bottom: 10px;
+    margin: 0;
+
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+    -webkit-mask-image: -webkit-radial-gradient(white, black);
+  }
+
+  .hv-table td {
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+    border-radius: 0;
+  }
+
+  .hv-table td:first-child {
+    margin-bottom: 5px;
+    padding: 12px 15px;
+
+    background: rgba(52, 152, 219, 0.25);
+    color: #3498db;
+
+    font-weight: 900;
+    border-bottom: 1px solid rgba(52, 152, 219, 0.3);
+  }
+
+  .hv-table td:not(:first-child) {
+    padding: 10px 15px;
+    border: none;
+  }
+
+  .hv-table td:nth-child(2)::before {
+    content: "Universitätsbibliothek:";
+    display: block;
+    margin-bottom: 5px;
+    color: #3498db;
+    font-size: 0.75rem;
+  }
+
+  .hv-table td:nth-child(3)::before {
+    content: "ZB (Zentralbib.):";
+    display: block;
+    margin-bottom: 5px;
+    color: #3498db;
+    font-size: 0.75rem;
+  }
+
+  .hv-table td:nth-child(4)::before {
+    content: "Literaturarchiv:";
+    display: block;
+    margin-bottom: 5px;
+    color: #3498db;
+    font-size: 0.75rem;
+  }
+
+  .sm-input {
+    width: 100%;
+    max-width: 120px;
+    display: inline-block;
+    margin-bottom: 5px;
+    text-align: left;
+  }
+
+  label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 0.85rem;
+    word-wrap: break-word;
+  }
 }
 </style>

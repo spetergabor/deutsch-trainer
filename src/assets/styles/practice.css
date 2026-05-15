@@ -1,0 +1,156 @@
+/* =========================================================
+   PRACTICE SCREEN
+========================================================= */
+
+.practice-screen {
+  width: 100%;
+  min-height: 100dvh;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  padding: 0 0 40px;
+  box-sizing: border-box;
+}
+
+.practice-container,
+.verb-practice,
+.adjektiv-practice,
+.praeposition-practice,
+.konnektoren-practice {
+  width: 100%;
+  max-width: var(--container-practice);
+  margin: 0 auto;
+  padding: 20px 0;
+  text-align: center;
+}
+
+/* =========================================================
+   MOBILE PRACTICE TOP NAV
+========================================================= */
+
+.mobile-practice-nav {
+  display: none !important;
+}
+
+@media (max-width: 700px) {
+  .mobile-practice-nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+
+    width: 100% !important;
+    max-width: none !important;
+
+    margin: 0 !important;
+    padding: 14px 16px 10px;
+
+    border: none !important;
+    border-radius: 0 !important;
+
+    background: transparent !important;
+    box-shadow: none !important;
+
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+
+    display: grid !important;
+    grid-template-columns: 48px 1fr 48px;
+    align-items: center;
+
+    z-index: 3000;
+  }
+
+  .practice-back-btn {
+    width: 48px !important;
+    min-width: 48px !important;
+    padding: 0 !important;
+
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+
+    appearance: none !important;
+    -webkit-appearance: none !important;
+
+    color: white;
+    font-size: 0;
+    justify-self: start;
+  }
+
+  .practice-back-btn::before {
+    content: "←";
+    font-size: 1.8rem;
+    font-weight: 900;
+  }
+
+  .practice-title {
+    justify-self: center;
+
+    padding: 7px 16px;
+    border-radius: 999px;
+
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+
+    color: white;
+    font-size: 0.9rem;
+    font-weight: 900;
+    white-space: nowrap;
+  }
+
+  .practice-nav-spacer {
+    width: 48px !important;
+    min-width: 48px !important;
+  }
+
+  .practice-screen {
+    min-height: 100dvh;
+
+    justify-content: center;
+    align-items: center;
+
+    padding-top: 70px;
+    padding-bottom: 110px;
+  }
+
+  .practice-container,
+  .verb-practice,
+  .adjektiv-practice,
+  .praeposition-practice,
+  .konnektoren-practice {
+    min-height: calc(100dvh - 180px);
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+    padding: 0;
+  }
+}
+
+/* =========================================================
+   SHARED PRACTICE FORM ELEMENTS
+========================================================= */
+
+.input-wrapper,
+.button-group {
+  width: 100%;
+}
+
+.pill-input,
+.pill-button {
+  width: 100%;
+  max-width: 560px;
+  box-sizing: border-box;
+}
+
+@media (max-width: 768px) {
+  .pill-input,
+  .pill-button {
+    width: 100%;
+    max-width: none;
+  }
+}

@@ -114,7 +114,7 @@ p {
   width: 100%;
   max-width: var(--container-practice);
   margin: 0 auto;
-  padding: 20px;
+  padding: 0px;
   text-align: center;
 }
 
@@ -443,11 +443,27 @@ input[type="text"]:focus,
 
   .content-wrapper {
     padding-top: 80px;
+ 
+
   }
 
   .verb-display,
   .nomen-display,
   .display-word {
     font-size: 2rem;
+  }
+}
+
+.pill-input,
+.pill-button {
+  width: 100%;
+  max-width: 560px;
+  box-sizing: border-box;
+}
+
+@media (max-width: 768px) {
+  .pill-input,
+  .pill-button {
+    max-width: none;
   }
 }

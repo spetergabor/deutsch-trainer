@@ -86,6 +86,14 @@
           </p>
         </div>
 
+        <p v-if="incorrectAnswersInRound === 0" class="success-msg">
+          🌟 Hibátlan! Jöhet a következő 10!
+        </p>
+
+        <p v-else class="fail-msg">
+          ❌ Volt benne hiba. Csak a hibásakat ismételjük újra!
+        </p>
+
         <button class="pill-button btn-green" @click="startNextAction">
           {{ incorrectAnswersInRound === 0 ? 'Új kör indítása' : 'Hibásak újragyakorlása' }}
         </button>
@@ -106,6 +114,7 @@ export default {
       allVerbs: verbsData,
       currentRoundVerbs: [],
       unansweredInRound: [],
+      wrongQuestions: [],
       currentQuestion: null,
       userAnswer: "",
       isAnswered: false,
@@ -114,6 +123,7 @@ export default {
       incorrectAnswersInRound: 0,
       currentRoundQuestionIndex: 0,
       questionsPerRound: 10,
+      defaultQuestionsPerRound: 10,
     };
   },
 
@@ -129,7 +139,11 @@ export default {
     },
 
     progressPercent() {
-      return Math.round((this.currentRoundQuestionIndex / this.questionsPerRound) * 100);
+      if (!this.questionsPerRound) return 0;
+
+      return Math.round(
+        (this.currentRoundQuestionIndex / this.questionsPerRound) * 100
+      );
     },
   },
 
@@ -147,12 +161,18 @@ export default {
     },
 
     pickNewSet() {
-      this.currentRoundVerbs = this.shuffle(this.allVerbs).slice(0, this.questionsPerRound);
+      this.questionsPerRound = this.defaultQuestionsPerRound;
+      this.currentRoundVerbs = this.shuffle(this.allVerbs).slice(
+        0,
+        this.questionsPerRound
+      );
+
       this.startRound();
     },
 
     startRound() {
       this.unansweredInRound = this.shuffle(this.currentRoundVerbs);
+      this.wrongQuestions = [];
       this.incorrectAnswersInRound = 0;
       this.currentRoundQuestionIndex = 0;
       this.showStatistics = false;
@@ -204,11 +224,15 @@ export default {
 
       if (!this.isCorrect) {
         this.incorrectAnswersInRound += 1;
+        this.wrongQuestions.push(this.currentQuestion);
       }
     },
 
     normalizeAnswer(value) {
-      return value.trim().toLowerCase().replace(/\s+/g, " ");
+      return String(value || "")
+        .trim()
+        .toLowerCase()
+        .replace(/\s+/g, " ");
     },
 
     nextQuestion() {
@@ -218,9 +242,12 @@ export default {
     startNextAction() {
       if (this.incorrectAnswersInRound === 0) {
         this.pickNewSet();
-      } else {
-        this.startRound();
+        return;
       }
+
+      this.currentRoundVerbs = this.shuffle(this.wrongQuestions);
+      this.questionsPerRound = this.currentRoundVerbs.length;
+      this.startRound();
     },
 
     async saveResults() {

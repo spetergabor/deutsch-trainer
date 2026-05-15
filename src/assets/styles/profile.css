@@ -1,0 +1,304 @@
+/* =========================================================
+   PROFILE PAGE
+========================================================= */
+
+.profile-page {
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+
+  color: white;
+}
+
+.profile-hero {
+  padding: 35px;
+
+  border-radius: var(--radius-xl);
+
+  background: var(--glass-card);
+
+  border: 1px solid var(--glass-border);
+
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+
+  box-shadow: var(--shadow-soft);
+
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.profile-avatar-large {
+  width: 100px;
+  height: 100px;
+
+  min-width: 100px;
+
+  border-radius: 30px;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  background:
+  linear-gradient(
+  135deg,
+  #667eea,
+  #764ba2
+  );
+
+  font-size: 2.6rem;
+
+  box-shadow:
+  0 10px 30px rgba(102,126,234,.35);
+}
+
+.profile-hero-text h1 {
+  margin:0;
+  font-size:2rem;
+}
+
+.profile-hero-text p{
+margin-top:8px;
+color:var(--color-text-soft);
+}
+
+/* =========================================================
+   PROFILE CARDS
+========================================================= */
+
+.profile-grid{
+display:grid;
+
+grid-template-columns:
+repeat(
+auto-fit,
+minmax(320px,1fr)
+);
+
+gap:22px;
+}
+
+.profile-card{
+padding:24px;
+
+border-radius:
+var(--radius-xl);
+
+background:
+var(--glass-card);
+
+border:
+1px solid
+var(--glass-border);
+
+backdrop-filter:
+blur(18px);
+
+-webkit-backdrop-filter:
+blur(18px);
+
+box-shadow:
+var(--shadow-soft);
+}
+
+.profile-card h3{
+margin-top:0;
+margin-bottom:18px;
+
+padding-bottom:10px;
+
+border-bottom:
+1px solid rgba(255,255,255,.08);
+}
+
+/* =========================================================
+   PROFILE INFO ROWS
+========================================================= */
+
+.profile-row{
+display:flex;
+justify-content:space-between;
+
+gap:20px;
+
+padding:12px 0;
+
+border-bottom:
+1px solid rgba(255,255,255,.06);
+}
+
+.profile-row:last-child{
+border-bottom:none;
+}
+
+.profile-label{
+color:
+rgba(255,255,255,.55);
+
+font-size:.9rem;
+}
+
+.profile-value{
+font-weight:800;
+}
+
+/* =========================================================
+   PROFILE ACTIONS
+========================================================= */
+
+.profile-actions{
+display:flex;
+flex-direction:column;
+gap:14px;
+}
+
+.profile-btn{
+width:100%;
+
+padding:14px;
+
+border:none;
+border-radius:999px;
+
+font-weight:800;
+
+cursor:pointer;
+
+transition:.25s;
+}
+
+.profile-btn:hover{
+transform:
+translateY(-2px);
+}
+
+.profile-btn.primary{
+background:
+linear-gradient(
+135deg,
+#667eea,
+#764ba2
+);
+
+color:white;
+}
+
+.profile-btn.danger{
+background:
+rgba(255,71,87,.12);
+
+border:
+1px solid
+rgba(255,71,87,.3);
+
+color:#ff7272;
+}
+
+.profile-btn.danger:hover{
+background:#ff4757;
+color:white;
+}
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media(max-width:700px){
+
+.profile-page{
+padding-bottom:120px;
+}
+
+.profile-hero{
+padding:25px;
+
+flex-direction:column;
+text-align:center;
+}
+
+.profile-avatar-large{
+width:85px;
+height:85px;
+min-width:85px;
+
+font-size:2rem;
+}
+
+.profile-grid{
+grid-template-columns:1fr;
+}
+
+.profile-row{
+flex-direction:column;
+gap:6px;
+}
+
+}
+
+/* ======================
+   PROFILE PAGE
+====================== */
+
+.profile-page {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* ugyanaz a szélesség mint a mobil alsó menü */
+
+.profile-hero-card,
+.profile-settings-card,
+.profile-danger-card {
+  width: calc(100% - 20px);
+  max-width: 740px;
+
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 22px;
+
+  box-sizing: border-box;
+}
+
+/* mobil finomhangolás */
+
+@media (max-width:768px){
+
+  .profile-hero-card,
+  .profile-settings-card,
+  .profile-danger-card{
+      width: calc(100% - 20px);
+  }
+}
+
+@media (max-width: 700px) {
+  .profile-page {
+    width: calc(100% - 30px) !important;
+    max-width: none !important;
+
+    margin: 0 auto !important;
+
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    padding-bottom: 120px !important;
+
+    box-sizing: border-box !important;
+  }
+
+  .profile-page > * {
+    width: 100% !important;
+    max-width: none !important;
+
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+
+    box-sizing: border-box !important;
+  }
+}

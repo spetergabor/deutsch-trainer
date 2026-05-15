@@ -1,23 +1,47 @@
 <template>
   <div id="app">
-    <header class="app-header">
-      <button class="logo-btn" @click="goToDashboard" title="Vissza a kezdőlapra">
+<header
+  v-if="!currentMode || windowWidth > 700"
+  class="app-header"
+>      <button class="logo-btn" @click="goToDashboard" title="Vissza a kezdőlapra">
         D
       </button>
 
-      <div class="current-task-title">
-        {{ headerTitle }}
-      </div>
+<div class="current-task-title">
+  {{ headerTitle }}
+</div>
 
-      <button
-        v-if="userSession"
-        class="btn-logout-small"
-        @click="handleLogout"
-      >
-        Kilépés
-      </button>
+<div v-if="userSession" class="desktop-nav-actions">
 
-      <div v-else class="header-spacer"></div>
+  <button class="header-nav-btn">
+    💬
+    <span>Üzenetek</span>
+  </button>
+
+  <button class="header-nav-btn">
+    🔔
+    <span>Értesítés</span>
+  </button>
+
+<button
+  class="header-nav-btn"
+  @click="setCurrentMode('profile')"
+>
+  👤
+  <span>Profil</span>
+</button>
+
+  <button
+    class="btn-logout-small"
+    @click.prevent="handleLogout"
+    :disabled="isLoggingOut"
+  >
+    {{ isLoggingOut ? 'Kilépés...' : 'Kilépés' }}
+  </button>
+
+</div>
+
+<div v-else class="header-spacer"></div>
     </header>
 
     <main class="content-wrapper">
@@ -74,13 +98,14 @@
             @keyup.enter="submitAuthForm"
           />
 
-          <button
-            v-if="isLoginMode"
-            class="select-btn btn-login"
-            @click="handleLogin"
-          >
-            Belépés
-          </button>
+<button
+  v-if="isLoginMode"
+  class="select-btn btn-login"
+  @click.prevent="handleLogin"
+  :disabled="isLoggingIn"
+>
+  {{ isLoggingIn ? 'Belépés...' : 'Belépés' }}
+</button>
 
           <button
             v-else
@@ -179,6 +204,47 @@
         </h2>
 
         <div class="dashboard-widgets-auto">
+          <article class="widget-card activity-card">
+  <div class="activity-header">
+    <div>
+      <h3>🔥 Aktivitás</h3>
+      <p class="activity-subtitle">Tanulási lendület</p>
+    </div>
+
+    <div class="streak-badge">
+      <span class="fire-icon">🔥</span>
+      <strong>{{ activityStats.streak }}</strong>
+      <small>nap</small>
+    </div>
+  </div>
+
+  <div class="activity-stats-row">
+    <div>
+      <strong>{{ activityStats.today }}</strong>
+      <span>ma</span>
+    </div>
+
+    <div>
+      <strong>{{ activityStats.activeDays }}</strong>
+      <span>aktív nap</span>
+    </div>
+
+    <div>
+      <strong>{{ activityStats.last30Days }}</strong>
+      <span>30 nap</span>
+    </div>
+  </div>
+
+  <div class="activity-grid">
+    <div
+      v-for="day in activityCalendar"
+      :key="day.date"
+      class="activity-dot"
+      :class="day.level"
+      :title="`${day.date}: ${day.count} feladat`"
+    ></div>
+  </div>
+</article>
           <article class="widget-card">
             <h3>👤 Profil</h3>
 
@@ -301,19 +367,77 @@
       </section>
 
       <!-- GYAKORLATOK -->
-      <section v-else class="practice-screen">
-        <VerbPractice v-if="currentMode === 'perfekt'" />
-        <NomenVerbPractice v-if="currentMode === 'nomen-verb'" />
-        <AdjektivPractice v-if="currentMode === 'adjektiv'" />
-        <OsdPractice v-if="currentMode === 'osd'" />
-        <PraepositionPractice v-if="currentMode === 'praeposition'" />
-        <KonnektorenPractice v-if="currentMode === 'konnektoren'" />
-      </section>
+<!-- GYAKORLATOK / APP AL-OLDALAK -->
+<section v-else class="practice-screen">
+
+  <!-- csak mobilon -->
+  <header class="practice-nav app-header mobile-practice-nav">
+    <button class="practice-back-btn" @click="goToDashboard"></button>
+
+    <div class="practice-title">
+      {{ headerTitle }}
+    </div>
+
+    <div class="practice-nav-spacer"></div>
+  </header>
+
+  <VerbPractice v-if="currentMode === 'perfekt'" />
+  <NomenVerbPractice v-if="currentMode === 'nomen-verb'" />
+  <AdjektivPractice v-if="currentMode === 'adjektiv'" />
+  <OsdPractice v-if="currentMode === 'osd'" />
+  <PraepositionPractice v-if="currentMode === 'praeposition'" />
+  <KonnektorenPractice v-if="currentMode === 'konnektoren'" />
+
+  <ProfileView
+    v-if="currentMode==='profile'"
+    :userSession="userSession"
+    :authFullName="authFullName"
+    :stats="stats"
+    :activityStats="activityStats"
+    @logout="handleLogout"
+  />
+</section>
     </main>
+   <nav v-if="userSession" class="mobile-bottom-nav">
+  <button
+    class="mobile-nav-item"
+    @click="goToDashboard"
+  >
+    <span class="mobile-nav-icon">🏠</span>
+    <span>Főmenü</span>
+  </button>
+
+  <button class="mobile-nav-item">
+    <span class="mobile-nav-icon">💬</span>
+    <span>Üzenetek</span>
+  </button>
+
+  <button class="mobile-nav-item">
+    <span class="mobile-nav-icon">🔔</span>
+    <span>Értesítés</span>
+  </button>
+
+<button
+  class="mobile-nav-item"
+  @click="setCurrentMode('profile')"
+>
+  <span class="mobile-nav-icon">👤</span>
+  <span>Profil</span>
+</button>
+
+  <button
+    class="mobile-nav-item logout-item"
+    @click="handleLogout"
+  >
+    <span class="mobile-nav-icon">🚪</span>
+    <span>Kilépés</span>
+  </button>
+</nav>
   </div>
 </template>
 
 <script>
+import ProfileView from "./components/ProfileView.vue";
 import KonnektorenPractice from "./components/KonnektorenPractice.vue";
 import PraepositionPractice from "./components/PraepositionPractice.vue";
 import VerbPractice from "./components/VerbPractice.vue";
@@ -323,11 +447,11 @@ import OsdPractice from "./components/OsdPractice.vue";
 import TeacherDashboard from "./components/TeacherDashboard.vue";
 import { supabase } from "./supabase";
 
-
 export default {
   name: "App",
 
   components: {
+    ProfileView,
     VerbPractice,
     NomenVerbPractice,
     AdjektivPractice,
@@ -339,6 +463,9 @@ export default {
 
   data() {
     return {
+      windowWidth: window.innerWidth,
+      isLoggingIn: false,
+      isLoggingOut: false,
       userSession: null,
       userRole: null,
       showLoginForm: null,
@@ -356,14 +483,19 @@ export default {
         accuracy: 0,
         totalDone: 0,
       },
+      activityStats: {
+        streak: 0,
+        today: 0,
+        activeDays: 0,
+        last30Days: 0,
+      },
+      activityCalendar: [],
     };
   },
 
   computed: {
     headerTitle() {
-      if (this.currentMode) {
-        return this.getTaskName(this.currentMode);
-      }
+      if (this.currentMode) return this.getTaskName(this.currentMode);
 
       if (this.userSession) {
         return this.userRole === "teacher" ? "Tanári felület" : "Diák dashboard";
@@ -377,25 +509,44 @@ export default {
     },
   },
 
-  async mounted() {
-    const {
-      data: { session },
-    } = await supabase.auth.getSession();
+async mounted() {
+  this.updateWindowSize();
 
-    if (session) {
-      await this.setupUserSession(session);
-    }
+  window.addEventListener(
+    "resize",
+    this.updateWindowSize
+  );
 
-    supabase.auth.onAuthStateChange(async (_event, session) => {
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
+
+  if (session) {
+    await this.setupUserSession(session);
+  }
+
+  supabase.auth.onAuthStateChange(
+    async (_event, session) => {
       if (session) {
         await this.setupUserSession(session);
       } else {
         this.clearUserSession();
       }
-    });
-  },
+    }
+  );
+},
+
+beforeUnmount() {
+  window.removeEventListener(
+    "resize",
+    this.updateWindowSize
+  );
+},
 
   methods: {
+    updateWindowSize() {
+  this.windowWidth = window.innerWidth;
+},
     setCurrentMode(mode) {
       this.currentMode = mode;
     },
@@ -435,20 +586,35 @@ export default {
     },
 
     async handleLogin() {
-      if (!this.authEmail || !this.authPassword) {
-        alert("Kérlek, add meg az e-mail címedet és a jelszavadat!");
-        return;
-      }
+  if (this.isLoggingIn) return;
 
-      const { error } = await supabase.auth.signInWithPassword({
-        email: this.authEmail,
-        password: this.authPassword,
-      });
+  if (!this.authEmail || !this.authPassword) {
+    alert("Kérlek, add meg az e-mail címedet és a jelszavadat!");
+    return;
+  }
 
-      if (error) {
-        alert("Hiba a belépésnél: " + error.message);
-      }
-    },
+  this.isLoggingIn = true;
+
+  try {
+    const { data, error } = await supabase.auth.signInWithPassword({
+  email: this.authEmail,
+  password: this.authPassword,
+});
+
+if (error) {
+  alert("Hiba a belépésnél: " + error.message);
+  return;
+}
+
+if (data?.session) {
+  await this.setupUserSession(data.session);
+}
+  } catch (error) {
+    alert("Váratlan hiba a belépésnél: " + error.message);
+  } finally {
+    this.isLoggingIn = false;
+  }
+},
 
     async handleRegister() {
       if (!this.authEmail || !this.authFullName || this.authPassword.length < 6) {
@@ -487,19 +653,31 @@ export default {
           return;
         }
 
+        await this.saveDailyActivity(data.user.id);
+
         alert("Sikeres regisztráció!");
       }
     },
 
     async handleLogout() {
-      const { error } = await supabase.auth.signOut();
+      if (this.isLoggingOut) return;
 
-      if (error) {
-        alert("Hiba a kilépésnél: " + error.message);
-        return;
+      this.isLoggingOut = true;
+
+      try {
+        const { error } = await supabase.auth.signOut({
+          scope: "local",
+        });
+
+        if (error) {
+          console.error("Kilépési hiba:", error.message);
+        }
+      } catch (error) {
+        console.error("Kilépési hiba:", error.message);
+      } finally {
+        this.clearUserSession();
+        this.isLoggingOut = false;
       }
-
-      this.clearUserSession();
     },
 
     async setupUserSession(session) {
@@ -508,12 +686,16 @@ export default {
       this.authFullName = session.user.user_metadata?.full_name || "";
       this.showLoginForm = null;
 
+      await this.saveDailyActivity(session.user.id);
+
       if (this.userRole === "student") {
         await this.fetchStudentDashboardData();
       }
     },
 
     clearUserSession() {
+      this.isLoggingIn = false;
+      this.isLoggingOut = false;
       this.userSession = null;
       this.userRole = null;
       this.showLoginForm = null;
@@ -530,6 +712,13 @@ export default {
         accuracy: 0,
         totalDone: 0,
       };
+      this.activityStats = {
+        streak: 0,
+        today: 0,
+        activeDays: 0,
+        last30Days: 0,
+      };
+      this.activityCalendar = [];
     },
 
     async fetchStudentDashboardData() {
@@ -537,6 +726,7 @@ export default {
         this.fetchNotes(),
         this.fetchFiles(),
         this.fetchStatistics(),
+        this.fetchActivityStats(),
       ]);
     },
 
@@ -592,7 +782,6 @@ export default {
 
       this.isUploading = true;
 
-      const fileExtension = file.name.split(".").pop();
       const safeFileName = file.name.replace(/[^a-zA-Z0-9._-]/g, "_");
       const filePath = `${this.userSession.id}/${Date.now()}-${safeFileName}`;
 
@@ -647,7 +836,9 @@ export default {
         return;
       }
 
-      if (!data?.length) {
+      const results = data || [];
+
+      if (!results.length) {
         this.recentExercises = [];
         this.stats = {
           accuracy: 0,
@@ -656,13 +847,13 @@ export default {
         return;
       }
 
-      this.recentExercises = data.slice(0, 3);
-      this.stats.totalDone = data.length;
+      this.recentExercises = results.slice(0, 3);
+      this.stats.totalDone = results.length;
 
       let totalScore = 0;
       let totalMaxScore = 0;
 
-      data.forEach((item) => {
+      results.forEach((item) => {
         totalScore += Number(item.score) || 0;
         totalMaxScore += Number(item.max_score) || 0;
       });
@@ -670,6 +861,115 @@ export default {
       this.stats.accuracy = totalMaxScore
         ? Math.round((totalScore / totalMaxScore) * 100)
         : 0;
+    },
+
+    async saveDailyActivity(userId) {
+  if (!userId) return;
+
+  const today = new Date().toISOString().split("T")[0];
+
+  const { error } = await supabase
+    .from("user_daily_activity")
+    .upsert(
+      {
+        user_id: userId,
+        activity_date: today,
+      },
+      {
+        onConflict: "user_id,activity_date",
+      }
+    );
+
+  if (error) {
+    console.error("Napi aktivitás mentési hiba:", error.message);
+  }
+},
+
+    async fetchActivityStats() {
+      if (!this.userSession?.id) return;
+
+      const { data, error } = await supabase
+        .from("user_daily_activity")
+        .select("*")
+        .eq("user_id", this.userSession.id)
+        .order("activity_date", { ascending: false });
+
+      if (error) {
+        console.error("Aktivitás betöltési hiba:", error.message);
+        return;
+      }
+
+      this.calculateLoginActivityStats(data || []);
+    },
+
+    calculateLoginActivityStats(days) {
+      const today = new Date();
+const todayKey = new Date().toISOString().split("T")[0];
+      const activeDates = new Set(days.map((item) => item.activity_date));
+
+      const last42Days = [];
+      const last30Days = [];
+
+      for (let i = 41; i >= 0; i -= 1) {
+        const date = new Date(today);
+        date.setDate(today.getDate() - i);
+
+        const key = this.getDateKey(date);
+        const active = activeDates.has(key);
+
+        last42Days.push({
+          date: key,
+          count: active ? 1 : 0,
+          level: active ? "level-3" : "level-0",
+        });
+
+        if (i < 30) {
+          last30Days.push({
+            date: key,
+            active,
+          });
+        }
+      }
+
+      let streak = 0;
+
+      for (let i = 0; i < 365; i += 1) {
+        const date = new Date(today);
+        date.setDate(today.getDate() - i);
+
+        const key = this.getDateKey(date);
+
+        if (activeDates.has(key)) {
+          streak += 1;
+        } else {
+          break;
+        }
+      }
+
+      this.activityCalendar = last42Days;
+
+this.activityStats = {
+  streak: Math.max(streak, activeDates.has(todayKey) ? 1 : 0),
+  today: activeDates.has(todayKey) ? 1 : 0,
+  activeDays: activeDates.size,
+  last30Days: last30Days.filter((day) => day.active).length,
+};
+    },
+
+    getActivityLevel(count) {
+      if (count === 0) return "level-0";
+      if (count === 1) return "level-1";
+      if (count <= 3) return "level-2";
+      if (count <= 6) return "level-3";
+      return "level-4";
+    },
+
+    getDateKey(date) {
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, "0");
+      const day = String(date.getDate()).padStart(2, "0");
+
+      return `${year}-${month}-${day}`;
     },
 
     formatDate(dateString) {
@@ -685,14 +985,15 @@ export default {
     },
 
     getTaskName(type) {
-      const names = {
-        perfekt: "Perfekt Gyakorló",
-        "nomen-verb": "Nomen-Verb",
-        adjektiv: "Adjektivdekl.",
-        osd: "ÖSD Gyakorló",
-        praeposition: "Präpositionen",
-        konnektoren: "Konnektoren",
-      };
+const names = {
+  perfekt: "Perfekt Gyakorló",
+  "nomen-verb": "Nomen-Verb",
+  adjektiv: "Adjektivdekl.",
+  osd: "ÖSD Gyakorló",
+  praeposition: "Präpositionen",
+  konnektoren: "Konnektoren",
+  profile: "Profil",
+};
 
       return names[type] || "Gyakorlat";
     },
@@ -700,655 +1001,10 @@ export default {
 };
 </script>
 
-<style scoped>
-/* =========================
-   GLOBAL LAYOUT
-========================= */
-
-.dashboard-layout,
-.welcome-screen {
-  width: 100%;
-  max-width: 1150px;
-  margin: 0 auto;
-  padding: 20px 16px 50px;
-  box-sizing: border-box;
-}
-
-/* =========================
-   APPLE IOS HEADER
-========================= */
-
-.app-header {
-  position: sticky;
-  top: 14px;
-  z-index: 999;
-
-  width: calc(100% - 30px);
-  max-width: 1180px;
-
-  margin: 16px auto 28px;
-  padding: 14px 20px;
-
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-
-  border-radius: 999px;
-
-  background: rgba(255, 255, 255, 0.08);
-
-  backdrop-filter: blur(28px) saturate(180%);
-  -webkit-backdrop-filter: blur(28px) saturate(180%);
-
-  border: 1px solid rgba(255, 255, 255, 0.14);
-
-  box-shadow:
-    0 10px 40px rgba(0, 0, 0, 0.28),
-    inset 0 1px 0 rgba(255,255,255,0.12);
-
-  transition: all 0.3s ease;
-}
-
-.logo-btn {
-  width: 44px;
-  height: 44px;
-  border: none;
-  border-radius: 15px;
-
-  display: flex;
-  justify-content: center;
-  align-items: center;
-
-  background:
-    linear-gradient(135deg, rgba(255,255,255,0.25), rgba(255,255,255,0.08)),
-    linear-gradient(135deg, #667eea, #764ba2);
-
-  color: white;
-  font-size: 1.2rem;
-  font-weight: 900;
-
-  cursor: pointer;
-  transition: all 0.25s ease;
-
-  box-shadow:
-    0 8px 24px rgba(102,126,234,0.35),
-    inset 0 1px 1px rgba(255,255,255,0.2);
-}
-
-.logo-btn:hover {
-  transform: scale(1.06);
-}
-
-.current-task-title {
-  flex: 1;
-  text-align: center;
-
-  color: white;
-  font-size: 1rem;
-  font-weight: 800;
-  letter-spacing: 0.5px;
-}
-
-.header-spacer {
-  width: 70px;
-}
-
-.btn-logout-small {
-  padding: 10px 16px;
-
-  border-radius: 999px;
-  border: 1px solid rgba(255,255,255,0.15);
-
-  background: rgba(255,255,255,0.08);
-
-  color: white;
-  font-weight: 700;
-
-  cursor: pointer;
-  transition: all 0.25s ease;
-
-  backdrop-filter: blur(12px);
-}
-
-.btn-logout-small:hover {
-  background: rgba(231, 76, 60, 0.9);
-  border-color: transparent;
-}
-
-/* =========================
-   TITLES
-========================= */
-
-.dashboard-header {
-  margin-bottom: 35px;
-  text-align: center;
-}
-
-.dashboard-header h1 {
-  margin-bottom: 8px;
-
-  color: white;
-  font-size: clamp(2rem, 5vw, 3rem);
-  font-weight: 900;
-  letter-spacing: -1px;
-}
-
-.subtitle {
-  color: rgba(255,255,255,0.65);
-}
-
-.section-title {
-  display: inline-block;
-
-  margin-bottom: 24px;
-  padding-bottom: 6px;
-
-  border-bottom: 2px solid rgba(255,255,255,0.15);
-
-  color: white;
-  font-size: 1.15rem;
-  font-weight: 800;
-}
-
-.section-title-spaced {
-  margin-top: 50px;
-}
-
-/* =========================
-   LOGIN CARD
-========================= */
-
-.login-card {
-  max-width: 430px;
-  margin: 0 auto;
-
-  padding: 35px 28px;
-
-  border-radius: 30px;
-
-  background: rgba(255,255,255,0.06);
-
-  backdrop-filter: blur(22px);
-  -webkit-backdrop-filter: blur(22px);
-
-  border: 1px solid rgba(255,255,255,0.1);
-
-  box-shadow:
-    0 18px 40px rgba(0,0,0,0.25);
-
-  text-align: center;
-}
-
-.login-card h2 {
-  margin-bottom: 28px;
-  color: white;
-}
-
-/* =========================
-   INPUTS
-========================= */
-
-.simple-input,
-.simple-textarea {
-  width: 100%;
-
-  border-radius: 18px;
-
-  border: 1px solid rgba(255,255,255,0.1);
-
-  background: rgba(255,255,255,0.06);
-
-  color: white;
-
-  box-sizing: border-box;
-
-  font-size: 1rem;
-
-  transition: all 0.25s ease;
-}
-
-.simple-input {
-  padding: 15px;
-  margin-bottom: 15px;
-}
-
-.simple-textarea {
-  padding: 15px;
-  min-height: 90px;
-  resize: vertical;
-}
-
-.simple-input::placeholder,
-.simple-textarea::placeholder {
-  color: rgba(255,255,255,0.35);
-}
-
-.simple-input:focus,
-.simple-textarea:focus {
-  outline: none;
-
-  border-color: rgba(255,255,255,0.2);
-
-  background: rgba(255,255,255,0.09);
-
-  box-shadow:
-    0 0 0 4px rgba(255,255,255,0.05);
-}
-
-/* =========================
-   BUTTONS
-========================= */
-
-.select-btn,
-.upload-btn,
-.btn-back,
-.btn-login,
-.btn-register,
-.btn-save-note {
-  transition: all 0.25s ease;
-}
-
-.select-btn,
-.btn-login,
-.btn-register,
-.btn-save-note {
-  width: 100%;
-
-  padding: 13px;
-
-  border: none;
-  border-radius: 18px;
-
-  color: white;
-  font-weight: 800;
-
-  cursor: pointer;
-}
-
-.btn-login {
-  background: linear-gradient(135deg, #43cea2, #185a9d);
-}
-
-.btn-register {
-  background: linear-gradient(135deg, #667eea, #764ba2);
-}
-
-.select-btn,
-.btn-save-note {
-  background: linear-gradient(135deg, #2ecc71, #27ae60);
-}
-
-.select-btn:hover,
-.btn-login:hover,
-.btn-register:hover,
-.btn-save-note:hover {
-  transform: translateY(-2px);
-  filter: brightness(1.05);
-}
-
-.btn-back {
-  width: 100%;
-
-  padding: 12px;
-
-  border-radius: 16px;
-
-  border: 1px solid rgba(255,255,255,0.15);
-
-  background: rgba(255,255,255,0.05);
-
-  color: rgba(255,255,255,0.7);
-
-  cursor: pointer;
-}
-
-.btn-back:hover {
-  background: rgba(255,255,255,0.1);
-  color: white;
-}
-
-/* =========================
-   AUTH
-========================= */
-
-.auth-toggle {
-  margin-top: 22px;
-
-  color: rgba(255,255,255,0.55);
-  font-size: 0.9rem;
-}
-
-.auth-toggle a {
-  color: white;
-  font-weight: 700;
-  text-decoration: none;
-}
-
-.auth-toggle a:hover {
-  opacity: 0.8;
-}
-
-.divider {
-  margin: 24px 0;
-  border: none;
-  border-top: 1px solid rgba(255,255,255,0.1);
-}
-
-/* =========================
-   IOS LESSON GRID
-========================= */
-
-.lessons-ios-grid {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: flex-start;
-
-  gap: 34px;
-
-  margin-top: 30px;
-}
-
-.ios-app {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-
-  gap: 12px;
-
-  cursor: pointer;
-
-  transition: transform 0.25s ease;
-}
-
-.ios-app:hover {
-  transform: translateY(-6px);
-}
-
-.ios-icon {
-  width: 92px;
-  height: 92px;
-
-  border-radius: 30px;
-
-  display: flex;
-  justify-content: center;
-  align-items: center;
-
-  font-size: 2.2rem;
-  color: white;
-
-  backdrop-filter: blur(20px);
-
-  border: 1px solid rgba(255,255,255,0.16);
-
-  box-shadow:
-    0 14px 34px rgba(0,0,0,0.35),
-    inset 0 1px 1px rgba(255,255,255,0.2);
-
-  transition: all 0.28s ease;
-}
-
-.ios-icon:hover {
-  transform: scale(1.08);
-}
-
-/* ICON COLORS */
-
-.ios-icon.perfekt {
-  background: linear-gradient(135deg, #ff9966, #ff5e62);
-}
-
-.ios-icon.nomen {
-  background: linear-gradient(135deg, #36d1dc, #5b86e5);
-}
-
-.ios-icon.adjektiv {
-  background: linear-gradient(135deg, #c471f5, #fa71cd);
-}
-
-.ios-icon.osd {
-  background: linear-gradient(135deg, #43cea2, #185a9d);
-}
-
-.ios-icon.praeposition {
-  background: linear-gradient(135deg, #f7971e, #ffd200);
-}
-
-.ios-icon.konnektoren {
-  background: linear-gradient(135deg, #667eea, #764ba2);
-}
-
-.ios-app span {
-  color: white;
-  font-size: 0.92rem;
-  font-weight: 700;
-  text-align: center;
-}
-
-/* =========================
-   WIDGETS
-========================= */
-
-.dashboard-widgets-auto {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-
-  gap: 22px;
-}
-
-.widget-card {
-  padding: 24px;
-
-  border-radius: 28px;
-
-  background: rgba(255,255,255,0.06);
-
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-
-  border: 1px solid rgba(255,255,255,0.1);
-
-  box-shadow:
-    0 18px 36px rgba(0,0,0,0.24);
-
-  color: white;
-}
-
-.widget-card h3 {
-  margin-top: 0;
-  margin-bottom: 18px;
-
-  padding-bottom: 12px;
-
-  border-bottom: 1px solid rgba(255,255,255,0.08);
-
-  font-size: 1.05rem;
-}
-
-/* =========================
-   PROFILE
-========================= */
-
-.profile-info {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-}
-
-.profile-avatar {
-  width: 72px;
-  height: 72px;
-
-  border-radius: 24px;
-
-  display: flex;
-  justify-content: center;
-  align-items: center;
-
-  background: linear-gradient(135deg, #667eea, #764ba2);
-
-  font-size: 2rem;
-
-  box-shadow:
-    0 10px 30px rgba(102,126,234,0.35);
-}
-
-.profile-info p {
-  margin: 5px 0;
-
-  color: rgba(255,255,255,0.7);
-}
-
-.profile-info strong {
-  color: white;
-}
-
-/* =========================
-   STATS
-========================= */
-
-.stat-row,
-.recent-task-row {
-  display: flex;
-  justify-content: space-between;
-
-  padding: 12px 0;
-
-  border-bottom: 1px solid rgba(255,255,255,0.08);
-}
-
-.stat-row:last-child,
-.recent-task-row:last-child {
-  border-bottom: none;
-}
-
-.stat-row strong,
-.recent-task-row strong {
-  color: #2ecc71;
-}
-
-/* =========================
-   NOTES
-========================= */
-
-.mini-note-list {
-  margin-top: 15px;
-
-  padding: 12px;
-
-  border-radius: 18px;
-
-  background: rgba(0,0,0,0.2);
-}
-
-.mini-note {
-  padding-bottom: 8px;
-  margin-bottom: 8px;
-
-  border-bottom: 1px solid rgba(255,255,255,0.06);
-}
-
-.mini-note:last-child {
-  border-bottom: none;
-}
-
-.mini-note small {
-  color: rgba(255,255,255,0.4);
-}
-
-.mini-note p {
-  margin-top: 4px;
-  color: rgba(255,255,255,0.8);
-}
-
-/* =========================
-   FILES
-========================= */
-
-.upload-btn {
-  width: 100%;
-
-  margin-bottom: 15px;
-
-  padding: 12px;
-
-  border-radius: 18px;
-
-  border: 1px solid rgba(46,204,113,0.35);
-
-  background: rgba(46,204,113,0.08);
-
-  color: #2ecc71;
-
-  font-weight: 700;
-
-  cursor: pointer;
-}
-
-.upload-btn:hover {
-  background: rgba(46,204,113,0.16);
-}
-
-.hidden-file-input {
-  display: none;
-}
-
-.file-list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.file-list li {
-  margin-bottom: 8px;
-
-  padding: 10px 12px;
-
-  border-radius: 14px;
-
-  background: rgba(0,0,0,0.2);
-
-  color: rgba(255,255,255,0.8);
-}
-
-.empty-text {
-  color: rgba(255,255,255,0.45);
-  font-style: italic;
-}
-
-/* =========================
-   MOBILE
-========================= */
-
-@media (max-width: 700px) {
-  .lessons-ios-grid {
-    justify-content: center;
-    gap: 24px;
-  }
-
-  .ios-icon {
-    width: 76px;
-    height: 76px;
-    border-radius: 24px;
-    font-size: 1.8rem;
-  }
-
-  .ios-app span {
-    font-size: 0.82rem;
-  }
-
-  .current-task-title {
-    font-size: 0.82rem;
-  }
-
-  .app-header {
-    padding: 12px 16px;
-  }
-
-  .dashboard-layout,
-  .welcome-screen {
-    padding: 16px 12px 40px;
-  }
-}
+<style>
+@import "./assets/styles/app.css";
+@import "./assets/styles/dashboard.css";
+@import "./assets/styles/practice.css";
+@import "./assets/styles/mobile-nav.css";
+@import "./assets/styles/profile.css";
 </style>

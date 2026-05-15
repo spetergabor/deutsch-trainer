@@ -69,7 +69,10 @@
           </p>
 
           <div class="example-box">
-            <p><strong>Vonzat:</strong> {{ currentQuestion.verb }} {{ currentQuestion.preposition }} + {{ currentQuestion.caseType }}</p>
+            <p>
+              <strong>Vonzat:</strong>
+              {{ currentQuestion.verb }} {{ currentQuestion.preposition }} + {{ currentQuestion.caseType }}
+            </p>
             <p><strong>Példa:</strong> {{ currentQuestion.example }}</p>
           </div>
         </div>
@@ -82,7 +85,17 @@
 
         <p>
           Eredmény:
-          <span class="correct-text">{{ correctAnswersInRound }} / {{ questionsPerRound }}</span>
+          <span class="correct-text">
+            {{ correctAnswersInRound }} / {{ questionsPerRound }}
+          </span>
+        </p>
+
+        <p v-if="incorrectAnswersInRound === 0" class="success-msg">
+          🌟 Hibátlan! Jöhet a következő 10!
+        </p>
+
+        <p v-else class="fail-msg">
+          ❌ Volt benne hiba. Csak a hibásakat ismételjük újra!
         </p>
 
         <button class="pill-button btn-green" @click="startNextAction">
@@ -105,6 +118,7 @@ export default {
       allQuestions: praepositionenData,
       currentRoundQuestions: [],
       unansweredQuestions: [],
+      wrongQuestions: [],
       currentQuestion: null,
       userAnswer: "",
       isAnswered: false,
@@ -114,11 +128,14 @@ export default {
       incorrectAnswersInRound: 0,
       currentQuestionIndex: 0,
       questionsPerRound: 10,
+      defaultQuestionsPerRound: 10,
     };
   },
 
   computed: {
     progressPercent() {
+      if (!this.questionsPerRound) return 0;
+
       return Math.round((this.currentQuestionIndex / this.questionsPerRound) * 100);
     },
   },
@@ -137,12 +154,18 @@ export default {
     },
 
     pickNewSet() {
-      this.currentRoundQuestions = this.shuffle(this.allQuestions).slice(0, this.questionsPerRound);
+      this.questionsPerRound = this.defaultQuestionsPerRound;
+      this.currentRoundQuestions = this.shuffle(this.allQuestions).slice(
+        0,
+        this.questionsPerRound
+      );
+
       this.startRound();
     },
 
     startRound() {
       this.unansweredQuestions = this.shuffle(this.currentRoundQuestions);
+      this.wrongQuestions = [];
       this.correctAnswersInRound = 0;
       this.incorrectAnswersInRound = 0;
       this.currentQuestionIndex = 0;
@@ -193,6 +216,7 @@ export default {
         this.correctAnswersInRound += 1;
       } else {
         this.incorrectAnswersInRound += 1;
+        this.wrongQuestions.push(this.currentQuestion);
       }
     },
 
@@ -214,9 +238,12 @@ export default {
     startNextAction() {
       if (this.incorrectAnswersInRound === 0) {
         this.pickNewSet();
-      } else {
-        this.startRound();
+        return;
       }
+
+      this.currentRoundQuestions = this.shuffle(this.wrongQuestions);
+      this.questionsPerRound = this.currentRoundQuestions.length;
+      this.startRound();
     },
 
     async saveResults() {
@@ -251,6 +278,7 @@ export default {
 }
 
 .gap-sentence {
+  width: 100%;
   max-width: 420px;
   margin: 18px auto 24px;
   padding: 18px;

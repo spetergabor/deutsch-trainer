@@ -104,7 +104,7 @@
         </p>
 
         <p v-else class="fail-msg">
-          ❌ Volt benne hiba. Ismételjük meg ezt a kört!
+          ❌ Volt benne hiba. Csak a hibásakat ismételjük újra!
         </p>
 
         <div class="solved-list">
@@ -140,6 +140,7 @@ export default {
       currentRoundQuestions: [],
       currentQuestionIndex: 0,
       roundHistory: [],
+      wrongQuestions: [],
       currentQuestion: null,
       userAnswer: "",
       isAnswered: false,
@@ -148,11 +149,14 @@ export default {
       correctAnswersInRound: 0,
       incorrectAnswersInRound: 0,
       totalQuestionsInRound: 10,
+      defaultQuestionsPerRound: 10,
     };
   },
 
   computed: {
     progressPercentage() {
+      if (!this.totalQuestionsInRound) return 0;
+
       return Math.round(
         (this.roundHistory.length / this.totalQuestionsInRound) * 100
       );
@@ -167,7 +171,7 @@ export default {
   },
 
   created() {
-    this.startRound();
+    this.pickNewSet();
   },
 
   mounted() {
@@ -179,25 +183,28 @@ export default {
       return [...array].sort(() => Math.random() - 0.5);
     },
 
+    pickNewSet() {
+      this.totalQuestionsInRound = this.defaultQuestionsPerRound;
+      this.currentRoundQuestions = this.shuffle(this.allQuestions).slice(
+        0,
+        this.totalQuestionsInRound
+      );
+
+      this.startRound();
+    },
+
     startRound() {
       this.roundHistory = [];
+      this.wrongQuestions = [];
       this.correctAnswersInRound = 0;
       this.incorrectAnswersInRound = 0;
-      this.showStatistics = false;
-
-      if (!this.currentRoundQuestions.length) {
-        this.currentRoundQuestions = this.shuffle(this.allQuestions).slice(
-          0,
-          this.totalQuestionsInRound
-        );
-      }
-
       this.currentQuestionIndex = 0;
+      this.showStatistics = false;
       this.setNextQuestion();
     },
 
     setNextQuestion() {
-      if (this.currentQuestionIndex >= this.totalQuestionsInRound) {
+      if (this.currentQuestionIndex >= this.currentRoundQuestions.length) {
         this.currentQuestion = null;
         this.showStatistics = true;
         this.saveResultToDatabase();
@@ -220,7 +227,10 @@ export default {
     },
 
     normalizeAnswer(value) {
-      return value.trim().toLowerCase().replace(/\s+/g, " ");
+      return String(value || "")
+        .trim()
+        .toLowerCase()
+        .replace(/\s+/g, " ");
     },
 
     checkAnswer() {
@@ -238,6 +248,7 @@ export default {
         this.correctAnswersInRound += 1;
       } else {
         this.incorrectAnswersInRound += 1;
+        this.wrongQuestions.push(this.currentQuestion);
       }
 
       this.roundHistory.push({
@@ -263,9 +274,12 @@ export default {
 
     startNextAction() {
       if (this.incorrectAnswersInRound === 0) {
-        this.currentRoundQuestions = [];
+        this.pickNewSet();
+        return;
       }
 
+      this.currentRoundQuestions = this.shuffle(this.wrongQuestions);
+      this.totalQuestionsInRound = this.currentRoundQuestions.length;
       this.startRound();
     },
 

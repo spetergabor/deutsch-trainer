@@ -157,8 +157,16 @@
           </p>
         </div>
 
-        <button class="pill-button btn-dark" @click="startRound(correctAnswersInRound !== totalQuestionsInRound)">
-          {{ correctAnswersInRound === totalQuestionsInRound ? 'Következő kör' : 'Újrapróbálás ugyanazokkal' }}
+        <p v-if="incorrectAnswersInRound === 0" class="success-msg">
+          🌟 Hibátlan! Jöhet a következő kör!
+        </p>
+
+        <p v-else class="fail-msg">
+          ❌ Volt benne hiba. Csak a hibásakat ismételjük újra!
+        </p>
+
+        <button class="pill-button btn-dark" @click="startNextAction">
+          {{ incorrectAnswersInRound === 0 ? 'Következő kör' : 'Hibásak újragyakorlása' }}
         </button>
 
         <button class="pill-button btn-blue" @click="resetToSelector">
@@ -183,6 +191,7 @@ export default {
       allQuestions: adjektivData,
       filteredDeck: [],
       currentRoundBatch: [],
+      wrongQuestions: [],
       roundHistory: [],
       currentQuestion: null,
       userAnswer: "",
@@ -192,11 +201,14 @@ export default {
       correctAnswersInRound: 0,
       incorrectAnswersInRound: 0,
       totalQuestionsInRound: 5,
+      defaultQuestionsPerRound: 5,
     };
   },
 
   computed: {
     progressPercentage() {
+      if (!this.totalQuestionsInRound) return 0;
+
       return Math.round((this.roundHistory.length / this.totalQuestionsInRound) * 100);
     },
 
@@ -212,23 +224,27 @@ export default {
 
     selectCase(selectedCase) {
       this.selectedCase = selectedCase;
-      this.startRound(false);
+      this.pickNewSet();
     },
 
-    startRound(isRepeat = false) {
+    pickNewSet() {
+      this.totalQuestionsInRound = this.defaultQuestionsPerRound;
+
+      const pool =
+        this.selectedCase === "Mixed"
+          ? [...this.allQuestions]
+          : this.allQuestions.filter((question) => question.case === this.selectedCase);
+
+      this.currentRoundBatch = this.shuffle(pool).slice(0, this.totalQuestionsInRound);
+      this.startRound();
+    },
+
+    startRound() {
       this.roundHistory = [];
+      this.wrongQuestions = [];
       this.correctAnswersInRound = 0;
       this.incorrectAnswersInRound = 0;
       this.showStatistics = false;
-
-      if (!isRepeat) {
-        const pool =
-          this.selectedCase === "Mixed"
-            ? [...this.allQuestions]
-            : this.allQuestions.filter((question) => question.case === this.selectedCase);
-
-        this.currentRoundBatch = this.shuffle(pool).slice(0, this.totalQuestionsInRound);
-      }
 
       this.filteredDeck = this.shuffle(this.currentRoundBatch);
       this.setNextQuestion();
@@ -253,7 +269,10 @@ export default {
     },
 
     normalizeAnswer(value) {
-      return value.trim().toLowerCase().replace(/\s+/g, " ");
+      return String(value || "")
+        .trim()
+        .toLowerCase()
+        .replace(/\s+/g, " ");
     },
 
     checkAnswer() {
@@ -269,6 +288,7 @@ export default {
         this.correctAnswersInRound += 1;
       } else {
         this.incorrectAnswersInRound += 1;
+        this.wrongQuestions.push(this.currentQuestion);
       }
 
       this.roundHistory.push({
@@ -289,15 +309,31 @@ export default {
       this.setNextQuestion();
     },
 
+    startNextAction() {
+      if (this.incorrectAnswersInRound === 0) {
+        this.pickNewSet();
+        return;
+      }
+
+      this.currentRoundBatch = this.shuffle(this.wrongQuestions);
+      this.totalQuestionsInRound = this.currentRoundBatch.length;
+      this.startRound();
+    },
+
     resetToSelector() {
       this.selectedCase = null;
       this.showStatistics = false;
       this.currentRoundBatch = [];
       this.filteredDeck = [];
+      this.wrongQuestions = [];
+      this.roundHistory = [];
       this.currentQuestion = null;
       this.userAnswer = "";
       this.isAnswered = false;
       this.isCorrect = null;
+      this.correctAnswersInRound = 0;
+      this.incorrectAnswersInRound = 0;
+      this.totalQuestionsInRound = this.defaultQuestionsPerRound;
     },
 
     async saveResults() {
