@@ -195,6 +195,11 @@ export default {
       default: null,
     },
 
+    isGuestMode: {
+      type: Boolean,
+      default: false,
+    },
+
     authFullName: {
       type: String,
       default: "",

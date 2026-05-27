@@ -91,6 +91,172 @@
 }
 
 /* =========================================================
+   DAILY PLAN
+========================================================= */
+
+.dashboard-daily-plan {
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(340px, 0.95fr);
+  gap: 22px;
+  align-items: stretch;
+  margin: -26px 0 44px;
+}
+
+.daily-plan-main,
+.daily-plan-step {
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  background:
+    radial-gradient(circle at 14% 18%, rgba(67, 233, 123, 0.14), transparent 30%),
+    rgba(255, 255, 255, 0.055);
+  color: #ffffff;
+  box-shadow: 0 18px 42px rgba(0, 0, 0, 0.25);
+}
+
+.daily-plan-main {
+  min-height: 340px;
+  padding: 30px;
+  border-radius: 32px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 22px;
+}
+
+.daily-plan-eyebrow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+.daily-plan-eyebrow span,
+.daily-plan-eyebrow small {
+  display: inline-flex;
+  padding: 8px 12px;
+  border-radius: 999px;
+  font-weight: 950;
+  line-height: 1;
+}
+
+.daily-plan-eyebrow span {
+  background: rgba(67, 233, 123, 0.14);
+  color: #71ff99;
+  font-size: 0.82rem;
+}
+
+.daily-plan-eyebrow small {
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.68);
+  font-size: 0.78rem;
+}
+
+.daily-plan-main h2 {
+  max-width: 760px;
+  margin: 0;
+  color: #ffffff;
+  font-size: clamp(2.1rem, 4.4vw, 4rem);
+  font-weight: 950;
+  line-height: 1.02;
+}
+
+.daily-plan-main p {
+  max-width: 760px;
+  margin: 0;
+  color: rgba(255, 255, 255, 0.64);
+  font-size: 1.02rem;
+  font-weight: 850;
+  line-height: 1.5;
+}
+
+.daily-plan-primary {
+  width: fit-content;
+  min-height: 54px;
+  padding: 0 22px;
+  border: 1px solid rgba(67, 233, 123, 0.42);
+  border-radius: 999px;
+  background: rgba(67, 233, 123, 0.2);
+  color: #ffffff;
+  font: inherit;
+  font-size: 0.96rem;
+  font-weight: 950;
+  cursor: pointer;
+  transition:
+    transform 0.18s ease,
+    background 0.18s ease;
+}
+
+.daily-plan-primary:hover {
+  transform: translateY(-1px);
+  background: rgba(67, 233, 123, 0.3);
+}
+
+.daily-plan-steps {
+  display: grid;
+  gap: 14px;
+}
+
+.daily-plan-step {
+  width: 100%;
+  min-height: 104px;
+  padding: 18px;
+  border-radius: 26px;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 16px;
+  align-items: center;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition:
+    transform 0.18s ease,
+    border-color 0.18s ease,
+    background 0.18s ease;
+}
+
+.daily-plan-step:hover {
+  transform: translateY(-2px);
+  border-color: rgba(67, 233, 123, 0.36);
+  background: rgba(255, 255, 255, 0.075);
+}
+
+.daily-plan-step > span {
+  width: 48px;
+  height: 48px;
+  border-radius: 18px;
+  display: grid;
+  place-items: center;
+  background: rgba(67, 233, 123, 0.14);
+  color: #71ff99;
+  font-size: 0.88rem;
+  font-weight: 950;
+}
+
+.daily-plan-step small {
+  display: block;
+  margin-bottom: 5px;
+  color: rgba(255, 255, 255, 0.48);
+  font-size: 0.76rem;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
+.daily-plan-step strong {
+  display: block;
+  color: #ffffff;
+  font-size: 1.08rem;
+  font-weight: 950;
+  line-height: 1.12;
+}
+
+.daily-plan-step p {
+  margin: 6px 0 0;
+  color: rgba(255, 255, 255, 0.58);
+  font-size: 0.88rem;
+  font-weight: 800;
+  line-height: 1.35;
+}
+
+/* =========================================================
    DAILY CHALLENGE
 ========================================================= */
 
@@ -860,6 +1026,10 @@ button.grammar-practice-chip:hover {
 ========================================================= */
 
 @media (max-width: 1100px) {
+  .dashboard-daily-plan {
+    grid-template-columns: 1fr;
+  }
+
   .dashboard-today-grid {
     grid-template-columns: 1fr;
   }
@@ -874,6 +1044,10 @@ button.grammar-practice-chip:hover {
 }
 
 @media (max-width: 768px) {
+  .dashboard-daily-plan {
+    margin-bottom: 34px;
+  }
+
   .dashboard-today-grid {
     margin-bottom: 34px;
   }
@@ -929,6 +1103,35 @@ button.grammar-practice-chip:hover {
   .lessons-ios-grid {
     grid-template-columns: repeat(3, 1fr);
     gap: 24px;
+  }
+
+  .dashboard-daily-plan {
+    gap: 14px;
+    margin: -30px 0 34px;
+  }
+
+  .daily-plan-main {
+    min-height: auto;
+    padding: 22px;
+    border-radius: 28px;
+  }
+
+  .daily-plan-main h2 {
+    font-size: clamp(2rem, 9vw, 2.75rem);
+  }
+
+  .daily-plan-main p {
+    font-size: 0.94rem;
+  }
+
+  .daily-plan-primary {
+    width: 100%;
+  }
+
+  .daily-plan-step {
+    min-height: auto;
+    padding: 16px;
+    border-radius: 22px;
   }
 
   .daily-challenge-card {

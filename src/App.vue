@@ -4,6 +4,7 @@
       v-if="!currentMode || windowWidth > 700"
       :header-title="headerTitle"
       :user-session="userSession"
+      :is-guest-mode="isGuestMode"
       :unread-notifications="unreadNotifications"
       :unread-messages="unreadMessages"
       :is-logging-out="isLoggingOut"
@@ -41,6 +42,7 @@
         @register="handleRegister"
         @set-login-mode="isLoginMode = $event"
         @reset-auth-form="resetAuthForm"
+        @continue-as-guest="continueAsGuest"
       />
 
       <!-- DIÁK DASHBOARD -->
@@ -48,6 +50,7 @@
       <StudentDashboard
         v-else-if="userRole === 'student' && !currentMode"
         :user-session="userSession"
+        :is-guest-mode="isGuestMode"
         :auth-full-name="authFullName"
         :xp-profile="xpProfile"
         :activity-stats="activityStats"
@@ -88,6 +91,7 @@
         :current-mode="currentMode"
         :header-title="headerTitle"
         :user-session="userSession"
+        :is-guest-mode="isGuestMode"
         :auth-full-name="authFullName"
         :stats="stats"
         :activity-stats="activityStats"
@@ -122,6 +126,7 @@
 
     <MobileBottomNav
       v-if="userSession"
+      :is-guest-mode="isGuestMode"
       :unread-notifications="unreadNotifications"
       :unread-messages="unreadMessages"
       @go-dashboard="goToDashboard"
@@ -132,14 +137,14 @@
     />
 
     <NotificationsDropdown
-      v-if="userSession && showNotificationsMenu"
+      v-if="userSession && !isGuestMode && showNotificationsMenu"
       :notifications="notifications"
       :unread-notifications="unreadNotifications"
       @mark-all-read="markAllNotificationsRead"
     />
 
     <MessagesPanel
-      v-if="userSession && showMessagesPanel"
+      v-if="userSession && !isGuestMode && showMessagesPanel"
       :user-session="userSession"
       :user-role="userRole"
       @close="showMessagesPanel = false"
@@ -221,6 +226,7 @@ export default {
 
       userSession: null,
       userRole: null,
+      isGuestMode: false,
 
       showLoginForm: null,
       isLoginMode: true,
@@ -303,6 +309,8 @@ export default {
       if (this.currentMode) return this.getTaskName(this.currentMode);
 
       if (this.userSession) {
+        if (this.isGuestMode) return "Vendég mód";
+
         return this.userRole === "teacher"
           ? "Tanári felület"
           : "Diák dashboard";
@@ -405,7 +413,7 @@ export default {
       this.showMessagesPanel = false;
       this.scrollToPageTop();
 
-      if (this.userRole === "student") {
+      if (this.userRole === "student" && !this.isGuestMode) {
         this.fetchStudentDashboardData();
       }
     },
@@ -421,6 +429,8 @@ export default {
     },
 
     async handleExerciseFinished() {
+      if (this.isGuestMode) return;
+
       this.activityStats.today = Math.min(this.activityStats.today + 1, 10);
       await this.fetchStatistics();
     },
@@ -439,6 +449,24 @@ export default {
       this.authEmail = "";
       this.authPassword = "";
       this.authFullName = "";
+    },
+
+    continueAsGuest() {
+      this.isGuestMode = true;
+      this.userRole = "student";
+      this.userSession = {
+        id: null,
+        email: "",
+        user_metadata: {
+          full_name: "Vendég",
+          avatar_url: "",
+        },
+      };
+      this.authFullName = "Vendég";
+      this.showLoginForm = null;
+      this.currentMode = null;
+      this.selectedStoryId = null;
+      this.scrollToPageTop();
     },
 
     submitAuthForm() {
@@ -507,6 +535,11 @@ export default {
     async handleLogout() {
       if (this.isLoggingOut) return;
 
+      if (this.isGuestMode) {
+        this.clearUserSession();
+        return;
+      }
+
       this.isLoggingOut = true;
 
       try {
@@ -556,6 +589,7 @@ export default {
 
       this.userSession = null;
       this.userRole = null;
+      this.isGuestMode = false;
       this.currentSessionUserId = null;
 
       this.showLoginForm = null;

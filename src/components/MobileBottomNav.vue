@@ -5,7 +5,11 @@
       <span>Főmenü</span>
     </button>
 
-    <button class="mobile-nav-item" @click.stop="$emit('open-messages')">
+    <button
+      v-if="!isGuestMode"
+      class="mobile-nav-item"
+      @click.stop="$emit('open-messages')"
+    >
       <span class="mobile-nav-icon">💬</span>
       <span>Üzenetek</span>
 
@@ -17,7 +21,11 @@
       </span>
     </button>
 
-    <button class="mobile-nav-item" @click.stop="$emit('toggle-notifications')">
+    <button
+      v-if="!isGuestMode"
+      class="mobile-nav-item"
+      @click.stop="$emit('toggle-notifications')"
+    >
       <span class="mobile-nav-icon">🔔</span>
       <span>Értesítés</span>
 
@@ -29,14 +37,18 @@
       </span>
     </button>
 
-    <button class="mobile-nav-item" @click="$emit('open-profile')">
+    <button
+      v-if="!isGuestMode"
+      class="mobile-nav-item"
+      @click="$emit('open-profile')"
+    >
       <span class="mobile-nav-icon">👤</span>
       <span>Profil</span>
     </button>
 
     <button class="mobile-nav-item logout-item" @click="$emit('logout')">
       <span class="mobile-nav-icon">🚪</span>
-      <span>Kilépés</span>
+      <span>{{ isGuestMode ? "Belépés" : "Kilépés" }}</span>
     </button>
   </nav>
 </template>
@@ -54,6 +66,11 @@ export default {
     unreadMessages: {
       type: Number,
       default: 0,
+    },
+
+    isGuestMode: {
+      type: Boolean,
+      default: false,
     },
   },
 

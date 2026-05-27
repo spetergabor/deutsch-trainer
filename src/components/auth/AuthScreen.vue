@@ -18,6 +18,13 @@
           <p>Feladatok és diákok kezelése</p>
           <button class="select-btn btn-pill btn-check">Tovább</button>
         </article>
+
+        <article class="menu-card guest-card" @click="$emit('continue-as-guest')">
+          <div class="card-icon">👀</div>
+          <h2>Vendégként kipróbálom</h2>
+          <p>Profil, statisztika és mentés nélkül belenézhetsz a feladatokba.</p>
+          <button class="select-btn btn-pill btn-check">Kipróbálás</button>
+        </article>
       </div>
     </template>
 
@@ -148,6 +155,7 @@ export default {
     "register",
     "set-login-mode",
     "reset-auth-form",
+    "continue-as-guest",
   ],
 };
 </script>

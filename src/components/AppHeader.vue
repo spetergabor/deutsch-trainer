@@ -12,7 +12,7 @@
       {{ headerTitle }}
     </div>
 
-    <div v-if="userSession" class="desktop-nav-actions">
+    <div v-if="userSession && !isGuestMode" class="desktop-nav-actions">
       <button
         class="header-icon-btn"
         title="Üzenetek"
@@ -56,6 +56,15 @@
       </button>
     </div>
 
+    <div v-else-if="isGuestMode" class="desktop-nav-actions">
+      <button
+        class="btn-logout-small"
+        @click.prevent="$emit('logout')"
+      >
+        Bejelentkezés
+      </button>
+    </div>
+
     <div v-else class="header-spacer"></div>
   </header>
 </template>
@@ -86,6 +95,11 @@ export default {
     },
 
     isLoggingOut: {
+      type: Boolean,
+      default: false,
+    },
+
+    isGuestMode: {
       type: Boolean,
       default: false,
     },

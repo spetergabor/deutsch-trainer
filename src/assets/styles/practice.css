@@ -76,6 +76,32 @@
   overflow-x: clip;
 }
 
+.practice-screen:has(.vocab-pack-library) {
+  --active-practice-width: min(980px, calc(100% - 40px));
+}
+
+.practice-screen:has(.vocab-pack-library) > .desktop-practice-return {
+  width: var(--active-practice-width);
+}
+
+.practice-screen:has(.vocab-pack-library) > .vocabulary-practice {
+  width: var(--active-practice-width) !important;
+  max-width: var(--active-practice-width) !important;
+}
+
+.practice-screen:has(.daily-challenge-practice) {
+  --active-practice-width: min(920px, calc(100% - 40px));
+}
+
+.practice-screen:has(.daily-challenge-practice) > .desktop-practice-return {
+  width: var(--active-practice-width);
+}
+
+.practice-screen:has(.daily-challenge-practice) > .daily-challenge-practice {
+  width: var(--active-practice-width) !important;
+  max-width: var(--active-practice-width) !important;
+}
+
 .desktop-practice-return + .practice-container > h1,
 .desktop-practice-return + .verb-practice > h1,
 .desktop-practice-return + .adjektiv-practice > h1,
@@ -94,16 +120,16 @@
 }
 
 @media (min-width: 701px) {
-  .practice-screen:not(.grammar-practice-screen):not(:has(.story-reading)):not(:has(.osd-practice)) {
+  .practice-screen:not(.grammar-practice-screen):not(:has(.story-reading)):not(:has(.osd-practice)):not(:has(.vocab-pack-library)):not(:has(.daily-challenge-practice)) {
     --active-practice-width: var(--practice-desktop-width);
   }
 
-  .practice-screen:not(.grammar-practice-screen):not(:has(.story-reading)):not(:has(.osd-practice))
+  .practice-screen:not(.grammar-practice-screen):not(:has(.story-reading)):not(:has(.osd-practice)):not(:has(.vocab-pack-library)):not(:has(.daily-challenge-practice))
     > .desktop-practice-return {
     width: min(calc(var(--practice-desktop-width) * 0.92), calc(100% - 40px));
   }
 
-  .practice-screen:not(.grammar-practice-screen):not(:has(.story-reading)):not(:has(.osd-practice))
+  .practice-screen:not(.grammar-practice-screen):not(:has(.story-reading)):not(:has(.osd-practice)):not(:has(.vocab-pack-library)):not(:has(.daily-challenge-practice))
     > :is(
       .practice-container,
       .verb-practice,

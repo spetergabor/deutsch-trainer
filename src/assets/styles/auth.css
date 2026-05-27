@@ -63,6 +63,14 @@
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
 }
 
+.role-grid .guest-card {
+  border-color: rgba(255, 213, 106, 0.22);
+}
+
+.role-grid .guest-card .card-icon {
+  background: linear-gradient(135deg, #f7971e, #ffd200);
+}
+
 .role-grid .menu-card h2 {
   margin-bottom: 12px;
 

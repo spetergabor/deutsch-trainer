@@ -13,7 +13,7 @@
 
       <h1>Üdvözlünk, {{ authFullName || "Diák" }}!</h1>
 
-      <div class="dashboard-profile-xp">
+      <div v-if="!isGuestMode" class="dashboard-profile-xp">
         <div class="profile-level-pill streak">🔥 {{ activityStats.streak }} nap</div>
 
         <div class="profile-level-pill">⭐ {{ xpProfile.xp }} XP</div>
@@ -22,26 +22,50 @@
       </div>
 
       <p class="subtitle">
-        Válassz egy gyakorlatot, vagy tekintsd át a profilodat.
+        {{
+          isGuestMode
+            ? "Vendégként kipróbálhatod a feladatokat. Profil, statisztika és mentés nem készül."
+            : "Kezdj egy rövid napi edzéssel, vagy válassz szabadon a leckék közül."
+        }}
       </p>
     </div>
 
-    <section class="dashboard-recommended-section">
-      <article class="recommended-practice-card">
-        <div class="recommended-practice-icon">
-          {{ recommendedPracticeMeta.icon }}
+    <section class="dashboard-daily-plan">
+      <div class="daily-plan-main">
+        <div class="daily-plan-eyebrow">
+          <span>Mai edzés</span>
+          <small>kb. 12-15 perc</small>
         </div>
 
-        <div class="recommended-practice-content">
-          <span>Ajánlott gyakorlás</span>
-          <h2>{{ recommendedPracticeMeta.label }}</h2>
-          <p>{{ recommendedPracticeMeta.reason }}</p>
-        </div>
+        <h2>{{ recommendedPracticeMeta.label }} indításával kezdenék</h2>
+        <p>
+          {{ recommendedPracticeMeta.reason }} Utána jöhet egy rövid challenge
+          és egy szókincs kör, hogy ne csak szabályt tanulj, hanem használatba is kerüljön.
+        </p>
 
-        <button @click="$emit('set-mode', recommendedPracticeMeta.mode)">
-          Gyakorlás
+        <button
+          class="daily-plan-primary"
+          @click="$emit('set-mode', recommendedPracticeMeta.mode)"
+        >
+          Mai edzés indítása
         </button>
-      </article>
+      </div>
+
+      <div class="daily-plan-steps">
+        <button
+          v-for="step in dailyPlanSteps"
+          :key="step.label"
+          class="daily-plan-step"
+          @click="$emit('set-mode', step.mode)"
+        >
+          <span>{{ step.number }}</span>
+          <div>
+            <small>{{ step.kicker }}</small>
+            <strong>{{ step.label }}</strong>
+            <p>{{ step.description }}</p>
+          </div>
+        </button>
+      </div>
     </section>
 
     <section class="dashboard-challenge-section">
@@ -216,6 +240,11 @@ export default {
     userSession: {
       type: Object,
       required: true,
+    },
+
+    isGuestMode: {
+      type: Boolean,
+      default: false,
     },
 
     authFullName: {
@@ -424,6 +453,58 @@ export default {
           this.recommendedPractice?.reason ||
           "Sok döntési pont, jól automatizálható gyakorlással",
       };
+    },
+
+    dailyChallengeMeta() {
+      const type = this.recommendedPractice?.type || "";
+
+      if (type.includes("adjektiv")) {
+        return {
+          mode: "daily-challenge-adjektiv",
+          label: "Adjektiv challenge",
+          description: "Szövegből induló melléknévragozás.",
+        };
+      }
+
+      if (type.includes("passiv")) {
+        return {
+          mode: "daily-challenge",
+          label: "Passiv challenge",
+          description: "Hírszöveg, felismerés és átalakítás.",
+        };
+      }
+
+      return {
+        mode: "daily-challenge-konjunktiv-ii",
+        label: "Konjunktiv II challenge",
+        description: "Kívánságok, feltételek és múlt idejű alakok.",
+      };
+    },
+
+    dailyPlanSteps() {
+      return [
+        {
+          number: "01",
+          kicker: "Gyenge pont",
+          label: this.recommendedPracticeMeta.label,
+          description: "A legjobb következő gyakorlás a legutóbbi eredményeid alapján.",
+          mode: this.recommendedPracticeMeta.mode,
+        },
+        {
+          number: "02",
+          kicker: "Challenge",
+          label: this.dailyChallengeMeta.label,
+          description: this.dailyChallengeMeta.description,
+          mode: this.dailyChallengeMeta.mode,
+        },
+        {
+          number: "03",
+          kicker: "Levezetés",
+          label: "Szókincs edző",
+          description: "Rövid ismétlés, hogy a nap végén szóanyag is épüljön.",
+          mode: "vocabulary",
+        },
+      ];
     },
 
     latestStoryLessons() {
