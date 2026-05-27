@@ -6,6 +6,15 @@
     </button>
 
     <button
+      v-if="userRole === 'teacher' && !isGuestMode"
+      class="mobile-nav-item"
+      @click="$emit('open-teacher-materials')"
+    >
+      <span class="mobile-nav-icon">＋</span>
+      <span>Anyagok</span>
+    </button>
+
+    <button
       v-if="!isGuestMode"
       class="mobile-nav-item"
       @click.stop="$emit('open-messages')"
@@ -72,8 +81,20 @@ export default {
       type: Boolean,
       default: false,
     },
+
+    userRole: {
+      type: String,
+      default: null,
+    },
   },
 
-  emits: ["go-dashboard", "open-messages", "toggle-notifications", "open-profile", "logout"],
+  emits: [
+    "go-dashboard",
+    "open-teacher-materials",
+    "open-messages",
+    "toggle-notifications",
+    "open-profile",
+    "logout",
+  ],
 };
 </script>

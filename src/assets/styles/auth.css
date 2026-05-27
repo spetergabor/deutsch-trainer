@@ -63,14 +63,6 @@
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
 }
 
-.role-grid .guest-card {
-  border-color: rgba(255, 213, 106, 0.22);
-}
-
-.role-grid .guest-card .card-icon {
-  background: linear-gradient(135deg, #f7971e, #ffd200);
-}
-
 .role-grid .menu-card h2 {
   margin-bottom: 12px;
 
@@ -113,6 +105,28 @@
 
 .select-btn:hover {
   transform: scale(1.02);
+}
+
+.guest-entry {
+  margin: 28px 0 0;
+
+  color: rgba(255, 255, 255, 0.58);
+
+  font-size: 1rem;
+  font-weight: 750;
+  text-align: center;
+}
+
+.guest-entry a {
+  color: rgba(255, 213, 106, 0.96);
+
+  font-weight: 900;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.guest-entry a:hover {
+  color: white;
 }
 
 /* =========================================================

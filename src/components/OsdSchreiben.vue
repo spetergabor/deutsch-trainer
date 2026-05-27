@@ -71,16 +71,40 @@
           Szavak száma:
           <strong>{{ wordCount }}</strong> / {{ minWordCount }}
         </div>
+
+        <button
+          class="submit-writing-btn"
+          :disabled="!canSubmit || isSubmitting"
+          @click="submitWriting"
+        >
+          {{ isSubmitting ? "Küldés..." : "Beküldés tanárnak" }}
+        </button>
       </div>
+
+      <p
+        v-if="submitFeedback"
+        class="submit-feedback"
+        :class="submitStatus"
+      >
+        {{ submitFeedback }}
+      </p>
     </div>
   </div>
 </template>
 
 <script>
 import { schreibenTasks } from "../data/OsdSchreibenData.js";
+import { createWritingSubmission } from "../services/writingSubmissionService";
 
 export default {
   name: "OsdSchreiben",
+
+  props: {
+    userSession: {
+      type: Object,
+      default: null,
+    },
+  },
 
   data() {
     return {
@@ -88,6 +112,9 @@ export default {
       showPhrases: false,
       userText: "",
       minWordCount: 120,
+      isSubmitting: false,
+      submitFeedback: "",
+      submitStatus: "",
     };
   },
 
@@ -102,6 +129,49 @@ export default {
       if (!text) return 0;
 
       return text.split(/\s+/).length;
+    },
+
+    canSubmit() {
+      return Boolean(this.currentSchreibenTask && this.userText.trim() && this.userSession?.id);
+    },
+  },
+
+  methods: {
+    async submitWriting() {
+      if (!this.canSubmit || this.isSubmitting) {
+        return;
+      }
+
+      this.isSubmitting = true;
+      this.submitFeedback = "";
+      this.submitStatus = "";
+
+      try {
+        const { teacher } = await createWritingSubmission({
+          studentId: this.userSession.id,
+          taskType: "osd-schreiben",
+          taskTitle: this.currentSchreibenTask.title,
+          taskSituation: this.currentSchreibenTask.situation,
+          taskInstructions: this.currentSchreibenTask.instructions,
+          taskPoints: this.currentSchreibenTask.adPoints,
+          expectedWordCount: this.minWordCount,
+          wordCount: this.wordCount,
+          content: this.userText,
+        });
+
+        this.submitStatus = "success";
+        this.submitFeedback = teacher
+          ? `Beküldve ${teacher.full_name || teacher.email || "a tanár"} részére.`
+          : "Beküldve a tanári írások közé.";
+      } catch (error) {
+        console.error("ÖSD Schreiben beküldési hiba:", error.message);
+        this.submitStatus = "error";
+        this.submitFeedback = error.message?.includes("writing_submissions")
+          ? "A beküldött írások táblája még nincs beállítva Supabase-ben."
+          : error.message || "Nem sikerült beküldeni a levelet.";
+      } finally {
+        this.isSubmitting = false;
+      }
     },
   },
 };
@@ -235,7 +305,9 @@ export default {
   border-top: 1px solid rgba(255, 255, 255, 0.1);
 
   display: flex;
-  justify-content: flex-end;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
 
   background: rgba(0, 0, 0, 0.2);
 }
@@ -259,6 +331,39 @@ export default {
   border: 1px solid #2ecc71;
   background: rgba(46, 204, 113, 0.2);
   color: #2ecc71;
+}
+
+.submit-writing-btn {
+  min-width: 180px;
+  padding: 11px 16px;
+  border: none;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #35d06f, #2fc061);
+  color: white;
+  font: inherit;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.submit-writing-btn:disabled {
+  opacity: 0.48;
+  cursor: not-allowed;
+}
+
+.submit-feedback {
+  margin: 0;
+  padding: 12px 18px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(0, 0, 0, 0.18);
+  font-weight: 800;
+}
+
+.submit-feedback.success {
+  color: #79f2a8;
+}
+
+.submit-feedback.error {
+  color: #ff8a8a;
 }
 
 .empty-task {
@@ -290,6 +395,15 @@ export default {
   .task-description,
   .writing-area {
     min-height: 420px;
+  }
+
+  .word-count-bar {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .submit-writing-btn {
+    width: 100%;
   }
 }
 </style>

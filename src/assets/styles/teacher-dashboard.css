@@ -46,6 +46,240 @@
   font-weight: 750;
 }
 
+.teacher-overview-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.teacher-overview-card {
+  min-height: 170px;
+  padding: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.055);
+  box-shadow: 0 16px 34px rgba(0, 0, 0, 0.2);
+
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.teacher-overview-card.highlight {
+  border-color: rgba(102, 126, 234, 0.28);
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.18), rgba(255, 255, 255, 0.055));
+}
+
+.teacher-overview-card.warning {
+  border-color: rgba(251, 191, 36, 0.24);
+}
+
+.teacher-overview-icon {
+  width: 46px;
+  height: 46px;
+  border-radius: 16px;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  font-size: 1.35rem;
+}
+
+.teacher-overview-icon.green {
+  background: linear-gradient(135deg, #35d06f, #2fc061);
+}
+
+.teacher-overview-icon.amber {
+  background: linear-gradient(135deg, #f7971e, #ffd200);
+}
+
+.teacher-overview-icon.blue {
+  background: linear-gradient(135deg, #4facfe, #00f2fe);
+}
+
+.teacher-overview-card small {
+  margin-top: 8px;
+  color: rgba(255, 255, 255, 0.58);
+  font-weight: 850;
+}
+
+.teacher-overview-card strong {
+  color: #ffffff;
+  font-size: clamp(1.65rem, 2.6vw, 2.35rem);
+  font-weight: 950;
+  line-height: 1.05;
+}
+
+.teacher-overview-card p {
+  margin: auto 0 0;
+  color: rgba(255, 255, 255, 0.62);
+  font-size: 0.9rem;
+  font-weight: 750;
+  line-height: 1.35;
+}
+
+.teacher-focus-panel {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 24px;
+  border: 1px solid rgba(255, 213, 106, 0.22);
+  border-radius: 28px;
+  background:
+    radial-gradient(circle at left, rgba(255, 213, 106, 0.15), transparent 34%),
+    rgba(255, 255, 255, 0.055);
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.24);
+}
+
+.teacher-focus-kicker {
+  display: inline-flex;
+  margin-bottom: 10px;
+  padding: 7px 12px;
+  border-radius: 999px;
+  background: rgba(255, 213, 106, 0.16);
+  color: #ffdc7a;
+  font-size: 0.82rem;
+  font-weight: 950;
+}
+
+.teacher-focus-panel h2 {
+  margin: 0 0 8px;
+  color: #ffffff;
+  font-size: clamp(1.45rem, 2.4vw, 2rem);
+  font-weight: 950;
+}
+
+.teacher-focus-panel p {
+  max-width: 760px;
+  margin: 0;
+  color: rgba(255, 255, 255, 0.64);
+  font-weight: 750;
+  line-height: 1.45;
+}
+
+.teacher-focus-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.teacher-focus-actions button {
+  min-width: 170px;
+  padding: 13px 18px;
+  border: none;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #35d06f, #2fc061);
+  color: #ffffff;
+  font: inherit;
+  font-weight: 950;
+  cursor: pointer;
+}
+
+.teacher-focus-actions button.secondary {
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.07);
+}
+
+.teacher-focus-list {
+  padding: 22px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 28px;
+  background: rgba(255, 255, 255, 0.055);
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.22);
+}
+
+.teacher-focus-list-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  margin-bottom: 16px;
+}
+
+.teacher-focus-list-header h2 {
+  margin: 0;
+  color: #ffffff;
+  font-size: 1.2rem;
+  font-weight: 950;
+}
+
+.teacher-focus-list-header span {
+  padding: 7px 12px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 0.82rem;
+  font-weight: 900;
+}
+
+.teacher-focus-students {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.teacher-focus-student {
+  min-width: 0;
+  padding: 16px;
+  border: 1px solid rgba(251, 191, 36, 0.2);
+  border-radius: 20px;
+  background: rgba(0, 0, 0, 0.16);
+
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 12px;
+  align-items: center;
+}
+
+.teacher-focus-student-body {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.teacher-focus-student-body strong,
+.teacher-focus-student-body span,
+.teacher-focus-student-body small {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.teacher-focus-student-body strong {
+  color: #ffffff;
+  font-weight: 950;
+}
+
+.teacher-focus-student-body span {
+  color: #ffdc7a;
+  font-size: 0.9rem;
+  font-weight: 850;
+}
+
+.teacher-focus-student-body small {
+  color: rgba(255, 255, 255, 0.52);
+  font-weight: 750;
+}
+
+.teacher-focus-student button {
+  grid-column: 1 / -1;
+  width: 100%;
+  padding: 11px 14px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.07);
+  color: #ffffff;
+  font: inherit;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.teacher-focus-student button:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+
 .teacher-workspace-header {
   align-items: flex-start;
   margin-bottom: 20px;
@@ -102,6 +336,10 @@
 
 .teacher-section-icon.exercises {
   background: linear-gradient(135deg, #667eea, #764ba2);
+}
+
+.teacher-section-icon.writings {
+  background: linear-gradient(135deg, #f7971e, #ffd200);
 }
 
 .teacher-section-card strong {
@@ -310,8 +548,17 @@
 }
 
 @media (max-width: 800px) {
+  .welcome-screen.teacher-dashboard-shell {
+    width: calc(100% - 20px) !important;
+    max-width: none !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
+
   .teacher-dashboard {
-    width: 93%;
+    width: 100%;
+    margin-left: 0;
+    margin-right: 0;
   }
 
   .teacher-portal,
@@ -320,12 +567,73 @@
   }
 
   .teacher-section-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+  }
+
+  .teacher-overview-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+  }
+
+  .teacher-overview-card {
+    min-height: 140px;
+    padding: 16px;
+    border-radius: 20px;
+  }
+
+  .teacher-overview-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 14px;
+    font-size: 1.15rem;
+  }
+
+  .teacher-overview-card small {
+    margin-top: 4px;
+    font-size: 0.78rem;
+  }
+
+  .teacher-overview-card strong {
+    font-size: clamp(1.35rem, 7vw, 1.95rem);
+  }
+
+  .teacher-overview-card p {
+    font-size: 0.78rem;
+  }
+
+  .teacher-focus-students {
+    grid-template-columns: 1fr;
+  }
+
+  .teacher-focus-panel {
+    align-items: flex-start;
+    flex-direction: column;
+    padding: 18px;
+    border-radius: 22px;
+  }
+
+  .teacher-focus-actions,
+  .teacher-focus-actions button {
+    width: 100%;
+  }
+
+  .writing-submissions-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .writing-submission-toolbar,
+  .writing-submission-detail-header {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .writing-submission-meta {
     grid-template-columns: 1fr;
   }
 
   .teacher-portal-header,
   .teacher-workspace-header {
-    flex-direction: column;
     align-items: flex-start;
   }
 
@@ -347,6 +655,18 @@
 
   .btn-small {
     width: 100%;
+  }
+}
+
+@media (max-width: 560px) {
+  .teacher-section-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 380px) {
+  .teacher-overview-grid {
+    grid-template-columns: 1fr;
   }
 }
 
@@ -501,6 +821,226 @@
 
 .empty-state.small {
   min-height: 200px;
+}
+
+/* =========================================================
+   WRITING SUBMISSIONS
+========================================================= */
+
+.writing-submissions-manager {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.setup-warning-card,
+.writing-submission-toolbar,
+.writing-submission-detail,
+.writing-submission-list {
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.055);
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.22);
+}
+
+.setup-warning-card {
+  padding: 18px 20px;
+  border-color: rgba(251, 191, 36, 0.28);
+}
+
+.setup-warning-card strong {
+  color: #ffdc7a;
+}
+
+.setup-warning-card p {
+  margin: 6px 0 0;
+  color: rgba(255, 255, 255, 0.64);
+  font-weight: 750;
+}
+
+.writing-submission-toolbar {
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+}
+
+.writing-submission-toolbar h2 {
+  margin: 0 0 6px;
+  color: #ffffff;
+}
+
+.writing-submission-toolbar p {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.62);
+  font-weight: 750;
+}
+
+.writing-submissions-layout {
+  display: grid;
+  grid-template-columns: 340px minmax(0, 1fr);
+  gap: 18px;
+  align-items: start;
+}
+
+.writing-submission-list {
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.writing-submission-item {
+  width: 100%;
+  padding: 14px;
+  border: 1px solid transparent;
+  border-radius: 18px;
+  background: rgba(0, 0, 0, 0.18);
+  color: #ffffff;
+  font-family: inherit;
+  text-align: left;
+  cursor: pointer;
+
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.writing-submission-item.active {
+  border-color: rgba(255, 213, 106, 0.4);
+  background: rgba(255, 213, 106, 0.12);
+}
+
+.writing-submission-item strong,
+.writing-submission-item span,
+.writing-submission-item small {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.writing-submission-item span {
+  color: rgba(255, 255, 255, 0.72);
+  font-weight: 800;
+}
+
+.writing-submission-item small {
+  color: rgba(255, 255, 255, 0.48);
+  font-weight: 750;
+}
+
+.writing-submission-detail {
+  padding: 22px;
+}
+
+.writing-submission-detail-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 18px;
+  margin-bottom: 18px;
+}
+
+.writing-submission-detail-header h2 {
+  margin: 8px 0 6px;
+  color: #ffffff;
+  font-size: clamp(1.4rem, 2.4vw, 2rem);
+}
+
+.writing-submission-detail-header p {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.58);
+  font-weight: 750;
+}
+
+.writing-submission-detail-header select {
+  min-width: 160px;
+  padding: 11px 14px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 14px;
+  background: rgba(0, 0, 0, 0.22);
+  color: #ffffff;
+  font: inherit;
+  font-weight: 850;
+}
+
+.submission-status-pill {
+  display: inline-flex;
+  padding: 7px 11px;
+  border-radius: 999px;
+  background: rgba(255, 213, 106, 0.15);
+  color: #ffdc7a;
+  font-size: 0.78rem;
+  font-weight: 950;
+}
+
+.writing-submission-meta {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.writing-submission-meta div,
+.writing-submission-task,
+.writing-submission-content {
+  border-radius: 18px;
+  background: rgba(0, 0, 0, 0.16);
+}
+
+.writing-submission-meta div {
+  padding: 14px;
+}
+
+.writing-submission-meta span,
+.writing-submission-meta strong {
+  display: block;
+}
+
+.writing-submission-meta span {
+  color: rgba(255, 255, 255, 0.52);
+  font-size: 0.82rem;
+  font-weight: 850;
+}
+
+.writing-submission-meta strong {
+  margin-top: 5px;
+  color: #ffffff;
+  font-weight: 950;
+}
+
+.writing-submission-task,
+.writing-submission-content {
+  padding: 18px;
+}
+
+.writing-submission-task {
+  margin-bottom: 14px;
+}
+
+.writing-submission-task h3,
+.writing-submission-content h3 {
+  margin: 0 0 8px;
+  color: #ffffff;
+}
+
+.writing-submission-task p,
+.writing-submission-task li,
+.writing-submission-content p {
+  color: rgba(255, 255, 255, 0.72);
+  font-weight: 700;
+  line-height: 1.58;
+}
+
+.writing-submission-task ul {
+  margin: 0 0 14px 20px;
+  padding: 0;
+}
+
+.writing-submission-content p {
+  margin: 0;
+  white-space: pre-wrap;
 }
 
 /* =========================================================

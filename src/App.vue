@@ -5,10 +5,12 @@
       :header-title="headerTitle"
       :user-session="userSession"
       :is-guest-mode="isGuestMode"
+      :user-role="userRole"
       :unread-notifications="unreadNotifications"
       :unread-messages="unreadMessages"
       :is-logging-out="isLoggingOut"
       @go-dashboard="goToDashboard"
+      @open-teacher-materials="openTeacherMaterials"
       @open-messages="openMessagesPanel"
       @toggle-notifications="toggleNotificationsMenu"
       @open-profile="setCurrentMode('profile')"
@@ -79,9 +81,9 @@
       <!-- TANÁRI FELÜLET -->
       <section
         v-else-if="userRole === 'teacher' && !currentMode"
-        class="welcome-screen"
+        class="welcome-screen teacher-dashboard-shell"
       >
-        <TeacherDashboard />
+        <TeacherDashboard :initial-section="teacherInitialSection" />
       </section>
 
       <!-- GYAKORLATOK / APP AL-OLDALAK -->
@@ -92,6 +94,7 @@
         :header-title="headerTitle"
         :user-session="userSession"
         :is-guest-mode="isGuestMode"
+        :user-role="userRole"
         :auth-full-name="authFullName"
         :stats="stats"
         :activity-stats="activityStats"
@@ -127,9 +130,11 @@
     <MobileBottomNav
       v-if="userSession"
       :is-guest-mode="isGuestMode"
+      :user-role="userRole"
       :unread-notifications="unreadNotifications"
       :unread-messages="unreadMessages"
       @go-dashboard="goToDashboard"
+      @open-teacher-materials="openTeacherMaterials"
       @open-messages="openMessagesPanel"
       @toggle-notifications="toggleNotificationsMenu"
       @open-profile="setCurrentMode('profile')"
@@ -238,6 +243,7 @@ export default {
 
       currentMode: null,
       selectedStoryId: null,
+      teacherInitialSection: null,
 
       newNoteText: "",
       savedNotes: [],
@@ -391,6 +397,16 @@ export default {
     setCurrentMode(mode) {
       this.currentMode = mode;
       this.selectedStoryId = null;
+      this.teacherInitialSection = null;
+      this.showNotificationsMenu = false;
+      this.showMessagesPanel = false;
+      this.scrollToPageTop();
+    },
+
+    openTeacherMaterials() {
+      this.currentMode = null;
+      this.selectedStoryId = null;
+      this.teacherInitialSection = "writings";
       this.showNotificationsMenu = false;
       this.showMessagesPanel = false;
       this.scrollToPageTop();
@@ -399,6 +415,7 @@ export default {
     openStoryLesson(storyId) {
       this.selectedStoryId = storyId;
       this.currentMode = "story-reading";
+      this.teacherInitialSection = null;
       this.showNotificationsMenu = false;
       this.showMessagesPanel = false;
       this.scrollToPageTop();
@@ -409,6 +426,7 @@ export default {
 
       this.currentMode = null;
       this.selectedStoryId = null;
+      this.teacherInitialSection = null;
       this.showNotificationsMenu = false;
       this.showMessagesPanel = false;
       this.scrollToPageTop();

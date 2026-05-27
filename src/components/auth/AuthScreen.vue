@@ -19,13 +19,14 @@
           <button class="select-btn btn-pill btn-check">Tovább</button>
         </article>
 
-        <article class="menu-card guest-card" @click="$emit('continue-as-guest')">
-          <div class="card-icon">👀</div>
-          <h2>Vendégként kipróbálom</h2>
-          <p>Profil, statisztika és mentés nélkül belenézhetsz a feladatokba.</p>
-          <button class="select-btn btn-pill btn-check">Kipróbálás</button>
-        </article>
       </div>
+
+      <p class="guest-entry">
+        Csak körülnéznél?
+        <a href="#" @click.prevent="$emit('continue-as-guest')">
+          Próbáld ki vendégként
+        </a>
+      </p>
     </template>
 
     <template v-else>

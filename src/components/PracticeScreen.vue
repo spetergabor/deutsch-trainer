@@ -47,6 +47,7 @@
 
     <OsdPractice
       v-if="currentMode === 'osd'"
+      :user-session="userSession"
       @exercise-finished="$emit('exercise-finished')"
       @go-dashboard="$emit('go-dashboard')"
     />
@@ -114,6 +115,7 @@
     <ProfileView
       v-if="currentMode === 'profile'"
       :userSession="userSession"
+      :user-role="userRole"
       :authFullName="authFullName"
       :stats="stats"
       :activityStats="activityStats"
@@ -198,6 +200,11 @@ export default {
     isGuestMode: {
       type: Boolean,
       default: false,
+    },
+
+    userRole: {
+      type: String,
+      default: "student",
     },
 
     authFullName: {

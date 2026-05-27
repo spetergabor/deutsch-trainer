@@ -14,6 +14,15 @@
 
     <div v-if="userSession && !isGuestMode" class="desktop-nav-actions">
       <button
+        v-if="userRole === 'teacher'"
+        class="header-icon-btn"
+        title="Beküldött írások és leckék"
+        @click="$emit('open-teacher-materials')"
+      >
+        +
+      </button>
+
+      <button
         class="header-icon-btn"
         title="Üzenetek"
         @click.stop="$emit('open-messages')"
@@ -84,6 +93,11 @@ export default {
       default: null,
     },
 
+    userRole: {
+      type: String,
+      default: null,
+    },
+
     unreadNotifications: {
       type: Number,
       default: 0,
@@ -105,6 +119,13 @@ export default {
     },
   },
 
-  emits: ["go-dashboard", "open-messages", "toggle-notifications", "open-profile", "logout"],
+  emits: [
+    "go-dashboard",
+    "open-teacher-materials",
+    "open-messages",
+    "toggle-notifications",
+    "open-profile",
+    "logout",
+  ],
 };
 </script>

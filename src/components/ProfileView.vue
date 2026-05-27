@@ -1,6 +1,9 @@
 <template>
   <div class="profile-page">
-    <div class="profile-dashboard-grid">
+    <div
+      class="profile-dashboard-grid"
+      :class="{ 'teacher-profile-grid': isTeacherProfile }"
+    >
       <div class="profile-top-card">
         <div class="profile-avatar-wrapper">
           <img :src="avatarUrl" class="profile-avatar-image" alt="Profilkép" />
@@ -32,7 +35,7 @@
         </div>
       </div>
 
-      <article class="widget-card profile-summary-card">
+      <article v-if="!isTeacherProfile" class="widget-card profile-summary-card">
         <h3>📌 Összkép</h3>
 
         <div class="profile-summary-list">
@@ -84,7 +87,7 @@
         </button>
       </article>
 
-      <article class="widget-card activity-card">
+      <article v-if="!isTeacherProfile" class="widget-card activity-card">
         <div class="activity-header">
           <div>
             <h3>🔥 Aktivitás</h3>
@@ -143,7 +146,7 @@
         </div>
       </article>
 
-      <article class="widget-card daily-goal-card">
+      <article v-if="!isTeacherProfile" class="widget-card daily-goal-card">
         <h3>🎯 Mai cél</h3>
 
         <div class="goal-inline-stats">
@@ -167,7 +170,7 @@
         </div>
       </article>
 
-      <article class="widget-card recent-tasks-card">
+      <article v-if="!isTeacherProfile" class="widget-card recent-tasks-card">
         <h3>🕒 Legutóbbi feladatok</h3>
 
         <div v-if="recentExercises.length" class="recent-tasks-scroll">
@@ -184,7 +187,7 @@
         <p v-else class="empty-text">Még nem oldottál meg feladatot.</p>
       </article>
 
-      <article class="widget-card stats-card visual-stats-card profile-wide-card">
+      <article v-if="!isTeacherProfile" class="widget-card stats-card visual-stats-card profile-wide-card">
         <h3>📊 Statisztikák</h3>
 
         <div class="practice-recommendation">
@@ -354,6 +357,10 @@ export default {
       type: Object,
       default: null,
     },
+    userRole: {
+      type: String,
+      default: "student",
+    },
     authFullName: {
       type: String,
       default: "",
@@ -453,6 +460,10 @@ export default {
   },
 
   computed: {
+    isTeacherProfile() {
+      return this.userRole === "teacher";
+    },
+
     registrationDate() {
       if (!this.userSession?.created_at) return "-";
 
@@ -845,6 +856,31 @@ export default {
     grid-row: 5;
     grid-column: 1 / -1;
     min-height: auto;
+  }
+
+  .profile-dashboard-grid.teacher-profile-grid > .profile-top-card {
+    grid-row: 1;
+    grid-column: span 2;
+  }
+
+  .profile-dashboard-grid.teacher-profile-grid > .profile-account-card {
+    grid-row: 1;
+    grid-column: 3;
+  }
+
+  .profile-dashboard-grid.teacher-profile-grid > .documents-widget {
+    grid-row: 2;
+    grid-column: 1;
+  }
+
+  .profile-dashboard-grid.teacher-profile-grid > .notes-widget {
+    grid-row: 2;
+    grid-column: 2 / 4;
+  }
+
+  .profile-dashboard-grid.teacher-profile-grid > .danger-zone {
+    grid-row: 3;
+    grid-column: 1 / -1;
   }
 }
 

@@ -3,8 +3,90 @@
     <section v-if="!activeTeacherSection" class="teacher-portal">
       <div class="teacher-portal-header">
         <div>
-          <h1>Munkaterület választása</h1>
-          <p>Válaszd ki, mivel szeretnél dolgozni.</p>
+          <h1>Tanári áttekintés</h1>
+          <p>Gyors kép arról, kivel érdemes ma foglalkozni.</p>
+        </div>
+      </div>
+
+      <div class="teacher-overview-grid">
+        <article class="teacher-overview-card highlight">
+          <span class="teacher-overview-icon">🎓</span>
+          <small>Diákok</small>
+          <strong>{{ students.length }}</strong>
+          <p>{{ isLoading ? "Betöltés..." : "regisztrált diák" }}</p>
+        </article>
+
+        <article class="teacher-overview-card">
+          <span class="teacher-overview-icon green">✅</span>
+          <small>Ma aktív</small>
+          <strong>{{ teacherOverview.activeTodayCount }}</strong>
+          <p>diák oldott meg feladatot</p>
+        </article>
+
+        <article class="teacher-overview-card warning">
+          <span class="teacher-overview-icon amber">⚠️</span>
+          <small>Figyelmet igényel</small>
+          <strong>{{ teacherOverview.attentionStudents.length }}</strong>
+          <p>
+            {{
+              teacherOverview.attentionStudents.length
+                ? teacherOverview.attentionStudents.map((item) => item.name).join(", ")
+                : "nincs kiugró gyenge pont"
+            }}
+          </p>
+        </article>
+
+        <article class="teacher-overview-card">
+          <span class="teacher-overview-icon blue">📉</span>
+          <small>Gyenge téma</small>
+          <strong>{{ teacherOverview.weakestTopic?.label || "Nincs adat" }}</strong>
+          <p>
+            {{
+              teacherOverview.weakestTopic
+                ? `${teacherOverview.weakestTopic.accuracy}% átlag · ${teacherOverview.weakestTopic.attempts} próba`
+                : "még kevés feladat alapján"
+            }}
+          </p>
+        </article>
+      </div>
+
+      <div class="teacher-focus-panel">
+        <div>
+          <span class="teacher-focus-kicker">Mai tanári fókusz</span>
+          <h2>{{ teacherFocusTitle }}</h2>
+          <p>{{ teacherFocusText }}</p>
+        </div>
+
+        <div class="teacher-focus-actions">
+          <button @click="openTeacherSection('students')">Diákok megnyitása</button>
+          <button class="secondary" @click="openTeacherSection('exercises')">
+            Feladat készítése
+          </button>
+        </div>
+      </div>
+
+      <div v-if="teacherOverview.attentionStudents.length" class="teacher-focus-list">
+        <div class="teacher-focus-list-header">
+          <h2>Figyelmet igénylő diákok</h2>
+          <span>{{ teacherOverview.attentionStudents.length }} javaslat</span>
+        </div>
+
+        <div class="teacher-focus-students">
+          <article
+            v-for="student in teacherOverview.attentionStudents"
+            :key="student.id"
+            class="teacher-focus-student"
+          >
+            <div class="avatar">{{ getInitial(student.name) }}</div>
+
+            <div class="teacher-focus-student-body">
+              <strong>{{ student.name }}</strong>
+              <span>{{ student.reason }}</span>
+              <small>Utolsó aktivitás: {{ formatDate(student.lastActivity) }}</small>
+            </div>
+
+            <button @click="openStudentFromOverview(student.id)">Megnyitás</button>
+          </article>
         </div>
       </div>
 
@@ -22,6 +104,13 @@
           <small>Feladatok hozzáadása, szerkesztése és deaktiválása.</small>
           <em>5 feladattípus</em>
         </button>
+
+        <button class="teacher-section-card" @click="openTeacherSection('writings')">
+          <span class="teacher-section-icon writings">✍️</span>
+          <strong>Beküldött írások</strong>
+          <small>ÖSD levelek, beadott fogalmazások és javításra váró szövegek.</small>
+          <em>{{ writingSubmissions.length }} beküldés</em>
+        </button>
       </div>
     </section>
 
@@ -33,19 +122,9 @@
 
         <div>
           <h1>
-            {{
-              activeTeacherSection === "students"
-                ? "Diákkezelő"
-                : "Feladatkezelő"
-            }}
+            {{ activeTeacherSectionTitle }}
           </h1>
-          <p>
-            {{
-              activeTeacherSection === "students"
-                ? "Diákok áttekintése, teljesítmény és tanári jegyzetek."
-                : "Nem ÖSD feladatok szerkesztése és bővítése."
-            }}
-          </p>
+          <p>{{ activeTeacherSectionDescription }}</p>
         </div>
       </header>
 
@@ -249,6 +328,116 @@
         </main>
       </div>
 
+      <section v-else-if="activeTeacherSection === 'writings'" class="writing-submissions-manager">
+        <div v-if="writingSubmissionSetupError" class="setup-warning-card">
+          <strong>A beküldött írások táblája még nincs beállítva.</strong>
+          <p>Futtasd le a `supabase/writing_submissions.sql` fájlt a Supabase SQL editorban.</p>
+        </div>
+
+        <div class="writing-submission-toolbar">
+          <div>
+            <h2>Beküldött írások</h2>
+            <p>ÖSD Schreiben beadások állapottal és teljes levélszöveggel.</p>
+          </div>
+
+          <button
+            class="btn-outline btn-small"
+            @click="fetchWritingSubmissions"
+            :disabled="isWritingSubmissionsLoading"
+          >
+            Frissítés
+          </button>
+        </div>
+
+        <div v-if="isWritingSubmissionsLoading" class="empty-state small">
+          Beküldések betöltése...
+        </div>
+
+        <div v-else-if="!writingSubmissions.length" class="empty-state small">
+          Még nincs beküldött írás.
+        </div>
+
+        <div v-else class="writing-submissions-layout">
+          <aside class="writing-submission-list">
+            <button
+              v-for="submission in writingSubmissions"
+              :key="submission.id"
+              class="writing-submission-item"
+              :class="{ active: selectedWritingSubmission?.id === submission.id }"
+              @click="selectedWritingSubmission = submission"
+            >
+              <strong>{{ submission.student?.full_name || submission.student?.email || "Diák" }}</strong>
+              <span>{{ submission.task_title }}</span>
+              <small>{{ formatDate(submission.created_at) }} · {{ getSubmissionStatusLabel(submission.status) }}</small>
+            </button>
+          </aside>
+
+          <article v-if="selectedWritingSubmission" class="writing-submission-detail">
+            <div class="writing-submission-detail-header">
+              <div>
+                <span class="submission-status-pill">
+                  {{ getSubmissionStatusLabel(selectedWritingSubmission.status) }}
+                </span>
+                <h2>{{ selectedWritingSubmission.task_title }}</h2>
+                <p>
+                  {{ selectedWritingSubmission.student?.full_name || selectedWritingSubmission.student?.email || "Diák" }}
+                  · {{ formatDate(selectedWritingSubmission.created_at) }}
+                </p>
+              </div>
+
+              <select
+                :value="selectedWritingSubmission.status"
+                @change="changeWritingSubmissionStatus(selectedWritingSubmission, $event.target.value)"
+              >
+                <option value="submitted">Új beküldés</option>
+                <option value="reviewing">Javítás alatt</option>
+                <option value="reviewed">Javítva</option>
+              </select>
+            </div>
+
+            <div class="writing-submission-meta">
+              <div>
+                <span>Elvárt szószám</span>
+                <strong>{{ selectedWritingSubmission.expected_word_count }} szó</strong>
+              </div>
+
+              <div>
+                <span>Diák szószáma</span>
+                <strong>{{ selectedWritingSubmission.word_count }} szó</strong>
+              </div>
+
+              <div>
+                <span>Típus</span>
+                <strong>{{ selectedWritingSubmission.task_type }}</strong>
+              </div>
+            </div>
+
+            <section class="writing-submission-task">
+              <h3>Levél témája</h3>
+              <p>{{ selectedWritingSubmission.task_situation }}</p>
+
+              <h3>Feladat pontjai</h3>
+              <ul>
+                <li
+                  v-for="point in selectedWritingSubmission.task_points"
+                  :key="point"
+                >
+                  {{ point }}
+                </li>
+              </ul>
+
+              <h3>Instrukció</h3>
+              <p>{{ selectedWritingSubmission.task_instructions }}</p>
+            </section>
+
+            <section class="writing-submission-content">
+              <h3>Diák levele</h3>
+              <p>{{ selectedWritingSubmission.content }}</p>
+            </section>
+          </article>
+        </div>
+      </section>
+
       <section v-else class="exercise-manager">
         <div class="exercise-manager-header">
           <div>
@@ -429,6 +618,7 @@ import {
   fetchTeacherStudentFiles,
   fetchTeacherStudentNotes,
   fetchTeacherStudentResults,
+  fetchTeacherOverview,
 } from "../services/teacherService";
 import {
   createExerciseItem,
@@ -436,6 +626,10 @@ import {
   fetchTeacherExerciseItems,
   updateExerciseItem,
 } from "../services/exerciseItemService";
+import {
+  fetchTeacherWritingSubmissions,
+  updateWritingSubmissionStatus,
+} from "../services/writingSubmissionService";
 import verbsData from "../data/verbs.json";
 import nomenData from "../data/nomen.json";
 import adjektivData from "../data/adjektiv.json";
@@ -445,6 +639,13 @@ import { sichVerbenData } from "../data/sichVerben";
 
 export default {
   name: "TeacherDashboard",
+
+  props: {
+    initialSection: {
+      type: String,
+      default: null,
+    },
+  },
 
   data() {
     return {
@@ -468,6 +669,14 @@ export default {
         accuracy: 0,
         totalDone: 0,
       },
+      teacherOverview: {
+        activeTodayCount: 0,
+        inactiveCount: 0,
+        inactiveStudents: [],
+        attentionStudents: [],
+        weakestTopic: null,
+        totalResults: 0,
+      },
 
       teacherNoteText: "",
       isSendingTeacherNote: false,
@@ -478,6 +687,10 @@ export default {
       exerciseItems: [],
       isExerciseItemsLoading: false,
       isExerciseSaving: false,
+      writingSubmissions: [],
+      selectedWritingSubmission: null,
+      isWritingSubmissionsLoading: false,
+      writingSubmissionSetupError: false,
       showBaseExercises: false,
       selectedExerciseType: "perfekt",
       exerciseTypes: [
@@ -566,6 +779,26 @@ export default {
         this.exerciseTypes.find((item) => item.type === this.selectedExerciseType) ||
         this.exerciseTypes[0]
       );
+    },
+
+    activeTeacherSectionTitle() {
+      const titles = {
+        students: "Diákkezelő",
+        exercises: "Feladatkezelő",
+        writings: "Beküldött írások",
+      };
+
+      return titles[this.activeTeacherSection] || "Tanári felület";
+    },
+
+    activeTeacherSectionDescription() {
+      const descriptions = {
+        students: "Diákok áttekintése, teljesítmény és tanári jegyzetek.",
+        exercises: "Nem ÖSD feladatok szerkesztése és bővítése.",
+        writings: "ÖSD levelek és fogalmazások áttekintése, javítási állapottal.",
+      };
+
+      return descriptions[this.activeTeacherSection] || "";
     },
 
     exerciseFields() {
@@ -728,10 +961,58 @@ export default {
         ? [...this.exerciseItems, ...this.baseExerciseItems]
         : this.exerciseItems;
     },
+
+    teacherFocusTitle() {
+      const attentionStudent = this.teacherOverview.attentionStudents[0];
+
+      if (attentionStudent) {
+        return `${attentionStudent.name} most figyelmet kér`;
+      }
+
+      if (this.teacherOverview.inactiveStudents.length) {
+        return "Van pár csendesebb diák";
+      }
+
+      if (this.teacherOverview.weakestTopic) {
+        return `${this.teacherOverview.weakestTopic.label} lehet a mai fókusz`;
+      }
+
+      return "Kezdd egy gyors ellenőrzéssel";
+    },
+
+    teacherFocusText() {
+      const attentionStudent = this.teacherOverview.attentionStudents[0];
+
+      if (attentionStudent) {
+        return `Érdemes ránézni: ${attentionStudent.reason}. Innen gyorsan tudsz jegyzetet írni vagy célzott feladatot adni.`;
+      }
+
+      if (this.teacherOverview.inactiveStudents.length) {
+        return `${this.teacherOverview.inactiveStudents.join(", ")} nem volt aktív az elmúlt 7 napban.`;
+      }
+
+      if (this.teacherOverview.weakestTopic) {
+        return `Az elmúlt 30 nap alapján ez a leggyengébb közös téma: ${this.teacherOverview.weakestTopic.accuracy}%.`;
+      }
+
+      return "Nyisd meg a diákkezelőt, vagy készíts egy rövid gyakorlófeladatot a következő órára.";
+    },
   },
 
   async mounted() {
     await this.fetchStudents();
+
+    if (this.initialSection) {
+      await this.openTeacherSection(this.initialSection);
+    }
+  },
+
+  watch: {
+    async initialSection(section) {
+      if (section) {
+        await this.openTeacherSection(section);
+      }
+    },
   },
 
   methods: {
@@ -741,11 +1022,25 @@ export default {
       if (section === "exercises" && !this.exerciseItems.length) {
         await this.fetchExerciseItems();
       }
+
+      if (section === "writings" && !this.writingSubmissions.length) {
+        await this.fetchWritingSubmissions();
+      }
+    },
+
+    async openStudentFromOverview(studentId) {
+      const student = this.students.find((item) => item.id === studentId);
+
+      if (!student) return;
+
+      this.activeTeacherSection = "students";
+      await this.selectStudent(student);
     },
 
     goToTeacherPortal() {
       this.activeTeacherSection = null;
       this.clearSelectedStudent();
+      this.selectedWritingSubmission = null;
       this.resetExerciseForm();
     },
 
@@ -754,11 +1049,65 @@ export default {
 
       try {
         this.students = await fetchTeacherStudents();
+        await Promise.all([
+          this.fetchTeacherOverview(),
+          this.fetchWritingSubmissions(),
+        ]);
       } catch (error) {
         console.error("Hiba a diákok lekérésekor:", error.message);
       } finally {
         this.isLoading = false;
       }
+    },
+
+    async fetchTeacherOverview() {
+      try {
+        this.teacherOverview = await fetchTeacherOverview(this.students);
+      } catch (error) {
+        console.error("Tanári áttekintés lekérési hiba:", error.message);
+      }
+    },
+
+    async fetchWritingSubmissions() {
+      this.isWritingSubmissionsLoading = true;
+      this.writingSubmissionSetupError = false;
+
+      try {
+        this.writingSubmissions = await fetchTeacherWritingSubmissions();
+        this.selectedWritingSubmission = this.writingSubmissions[0] || null;
+      } catch (error) {
+        console.error("Beküldött írások lekérési hiba:", error.message);
+        this.writingSubmissionSetupError = error.message?.includes("writing_submissions");
+      } finally {
+        this.isWritingSubmissionsLoading = false;
+      }
+    },
+
+    async changeWritingSubmissionStatus(submission, status) {
+      try {
+        const updated = await updateWritingSubmissionStatus(submission.id, status);
+
+        this.writingSubmissions = this.writingSubmissions.map((item) =>
+          item.id === submission.id ? { ...item, status: updated.status } : item,
+        );
+        this.selectedWritingSubmission = {
+          ...this.selectedWritingSubmission,
+          status: updated.status,
+        };
+      } catch (error) {
+        console.error("Beküldött írás státusz hiba:", error.message);
+        alert("Nem sikerült módosítani a státuszt.");
+      }
+    },
+
+    getSubmissionStatusLabel(status) {
+      const labels = {
+        submitted: "Új beküldés",
+        reviewing: "Javítás alatt",
+        reviewed: "Javítva",
+      };
+
+      return labels[status] || "Beküldve";
     },
 
     async selectStudent(student) {

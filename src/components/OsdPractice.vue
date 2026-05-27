@@ -58,7 +58,10 @@
         v-else-if="selectedPart === 'hoereverstehen'"
         @exercise-finished="$emit('exercise-finished')"
       />
-      <OsdSchreiben v-else-if="selectedPart === 'schreiben'" />
+      <OsdSchreiben
+        v-else-if="selectedPart === 'schreiben'"
+        :user-session="userSession"
+      />
     </div>
 
     <transition name="fade">
@@ -122,6 +125,13 @@ export default {
     OsdLeseverstehen,
     OsdSchreiben,
     OsdHoerverstehen,
+  },
+
+  props: {
+    userSession: {
+      type: Object,
+      default: null,
+    },
   },
 
   data() {

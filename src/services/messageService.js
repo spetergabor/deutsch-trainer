@@ -73,6 +73,36 @@ export async function sendConversationMessage(senderId, receiverId, content) {
   return data || null;
 }
 
+export async function sendMessageToFirstTeacher(senderId, content) {
+  if (!senderId || !content?.trim()) {
+    return null;
+  }
+
+  const { data: teachers, error: teacherError } = await supabase
+    .from("profiles")
+    .select("id, full_name, email")
+    .eq("role", "teacher")
+    .order("full_name", { ascending: true })
+    .limit(1);
+
+  if (teacherError) {
+    throw teacherError;
+  }
+
+  const teacher = teachers?.[0];
+
+  if (!teacher?.id) {
+    throw new Error("Nincs elérhető tanár, akinek el lehetne küldeni a levelet.");
+  }
+
+  const message = await sendConversationMessage(senderId, teacher.id, content);
+
+  return {
+    teacher,
+    message,
+  };
+}
+
 export async function markConversationMessagesRead(userId, contactId) {
   if (!userId || !contactId) {
     return;

@@ -1,6 +1,7 @@
 import { supabase } from "../supabase";
 import {
   calculateStatsFromResults,
+  getTopicStats,
   getLast30Trend,
   getTeacherAlerts,
   getWeakTopics,
@@ -18,6 +19,83 @@ export async function fetchTeacherStudents() {
   }
 
   return data || [];
+}
+
+export async function fetchTeacherOverview(students = []) {
+  const since = new Date();
+  since.setDate(since.getDate() - 30);
+
+  const { data, error } = await supabase
+    .from("exercise_results")
+    .select("*")
+    .gte("created_at", since.toISOString())
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    throw error;
+  }
+
+  const results = data || [];
+  const todayKey = new Date().toISOString().slice(0, 10);
+  const activeToday = new Set(
+    results
+      .filter((item) => item.created_at?.slice(0, 10) === todayKey)
+      .map((item) => item.user_id),
+  );
+  const activeLast7 = new Set(
+    results
+      .filter((item) => {
+        const createdAt = new Date(item.created_at);
+        const sevenDaysAgo = new Date();
+        sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+
+        return createdAt >= sevenDaysAgo;
+      })
+      .map((item) => item.user_id),
+  );
+  const studentNames = new Map(
+    students.map((student) => [
+      student.id,
+      student.full_name || student.email || "Névtelen diák",
+    ]),
+  );
+  const topics = getTopicStats(results);
+  const weakestTopic = topics.find((topic) => topic.attempts >= 2) || null;
+  const inactiveStudents = students
+    .filter((student) => !activeLast7.has(student.id))
+    .slice(0, 3)
+    .map((student) => student.full_name || student.email || "Névtelen diák");
+  const attentionStudents = students
+    .map((student) => {
+      const studentResults = results.filter((item) => item.user_id === student.id);
+      const weakTopic = getWeakTopics(studentResults, 1)[0];
+      const trend = getLast30Trend(studentResults);
+      const lastResult = studentResults[0] || null;
+
+      if (!weakTopic && trend.direction !== "down") {
+        return null;
+      }
+
+      return {
+        id: student.id,
+        name: studentNames.get(student.id),
+        reason: weakTopic
+          ? `${weakTopic.label}: ${weakTopic.accuracy}%`
+          : trend.label,
+        lastActivity: lastResult?.created_at || null,
+      };
+    })
+    .filter(Boolean)
+    .slice(0, 3);
+
+  return {
+    activeTodayCount: activeToday.size,
+    inactiveCount: students.length - activeLast7.size,
+    inactiveStudents,
+    attentionStudents,
+    weakestTopic,
+    totalResults: results.length,
+  };
 }
 
 export async function fetchTeacherStudentNotes(studentId) {
