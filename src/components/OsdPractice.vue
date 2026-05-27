@@ -45,9 +45,19 @@
         ← Vissza az ÖSD menübe
       </button>
 
-      <OsdLueckentext v-if="selectedPart === 'lueckentext'" />
-      <OsdLeseverstehen v-else-if="selectedPart === 'leseverstehen'" />
-      <OsdHoerverstehen v-else-if="selectedPart === 'hoereverstehen'" />
+      <OsdLueckentext
+        v-if="selectedPart === 'lueckentext'"
+        @exercise-finished="$emit('exercise-finished')"
+      />
+      <OsdLeseverstehen
+        v-else-if="selectedPart === 'leseverstehen'"
+        @exercise-finished="$emit('exercise-finished')"
+        @go-dashboard="$emit('go-dashboard')"
+      />
+      <OsdHoerverstehen
+        v-else-if="selectedPart === 'hoereverstehen'"
+        @exercise-finished="$emit('exercise-finished')"
+      />
       <OsdSchreiben v-else-if="selectedPart === 'schreiben'" />
     </div>
 

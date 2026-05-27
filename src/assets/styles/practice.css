@@ -3,14 +3,18 @@
 ========================================================= */
 
 .practice-screen {
+  --practice-desktop-width: 760px;
+  --active-practice-width: var(--practice-desktop-width);
+
   width: 100%;
-  min-height: 100dvh;
+  min-height: auto;
+  position: relative;
 
   display: flex;
   flex-direction: column;
   align-items: center;
 
-  padding: 0 0 40px;
+  padding: 0 0 24px;
   box-sizing: border-box;
 }
 
@@ -18,12 +22,99 @@
 .verb-practice,
 .adjektiv-practice,
 .praeposition-practice,
-.konnektoren-practice {
+.konnektoren-practice,
+.sich-verben-practice {
   width: 100%;
   max-width: var(--container-practice);
   margin: 0 auto;
-  padding: 20px 0;
+  padding: 12px 0;
   text-align: center;
+}
+
+.osd-practice.practice-container {
+  width: 100% !important;
+  max-width: 1100px !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
+.desktop-practice-return {
+  width: min(
+    var(--active-practice-width, var(--container-practice)),
+    calc(100% - 40px)
+  );
+  margin: 18px auto 18px;
+
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: 22px;
+}
+
+.desktop-practice-return .btn-small {
+  width: auto;
+  min-height: 54px;
+  padding: 14px 22px;
+  border-radius: 999px;
+  font-size: 1rem;
+  font-weight: 950;
+  white-space: nowrap;
+}
+
+.desktop-practice-return h1 {
+  margin: 0;
+  color: #ffffff;
+  font-weight: 950;
+  line-height: 1.05;
+  letter-spacing: 0;
+}
+
+.practice-screen:has(.story-reading) {
+  --active-practice-width: min(1080px, calc(100% - 40px));
+  align-items: stretch;
+  justify-content: flex-start;
+  overflow-x: clip;
+}
+
+.desktop-practice-return + .practice-container > h1,
+.desktop-practice-return + .verb-practice > h1,
+.desktop-practice-return + .adjektiv-practice > h1,
+.desktop-practice-return + .praeposition-practice > h1,
+.desktop-practice-return + .konnektoren-practice > h1,
+.desktop-practice-return + .sich-verben-practice > h1 {
+  display: none;
+}
+
+.desktop-practice-return + .profile-page .profile-top-card {
+  margin-top: 0;
+}
+
+.osd-practice ~ .desktop-practice-return {
+  width: min(1100px, calc(100% - 40px));
+}
+
+@media (min-width: 701px) {
+  .practice-screen:not(.grammar-practice-screen):not(:has(.story-reading)):not(:has(.osd-practice)) {
+    --active-practice-width: var(--practice-desktop-width);
+  }
+
+  .practice-screen:not(.grammar-practice-screen):not(:has(.story-reading)):not(:has(.osd-practice))
+    > .desktop-practice-return {
+    width: min(calc(var(--practice-desktop-width) * 0.92), calc(100% - 40px));
+  }
+
+  .practice-screen:not(.grammar-practice-screen):not(:has(.story-reading)):not(:has(.osd-practice))
+    > :is(
+      .practice-container,
+      .verb-practice,
+      .adjektiv-practice,
+      .praeposition-practice,
+      .konnektoren-practice,
+      .sich-verben-practice
+    ) {
+    width: min(var(--practice-desktop-width), calc(100% - 40px)) !important;
+    max-width: var(--practice-desktop-width) !important;
+  }
 }
 
 /* =========================================================
@@ -35,6 +126,10 @@
 }
 
 @media (max-width: 700px) {
+  .desktop-practice-return {
+    display: none;
+  }
+
   .mobile-practice-nav {
     position: fixed;
     top: 0;
@@ -120,7 +215,8 @@
   .verb-practice,
   .adjektiv-practice,
   .praeposition-practice,
-  .konnektoren-practice {
+  .konnektoren-practice,
+  .sich-verben-practice {
     min-height: calc(100dvh - 180px);
 
     display: flex;
@@ -147,10 +243,93 @@
   box-sizing: border-box;
 }
 
+.pill-button,
+.btn-check,
+.btn-next,
+.btn-popup-action {
+  min-height: 54px;
+  padding: 14px 28px;
+  border: 0;
+  border-radius: var(--radius-pill);
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+
+  color: white;
+  font-size: 1rem;
+  font-weight: 900;
+  line-height: 1;
+  text-align: center;
+
+  cursor: pointer;
+  transition:
+    transform 0.2s ease,
+    filter 0.2s ease,
+    opacity 0.2s ease;
+
+  box-shadow:
+    0 14px 30px rgba(0, 0, 0, 0.24),
+    inset 0 1px 0 rgba(255, 255, 255, 0.18);
+}
+
+.btn-green,
+.btn-check {
+  background: linear-gradient(135deg, #43e97b, #2ecc71);
+}
+
+.btn-blue,
+.btn-next,
+.btn-popup-action {
+  background: linear-gradient(135deg, #4facfe, #3498db);
+}
+
+.btn-dark {
+  background: linear-gradient(135deg, #3a3446, #201923);
+}
+
+.pill-button:hover,
+.btn-check:hover,
+.btn-next:hover,
+.btn-popup-action:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.05);
+}
+
+.pill-button:active,
+.btn-check:active,
+.btn-next:active,
+.btn-popup-action:active {
+  transform: scale(0.97);
+}
+
+.pill-button:disabled,
+.btn-check:disabled,
+.btn-next:disabled,
+.btn-popup-action:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+  filter: none;
+}
+
 @media (max-width: 768px) {
   .pill-input,
   .pill-button {
     width: 100%;
     max-width: none;
+  }
+}
+
+@media (max-width: 700px) {
+  .practice-screen:not(.grammar-practice-screen),
+  .practice-container,
+  .verb-practice {
+    max-width: none !important;
+    width: 99% !important;
+
+    padding-left: 16px;
+    padding-right: 16px;
   }
 }

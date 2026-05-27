@@ -1,0 +1,240 @@
+/* =========================================================
+   DASHBOARD RECENT TASKS + STATS CARD
+========================================================= */
+
+.recent-tasks-scroll {
+  max-height: 320px;
+  overflow-y: auto;
+  padding-right: 6px;
+}
+
+.recent-tasks-scroll::-webkit-scrollbar {
+  width: 6px;
+}
+
+.recent-tasks-scroll::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.18);
+  border-radius: 999px;
+}
+
+.visual-stats-card {
+  gap: 20px;
+}
+
+.stats-chart-header strong {
+  display: block;
+
+  color: #53e37b;
+
+  font-size: 3rem;
+  font-weight: 950;
+  line-height: 1;
+}
+
+.stats-chart-header span {
+  color: rgba(255, 255, 255, 0.55);
+
+  font-size: 0.85rem;
+  font-weight: 800;
+}
+
+.stats-chart-box {
+  position: relative;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  gap: 12px;
+  height: 170px;
+  padding: 16px 18px 16px 56px;
+  overflow: hidden;
+  border-radius: 24px;
+  background: rgba(0, 0, 0, 0.22);
+}
+
+.stats-axis-labels {
+  position: absolute;
+  left: 18px;
+  top: 96px;
+  bottom: 16px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  color: rgba(255, 255, 255, 0.36);
+  font-size: 0.68rem;
+  font-weight: 900;
+  pointer-events: none;
+}
+
+.stats-chart-plot {
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.stats-chart-box svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.stats-chart-box line {
+  stroke: rgba(255, 255, 255, 0.08);
+  stroke-width: 1;
+}
+
+.stats-chart-box path,
+.stats-chart-box polyline {
+  fill: none;
+  stroke: #53e37b;
+  stroke-width: 1.05;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+  filter: drop-shadow(0 0 8px rgba(83, 227, 123, 0.45));
+}
+
+.stats-answer-row {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 14px;
+}
+
+.stats-answer-row div {
+  padding: 16px;
+
+  border-radius: 20px;
+
+  background: rgba(255, 255, 255, 0.055);
+
+  text-align: center;
+}
+
+.stats-answer-row strong {
+  display: block;
+
+  color: white;
+
+  font-size: 1.6rem;
+  font-weight: 950;
+}
+
+.stats-answer-row span {
+  color: rgba(255, 255, 255, 0.55);
+
+  font-size: 0.75rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.practice-recommendation,
+.trend-box,
+.weak-topic-list {
+  padding: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.055);
+}
+
+.practice-recommendation span,
+.practice-recommendation small,
+.trend-box span,
+.weak-topic-row small {
+  display: block;
+  color: rgba(255, 255, 255, 0.58);
+  font-size: 0.78rem;
+  font-weight: 800;
+}
+
+.practice-recommendation strong {
+  display: block;
+  margin: 5px 0;
+  color: #ffffff;
+  font-size: 1.35rem;
+  font-weight: 950;
+}
+
+.practice-recommendation button {
+  width: 100%;
+  margin-top: 12px;
+  padding: 11px 14px;
+  border: none;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #4facfe, #43e97b);
+  color: #ffffff;
+  font-weight: 950;
+  cursor: pointer;
+}
+
+.trend-box strong,
+.weak-topic-list > strong {
+  display: block;
+  margin-bottom: 6px;
+  color: #ffffff;
+  font-weight: 950;
+}
+
+.trend-box.up {
+  border-color: rgba(83, 227, 123, 0.25);
+}
+
+.trend-box.down {
+  border-color: rgba(255, 99, 132, 0.35);
+}
+
+.weak-topic-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 9px 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.weak-topic-row span {
+  color: #ffffff;
+  font-weight: 850;
+}
+
+@media (min-width: 1101px) {
+  .visual-stats-card {
+    display: grid;
+    grid-template-columns: minmax(260px, 0.85fr) minmax(360px, 1.35fr) minmax(260px, 0.8fr);
+    grid-template-areas:
+      "title title title"
+      "recommend chart weak"
+      "trend chart weak"
+      "answers chart weak";
+    align-items: stretch;
+    gap: 16px 24px;
+  }
+
+  .visual-stats-card > h3 {
+    grid-area: title;
+    margin-bottom: 0;
+  }
+
+  .practice-recommendation {
+    grid-area: recommend;
+  }
+
+  .trend-box {
+    grid-area: trend;
+  }
+
+  .stats-chart-box {
+    grid-area: chart;
+    align-self: stretch;
+    height: 100%;
+    min-height: 275px;
+    margin-top: 0;
+  }
+
+  .stats-answer-row {
+    grid-area: answers;
+  }
+
+  .weak-topic-list {
+    grid-area: weak;
+  }
+}

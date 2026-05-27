@@ -348,6 +348,7 @@
 
 <script>
 import { hoerenAufgabe1 } from "../data/OsdHoerverstehenData.js";
+import { saveExerciseResult } from "../services/exerciseResultService";
 
 const ResultBox = {
   props: {
@@ -566,8 +567,9 @@ audioSource() {
       }
     },
 
-    checkA1() {
+    async checkA1() {
       this.isA1Checked = true;
+      await this.saveHoerenResult("osd-hoerverstehen-1", this.scoreA1, 10);
     },
 
     resetA1() {
@@ -575,8 +577,9 @@ audioSource() {
       this.isA1Checked = false;
     },
 
-    checkA2() {
+    async checkA2() {
       this.isA2Checked = true;
+      await this.saveHoerenResult("osd-hoerverstehen-2", this.scoreA2, 10);
     },
 
     resetA2() {
@@ -588,6 +591,15 @@ audioSource() {
 
       this.isA2Checked = false;
     },
+
+    async saveHoerenResult(type, score, maxScore) {
+      try {
+        await saveExerciseResult(type, score, maxScore);
+        this.$emit("exercise-finished");
+      } catch (error) {
+        console.error("Hörverstehen eredmény mentési hiba:", error.message);
+      }
+    },
   },
 };
 </script>
@@ -595,8 +607,9 @@ audioSource() {
 <style scoped>
 /* --- 1. ALAP ELRENDEZÉS --- */
 .hoeren-layout {
-  width: min(1100px, 92vw) !important;
+  width: 100% !important;
   max-width: 1100px !important;
+  margin: 20px auto 0 !important;
 
   padding: 0 !important;
 
@@ -606,6 +619,7 @@ audioSource() {
 
   color: white;
   box-sizing: border-box;
+  overflow-x: hidden;
 }
 
 /* --- 2. TABS --- */
@@ -672,6 +686,7 @@ audioSource() {
   width: 100% !important;
   padding: 28px !important;
   box-sizing: border-box !important;
+  overflow-x: hidden;
 }
 
 .custom-audio {
@@ -699,11 +714,11 @@ audioSource() {
 /* --- 4. AUFGABE 1 --- */
 .tf-list {
   width: 100%;
-  max-width: 920px;
+  max-width: 820px;
   margin: 0 auto;
 
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: 1fr;
   gap: 16px;
 
   box-sizing: border-box;
@@ -714,7 +729,7 @@ audioSource() {
   min-height: 120px;
 
   display: grid;
-  grid-template-columns: 34px 1fr auto;
+  grid-template-columns: 34px minmax(0, 1fr);
   align-items: center;
   gap: 14px;
 
@@ -725,6 +740,7 @@ audioSource() {
   border: 1px solid rgba(255, 255, 255, 0.07);
 
   box-sizing: border-box;
+  overflow: hidden;
 }
 
 .tf-num {
@@ -735,12 +751,16 @@ audioSource() {
 }
 
 .tf-text {
+  min-width: 0;
   text-align: left;
   line-height: 1.35;
   color: rgba(255, 255, 255, 0.94);
 }
 
 .tf-btns {
+  grid-column: 2;
+  justify-self: start;
+
   display: flex;
   gap: 10px;
 }
@@ -814,9 +834,96 @@ audioSource() {
   font-weight: 900;
 }
 
+/* Aufgabe 2: desktopon is a mobilos, kártyás elrendezést használjuk. */
+.table-scroll-wrapper {
+  width: 100%;
+  max-width: 820px;
+  margin: 0 auto 20px;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+.hv-table,
+.hv-table tbody {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  min-width: 0 !important;
+  gap: 20px;
+}
+
+.hv-table thead {
+  display: none;
+}
+
+.hv-table tr {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  min-width: 0;
+  overflow: hidden;
+
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 20px;
+  background: rgba(0, 0, 0, 0.3);
+
+  padding-bottom: 10px;
+  margin: 0;
+}
+
+.hv-table td {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  border-radius: 0;
+}
+
+.hv-table td:first-child {
+  margin-bottom: 5px;
+  padding: 12px 15px;
+
+  background: rgba(52, 152, 219, 0.25);
+  color: #3498db;
+
+  font-weight: 900;
+  border-bottom: 1px solid rgba(52, 152, 219, 0.3);
+}
+
+.hv-table td:not(:first-child) {
+  padding: 10px 15px;
+  border: none;
+}
+
+.hv-table td:nth-child(2)::before {
+  content: "Universitätsbibliothek:";
+  display: block;
+  margin-bottom: 5px;
+  color: #3498db;
+  font-size: 0.75rem;
+}
+
+.hv-table td:nth-child(3)::before {
+  content: "ZB (Zentralbib.):";
+  display: block;
+  margin-bottom: 5px;
+  color: #3498db;
+  font-size: 0.75rem;
+}
+
+.hv-table td:nth-child(4)::before {
+  content: "Literaturarchiv:";
+  display: block;
+  margin-bottom: 5px;
+  color: #3498db;
+  font-size: 0.75rem;
+}
+
 /* --- 6. INPUTOK --- */
 .sm-input {
-  width: 70px;
+  width: 100%;
+  max-width: 120px;
+  display: inline-block;
+  margin-bottom: 5px;
   padding: 8px;
 
   border-radius: 10px;
@@ -827,6 +934,13 @@ audioSource() {
 
   text-align: center;
   outline: none;
+}
+
+.hv-table label {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 0.9rem;
+  word-wrap: break-word;
 }
 
 .correct-input {
@@ -861,23 +975,32 @@ audioSource() {
 .button-group {
   display: flex;
   justify-content: center;
+  gap: 12px;
   margin-top: 24px;
 }
 
 .btn-check,
 .btn-next {
   min-width: 180px;
+  min-height: 54px;
   padding: 14px 28px;
 
   border: none;
   border-radius: 999px;
 
-  background: #3498db;
   color: white;
 
   cursor: pointer;
   font-weight: 900;
   transition: 0.25s ease;
+}
+
+.btn-check {
+  background: linear-gradient(135deg, #43e97b, #2ecc71);
+}
+
+.btn-next {
+  background: linear-gradient(135deg, #4facfe, #3498db);
 }
 
 .btn-check:hover,

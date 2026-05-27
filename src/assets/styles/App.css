@@ -53,6 +53,35 @@ body {
   width: 100%;
 }
 
+.auth-loading-screen {
+  min-height: calc(100vh - 160px);
+  display: grid;
+  place-items: center;
+  padding: 32px 20px;
+}
+
+.auth-loading-card {
+  display: grid;
+  gap: 6px;
+  min-width: 220px;
+  padding: 24px 28px;
+  text-align: center;
+  color: var(--color-white);
+  background: var(--glass-card);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-soft);
+}
+
+.auth-loading-card strong {
+  font-size: 1.1rem;
+}
+
+.auth-loading-card span {
+  color: var(--color-text-soft);
+  font-size: 0.9rem;
+}
+
 /* =========================================================
    SHARED HELPERS
 ========================================================= */

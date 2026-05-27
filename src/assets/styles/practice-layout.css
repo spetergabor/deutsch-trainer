@@ -1,0 +1,311 @@
+/* =========================================================
+   PRACTICE LAYOUT
+========================================================= */
+
+.practice-layout {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+:is(.practice-layout, .verb-practice) .xp-card {
+  width: 92%;
+  max-width: 760px;
+
+  margin: 0 auto 0px;
+
+  padding: 14px;
+
+  border-radius: 26px;
+
+  background: linear-gradient(
+    145deg,
+    rgba(255, 255, 255, 0.06),
+    rgba(255, 255, 255, 0.025)
+  );
+
+  border: 1px solid rgba(255, 255, 255, 0.08);
+
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+
+  box-shadow:
+    0 10px 32px rgba(0, 0, 0, 0.3),
+    inset 0 1px 1px rgba(255, 255, 255, 0.06);
+
+  display: flex;
+  flex-direction: column;
+
+  gap: 14px;
+
+  text-align: center;
+
+  box-sizing: border-box;
+}
+
+:is(.practice-layout, .verb-practice) .xp-top {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+:is(.practice-layout, .verb-practice) .xp-mini-card {
+  min-width: 0;
+
+  padding: 11px 10px;
+
+  border-radius: 18px;
+
+  background: rgba(255, 255, 255, 0.045);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+}
+
+:is(.practice-layout, .verb-practice) .xp-mini-card span {
+  font-size: 1.45rem;
+  line-height: 1;
+}
+
+:is(.practice-layout, .verb-practice) .xp-mini-card strong {
+  display: block;
+
+  color: #ffffff;
+
+  font-size: 1rem;
+  font-weight: 950;
+  line-height: 1.1;
+}
+
+:is(.practice-layout, .verb-practice) .xp-mini-card small {
+  display: block;
+
+  margin-top: 2px;
+
+  color: rgba(255, 255, 255, 0.58);
+
+  font-size: 0.68rem;
+  font-weight: 750;
+  line-height: 1.1;
+}
+
+:is(.practice-layout, .verb-practice) .level-area {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+
+:is(.practice-layout, .verb-practice) .level-badge {
+  align-self: center;
+
+  padding: 8px 18px;
+
+  border-radius: 999px;
+
+  background: linear-gradient(90deg, #4facfe, #43e97b);
+
+  color: white;
+
+  font-size: 0.82rem;
+  font-weight: 950;
+
+  box-shadow: 0 10px 22px rgba(67, 233, 123, 0.18);
+}
+
+:is(.practice-layout, .verb-practice) .xp-progress-info {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+
+  margin: 12px 0 8px;
+
+  color: rgba(255, 255, 255, 0.6);
+
+  font-size: 0.74rem;
+  font-weight: 750;
+}
+
+:is(.practice-layout, .verb-practice) .xp-progress {
+  width: 100%;
+  height: 10px;
+
+  overflow: hidden;
+
+  border-radius: 999px;
+
+  background: rgba(255, 255, 255, 0.08);
+}
+
+:is(.practice-layout, .verb-practice) .xp-progress-fill {
+  height: 100%;
+
+  border-radius: 999px;
+
+  background: linear-gradient(90deg, #43e97b, #38f9d7);
+
+  transition: width 0.45s ease;
+}
+
+:is(.practice-layout, .verb-practice) .xp-hint {
+  margin: 10px 0 0;
+
+  color: #71ff99;
+
+  font-size: 0.78rem;
+  font-weight: 850;
+}
+
+/* Ha maradt régi HTML-ből xp-pill class, ne zavarjon be */
+:is(.practice-layout, .verb-practice) .xp-pill,
+:is(.practice-layout, .verb-practice) .xp-progress-row,
+:is(.practice-layout, .verb-practice) .xp-progress-bar {
+  display: none;
+}
+
+@media (max-width: 700px) {
+  :is(.practice-layout, .verb-practice) .xp-card {
+    width: 100%;
+
+    margin-bottom: -10px;
+    padding: 13px;
+  }
+
+  :is(.practice-layout, .verb-practice) .xp-mini-card {
+    padding: 10px 8px;
+  }
+
+  :is(.practice-layout, .verb-practice) .xp-mini-card span {
+    font-size: 1.35rem;
+  }
+
+  :is(.practice-layout, .verb-practice) .xp-mini-card strong {
+    font-size: 0.95rem;
+  }
+
+  :is(.practice-layout, .verb-practice) .xp-mini-card small {
+    font-size: 0.64rem;
+  }
+}
+
+:where(.practice-layout, .verb-practice) .practice-box {
+  width: min(92%, 720px);
+
+  margin: 18px auto 12px;
+
+  padding: 28px 30px;
+
+  border-radius: 34px;
+
+  background: linear-gradient(
+    145deg,
+    rgba(255, 255, 255, 0.06),
+    rgba(255, 255, 255, 0.02)
+  );
+
+  border: 1px solid rgba(255, 255, 255, 0.08);
+
+  backdrop-filter: blur(28px);
+
+  -webkit-backdrop-filter: blur(28px);
+
+  box-shadow:
+    0 20px 50px rgba(0, 0, 0, 0.35),
+    inset 0 1px 1px rgba(255, 255, 255, 0.05);
+
+  display: flex;
+  flex-direction: column;
+
+  align-items: center;
+  gap: 22px;
+}
+
+:where(.practice-layout, .verb-practice) .practice-box h2 {
+  font-weight: 900;
+
+  color: white;
+
+  margin: 0;
+}
+
+:where(.practice-layout, .verb-practice) .translation {
+  font-size: 1.8rem;
+
+  font-style: italic;
+
+  opacity: 0.7;
+
+  margin-top: -10px;
+}
+
+:where(.practice-layout, .verb-practice) .practice-box .progress-bar {
+  width: 100%;
+}
+
+:where(.practice-layout, .verb-practice) .practice-box .answer-input {
+  width: 100%;
+  max-width: 640px;
+}
+
+:where(.practice-layout, .verb-practice) .practice-box .check-btn {
+  width: 100%;
+  max-width: 640px;
+}
+
+@media (max-width: 700px) {
+  :where(.practice-layout, .verb-practice) .practice-box {
+    width: calc(100% - 0px);
+
+    padding: 24px 18px;
+
+    border-radius: 28px;
+
+    gap: 20px;
+  }
+
+  :where(.practice-layout, .verb-practice) .practice-box h2 {
+    font-size: 2rem;
+  }
+
+  :where(.practice-layout, .verb-practice) .translation {
+    font-size: 1.4rem;
+  }
+}
+
+:where(.practice-layout, .verb-practice) .quiz-area {
+  width: 100%;
+
+  display: flex;
+  flex-direction: column;
+
+  align-items: center;
+}
+
+:where(.practice-layout, .verb-practice) .input-wrapper {
+  width: 100%;
+}
+
+:where(.practice-layout, .verb-practice) .button-group {
+  width: 100%;
+}
+
+:where(.practice-layout, .verb-practice) .pill-input {
+  width: 100%;
+
+  display: block;
+
+  box-sizing: border-box;
+}
+
+:where(.practice-layout, .verb-practice) .pill-button {
+  width: 100%;
+
+  display: flex;
+
+  justify-content: center;
+  align-items: center;
+
+  box-sizing: border-box;
+}

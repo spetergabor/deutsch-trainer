@@ -151,6 +151,10 @@
         <button class="btn-popup-action" @click="resetCurrentAufgabe">
           Újrakezdés
         </button>
+
+        <button class="btn-popup-action" @click="$emit('go-dashboard')">
+          Vissza a főmenübe
+        </button>
       </div>
     </div>
   </div>
@@ -163,6 +167,7 @@ import {
   leseAufgabe2Headings,
   leseAufgabe2Texts,
 } from "../data/OsdLeseverstehenData.js";
+import { saveExerciseResult } from "../services/exerciseResultService";
 
 export default {
   name: "OsdLeseverstehen",
@@ -247,7 +252,7 @@ export default {
       return "opt-disabled";
     },
 
-    nextLeseQuestion() {
+    async nextLeseQuestion() {
       if (this.currentIdx < this.totalTasks - 1) {
         this.currentIdx += 1;
         this.isAnswered = false;
@@ -257,10 +262,12 @@ export default {
       }
 
       this.showStatistics = true;
+      await this.saveCurrentResult();
     },
 
-    checkAufgabe2() {
+    async checkAufgabe2() {
       this.isA2Checked = true;
+      await this.saveCurrentResult();
     },
 
     getA2SelectClass(textId) {
@@ -300,6 +307,31 @@ export default {
 
       this.showStatistics = false;
     },
+
+    getA2CorrectCount() {
+      return this.leseAufgabe2Texts.filter((textObj) => {
+        return this.answersA2[textObj.id] === textObj.correct;
+      }).length;
+    },
+
+    async saveCurrentResult() {
+      const score =
+        this.currentLeseAufgabe === 1
+          ? this.correctAnswers
+          : this.getA2CorrectCount();
+
+      try {
+        await saveExerciseResult(
+          `osd-leseverstehen-${this.currentLeseAufgabe}`,
+          score,
+          this.totalTasks,
+        );
+
+        this.$emit("exercise-finished");
+      } catch (error) {
+        console.error("Leseverstehen eredmény mentési hiba:", error.message);
+      }
+    },
   },
 };
 </script>
@@ -307,8 +339,9 @@ export default {
 <style scoped>
 .lese-layout {
   width: 100%;
-  max-width: 800px;
+  max-width: 1100px;
   margin: 20px auto 0;
+  box-sizing: border-box;
   animation: fadeIn 0.4s ease;
 }
 
@@ -357,7 +390,7 @@ export default {
 
 .lese-text-panel {
   width: 100%;
-  max-height: 500px;
+  max-height: none;
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -380,10 +413,10 @@ export default {
 
 .scroll-text {
   flex: 1;
-  padding: 30px;
+  padding: 42px 54px;
   overflow-y: auto;
   text-align: left;
-  line-height: 1.7;
+  line-height: 1.85;
   color: #ecf0f1;
 }
 
@@ -415,7 +448,7 @@ export default {
 
 .lese-card {
   width: 100%;
-  padding: 25px;
+  padding: 30px 34px;
   border-radius: 20px;
   box-sizing: border-box;
 
@@ -423,6 +456,49 @@ export default {
   border: 1px solid rgba(255, 255, 255, 0.1);
 
   text-align: left;
+}
+
+@media (min-width: 900px) {
+  .lese-layout {
+    width: 100%;
+    max-width: 1100px;
+    margin-top: 20px;
+    margin-left: auto;
+    margin-right: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .lese-wrapper {
+    width: 100%;
+    gap: 30px;
+  }
+
+  .lese-tabs,
+  .lese-text-panel,
+  .lese-quiz-panel,
+  .lese-aufgabe2-wrapper {
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .scroll-text {
+    font-size: 1.08rem;
+  }
+
+  .scroll-text h3 {
+    font-size: 1.9rem;
+    line-height: 1.25;
+  }
+
+  .lese-question {
+    font-size: 1.08rem;
+  }
+
+  .lese-aufgabe2-wrapper {
+    width: min(1100px, 100%);
+  }
 }
 
 .lese-question {
@@ -575,31 +651,54 @@ export default {
 
 .button-group {
   display: flex;
-  justify-content: flex-end;
+  justify-content: center;
+  gap: 12px;
   margin-top: 15px;
 }
 
 .btn-next,
 .btn-check {
-  padding: 12px 25px;
+  min-width: 180px;
+  min-height: 54px;
+  padding: 14px 28px;
   border: none;
-  border-radius: 25px;
-  background: #3498db;
+  border-radius: 999px;
   color: #ffffff;
   font-size: 1rem;
-  font-weight: 800;
+  font-weight: 900;
   cursor: pointer;
   transition: all 0.3s ease;
 }
 
 .btn-check {
-  background: #2ecc71;
+  background: linear-gradient(135deg, #43e97b, #2ecc71);
+}
+
+.btn-next {
+  background: linear-gradient(135deg, #4facfe, #3498db);
+}
+
+.btn-popup-action {
+  min-width: 220px;
+  min-height: 54px;
+  padding: 14px 28px;
+  border: none;
+  border-radius: 999px;
+
+  background: linear-gradient(135deg, #4facfe, #3498db);
+  color: #ffffff;
+  font-size: 1rem;
+  font-weight: 900;
+
+  cursor: pointer;
+  transition: all 0.3s ease;
 }
 
 .btn-next:hover,
-.btn-check:hover {
+.btn-check:hover,
+.btn-popup-action:hover {
   transform: translateY(-2px);
-  filter: brightness(0.95);
+  filter: brightness(1.05);
 }
 
 .btn-next:disabled,

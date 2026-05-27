@@ -1,504 +1,311 @@
 <template>
   <div id="app">
-<header
-  v-if="!currentMode || windowWidth > 700"
-  class="app-header"
->      <button class="logo-btn" @click="goToDashboard" title="Vissza a kezdőlapra">
-        D
-      </button>
-
-<div class="current-task-title">
-  {{ headerTitle }}
-</div>
-
-<div v-if="userSession" class="desktop-nav-actions">
-
-  <button class="header-nav-btn">
-    💬
-    <span>Üzenetek</span>
-  </button>
-
-  <button class="header-nav-btn">
-    🔔
-    <span>Értesítés</span>
-  </button>
-
-<button
-  class="header-nav-btn"
-  @click="setCurrentMode('profile')"
->
-  👤
-  <span>Profil</span>
-</button>
-
-  <button
-    class="btn-logout-small"
-    @click.prevent="handleLogout"
-    :disabled="isLoggingOut"
-  >
-    {{ isLoggingOut ? 'Kilépés...' : 'Kilépés' }}
-  </button>
-
-</div>
-
-<div v-else class="header-spacer"></div>
-    </header>
+    <AppHeader
+      v-if="!currentMode || windowWidth > 700"
+      :header-title="headerTitle"
+      :user-session="userSession"
+      :unread-notifications="unreadNotifications"
+      :unread-messages="unreadMessages"
+      :is-logging-out="isLoggingOut"
+      @go-dashboard="goToDashboard"
+      @open-messages="openMessagesPanel"
+      @toggle-notifications="toggleNotificationsMenu"
+      @open-profile="setCurrentMode('profile')"
+      @logout="handleLogout"
+    />
 
     <main class="content-wrapper">
-      <!-- SZEREPKÖR VÁLASZTÓ -->
-      <section v-if="!userSession && !showLoginForm" class="welcome-screen">
-        <h1>Üdvözlünk!</h1>
-        <p class="subtitle">Kérjük, válaszd ki a szerepkörödet:</p>
-
-        <div class="menu-grid role-grid">
-          <article class="menu-card" @click="openAuthForm('student')">
-            <div class="card-icon">🎓</div>
-            <h2>Diák vagyok</h2>
-            <p>Gyakorlás és fejlődés követése</p>
-            <button class="select-btn btn-pill btn-check">Tovább</button>
-          </article>
-
-          <article class="menu-card" @click="openAuthForm('teacher')">
-            <div class="card-icon">👨‍🏫</div>
-            <h2>Tanár vagyok</h2>
-            <p>Feladatok és diákok kezelése</p>
-            <button class="select-btn btn-pill btn-check">Tovább</button>
-          </article>
+      <div v-if="!isAuthReady" class="auth-loading-screen">
+        <div class="auth-loading-card">
+          <strong>Betöltés...</strong>
+          <span>Fiók ellenőrzése</span>
         </div>
-      </section>
+      </div>
 
       <!-- BEJELENTKEZÉS / REGISZTRÁCIÓ -->
-      <section v-else-if="!userSession && showLoginForm" class="welcome-screen">
-        <div class="widget-card login-card">
-          <h2>
-            {{ selectedRoleLabel }}
-            {{ isLoginMode ? 'Bejelentkezés' : 'Regisztráció' }}
-          </h2>
-
-          <input
-            v-if="!isLoginMode"
-            v-model.trim="authFullName"
-            type="text"
-            placeholder="Teljes neved"
-            class="simple-input"
-          />
-
-          <input
-            v-model.trim="authEmail"
-            type="email"
-            placeholder="E-mail cím"
-            class="simple-input"
-          />
-
-          <input
-            v-model="authPassword"
-            type="password"
-            placeholder="Jelszó (min. 6 karakter)"
-            class="simple-input"
-            @keyup.enter="submitAuthForm"
-          />
-
-<button
-  v-if="isLoginMode"
-  class="select-btn btn-login"
-  @click.prevent="handleLogin"
-  :disabled="isLoggingIn"
->
-  {{ isLoggingIn ? 'Belépés...' : 'Belépés' }}
-</button>
-
-          <button
-            v-else
-            class="select-btn btn-register"
-            @click="handleRegister"
-          >
-            Fiók létrehozása
-          </button>
-
-          <div class="auth-toggle">
-            <p v-if="isLoginMode">
-              Nincs még fiókod?
-              <a href="#" @click.prevent="isLoginMode = false">
-                Regisztrálj itt!
-              </a>
-            </p>
-
-            <p v-else>
-              Már van fiókod?
-              <a href="#" @click.prevent="isLoginMode = true">
-                Lépj be itt!
-              </a>
-            </p>
-          </div>
-
-          <hr class="divider" />
-
-          <button class="btn-outline btn-back" @click="resetAuthForm">
-            ← Vissza a választáshoz
-          </button>
-        </div>
-      </section>
+      <AuthScreen
+        v-else-if="!userSession"
+        :show-login-form="showLoginForm"
+        :is-login-mode="isLoginMode"
+        :selected-role-label="selectedRoleLabel"
+        :auth-full-name="authFullName"
+        :auth-email="authEmail"
+        :auth-password="authPassword"
+        :is-logging-in="isLoggingIn"
+        @open-auth-form="openAuthForm"
+        @update:auth-full-name="authFullName = $event"
+        @update:auth-email="authEmail = $event"
+        @update:auth-password="authPassword = $event"
+        @submit-auth-form="submitAuthForm"
+        @login="handleLogin"
+        @register="handleRegister"
+        @set-login-mode="isLoginMode = $event"
+        @reset-auth-form="resetAuthForm"
+      />
 
       <!-- DIÁK DASHBOARD -->
-      <section
+      <!-- DIÁK DASHBOARD -->
+      <StudentDashboard
         v-else-if="userRole === 'student' && !currentMode"
-        class="dashboard-layout"
-      >
-        <div class="dashboard-header">
-          <h1>Üdvözlünk, {{ authFullName || 'Diák' }}!</h1>
-          <p class="subtitle">
-            Válassz egy gyakorlatot, vagy tekintsd át a profilodat.
-          </p>
-        </div>
-
-        <h2 class="section-title">Elérhető leckék</h2>
-
-        <div class="lessons-ios-grid">
-
-  <div class="ios-app" @click="setCurrentMode('perfekt')">
-    <div class="ios-icon perfekt">
-      🚀
-    </div>
-    <span>Perfekt</span>
-  </div>
-
-  <div class="ios-app" @click="setCurrentMode('nomen-verb')">
-    <div class="ios-icon nomen">
-      📚
-    </div>
-    <span>Nomen-Verb</span>
-  </div>
-
-  <div class="ios-app" @click="setCurrentMode('adjektiv')">
-    <div class="ios-icon adjektiv">
-      🎨
-    </div>
-    <span>Adjektiv</span>
-  </div>
-
-  <div class="ios-app" @click="setCurrentMode('osd')">
-    <div class="ios-icon osd">
-      🇦🇹
-    </div>
-    <span>ÖSD</span>
-  </div>
-
-  <div class="ios-app" @click="setCurrentMode('praeposition')">
-  <div class="ios-icon praeposition">
-    🔗
-  </div>
-  <span>Präpositionen</span>
-</div>
-
-<div class="ios-app" @click="setCurrentMode('konnektoren')">
-  <div class="ios-icon konnektoren">
-    🔀
-  </div>
-  <span>Konnektoren</span>
-</div>
-
-</div>
-
-        <h2 class="section-title section-title-spaced">
-          Saját irányítópult
-        </h2>
-
-        <div class="dashboard-widgets-auto">
-          <article class="widget-card activity-card">
-  <div class="activity-header">
-    <div>
-      <h3>🔥 Aktivitás</h3>
-      <p class="activity-subtitle">Tanulási lendület</p>
-    </div>
-
-    <div class="streak-badge">
-      <span class="fire-icon">🔥</span>
-      <strong>{{ activityStats.streak }}</strong>
-      <small>nap</small>
-    </div>
-  </div>
-
-  <div class="activity-stats-row">
-    <div>
-      <strong>{{ activityStats.today }}</strong>
-      <span>ma</span>
-    </div>
-
-    <div>
-      <strong>{{ activityStats.activeDays }}</strong>
-      <span>aktív nap</span>
-    </div>
-
-    <div>
-      <strong>{{ activityStats.last30Days }}</strong>
-      <span>30 nap</span>
-    </div>
-  </div>
-
-  <div class="activity-grid">
-    <div
-      v-for="day in activityCalendar"
-      :key="day.date"
-      class="activity-dot"
-      :class="day.level"
-      :title="`${day.date}: ${day.count} feladat`"
-    ></div>
-  </div>
-</article>
-          <article class="widget-card">
-            <h3>👤 Profil</h3>
-
-            <div class="profile-info">
-              <div class="profile-avatar">🎓</div>
-
-              <div>
-                <p>
-                  <strong>Név:</strong>
-                  <br />
-                  {{ authFullName || 'Nincs megadva' }}
-                </p>
-
-                <p>
-                  <strong>E-mail:</strong>
-                  <br />
-                  {{ userSession?.email || 'Nincs adat' }}
-                </p>
-              </div>
-            </div>
-          </article>
-
-          <article class="widget-card">
-            <h3>📊 Statisztikák</h3>
-
-            <div class="stat-row">
-              <span>Helyes válaszok:</span>
-              <strong>{{ stats.accuracy }}%</strong>
-            </div>
-
-            <div class="stat-row">
-              <span>Megoldott feladatok:</span>
-              <strong>{{ stats.totalDone }} db</strong>
-            </div>
-          </article>
-
-          <article class="widget-card">
-            <h3>🕒 Legutóbbi feladatok</h3>
-
-            <div v-if="recentExercises.length">
-              <div
-                v-for="task in recentExercises"
-                :key="task.id || task.created_at"
-                class="recent-task-row"
-              >
-                <span>{{ getTaskName(task.exercise_type) }}</span>
-                <strong>{{ task.score }} / {{ task.max_score }}</strong>
-              </div>
-            </div>
-
-            <p v-else class="empty-text">
-              Még nem oldottál meg feladatot.
-            </p>
-          </article>
-
-          <article class="widget-card">
-            <h3>📝 Gyors jegyzet</h3>
-
-            <textarea
-              v-model="newNoteText"
-              placeholder="Írd ide a jegyzeted..."
-              class="simple-textarea"
-            ></textarea>
-
-            <button
-              class="select-btn btn-save-note"
-              @click="saveNote"
-              :disabled="!newNoteText.trim()"
-            >
-              Mentés
-            </button>
-
-            <div v-if="savedNotes.length" class="mini-note-list">
-              <div
-                v-for="note in savedNotes.slice(0, 2)"
-                :key="note.id"
-                class="mini-note"
-              >
-                <small>{{ formatDate(note.created_at) }}</small>
-                <p>{{ note.content }}</p>
-              </div>
-            </div>
-          </article>
-
-          <article class="widget-card">
-            <h3>📂 Dokumentumok</h3>
-
-            <button
-              class="upload-btn"
-              @click="triggerFileInput"
-              :disabled="isUploading"
-            >
-              {{ isUploading ? 'Töltés... ⏳' : '+ Új fájl feltöltése' }}
-            </button>
-
-            <input
-              ref="fileInput"
-              type="file"
-              class="hidden-file-input"
-              accept=".pdf,.doc,.docx,.jpg,.png,.jpeg"
-              @change="uploadFile"
-            />
-
-            <ul v-if="userFiles.length" class="file-list">
-              <li v-for="file in userFiles.slice(0, 3)" :key="file.name">
-                📄 {{ file.name }}
-              </li>
-            </ul>
-
-            <p v-else class="empty-text">
-              Nincsenek feltöltött fájlok.
-            </p>
-          </article>
-        </div>
-      </section>
+        :user-session="userSession"
+        :auth-full-name="authFullName"
+        :xp-profile="xpProfile"
+        :activity-stats="activityStats"
+        :activity-calendar="activityCalendar"
+        :recent-exercises="recentExercises"
+        :user-files="userFiles"
+        :is-uploading="isUploading"
+        :new-note-text="newNoteText"
+        :saved-notes="savedNotes"
+        :last30-chart-points="last30ChartPoints"
+        :last30-average-percent="last30AveragePercent"
+        :last30-correct-answers="last30CorrectAnswers"
+        :last30-wrong-answers="last30WrongAnswers"
+        :recommended-practice="recommendedPractice"
+        :weak-topics="weakTopics"
+        :last30-trend="last30Trend"
+        @set-mode="setCurrentMode"
+        @open-story="openStoryLesson"
+        @upload-file="uploadFile"
+        @update:new-note-text="newNoteText = $event"
+        @save-note="saveNote"
+        @delete-note="deleteNote"
+        @select-note="selectedNote = $event"
+      />
 
       <!-- TANÁRI FELÜLET -->
-      <section v-else-if="userRole === 'teacher' && !currentMode" class="welcome-screen">
+      <section
+        v-else-if="userRole === 'teacher' && !currentMode"
+        class="welcome-screen"
+      >
         <TeacherDashboard />
       </section>
 
-      <!-- GYAKORLATOK -->
-<!-- GYAKORLATOK / APP AL-OLDALAK -->
-<section v-else class="practice-screen">
+      <!-- GYAKORLATOK / APP AL-OLDALAK -->
+      <!-- GYAKORLATOK / APP AL-OLDALAK -->
+      <PracticeScreen
+        v-else
+        :current-mode="currentMode"
+        :header-title="headerTitle"
+        :user-session="userSession"
+        :auth-full-name="authFullName"
+        :stats="stats"
+        :activity-stats="activityStats"
+        :xp-profile="xpProfile"
+        :activity-calendar="activityCalendar"
+        :recent-exercises="recentExercises"
+        :user-files="userFiles"
+        :is-uploading="isUploading"
+        :new-note-text="newNoteText"
+        :saved-notes="savedNotes"
+        :last30-chart-points="last30ChartPoints"
+        :last30-average-percent="last30AveragePercent"
+        :last30-correct-answers="last30CorrectAnswers"
+        :last30-wrong-answers="last30WrongAnswers"
+        :recommended-practice="recommendedPractice"
+        :weak-topics="weakTopics"
+        :last30-trend="last30Trend"
+        :initial-story-id="selectedStoryId"
+        @go-dashboard="goToDashboard"
+        @exercise-finished="handleExerciseFinished"
+        @logout="handleLogout"
+        @set-mode="setCurrentMode"
+        @upload-file="uploadFile"
+        @update:new-note-text="newNoteText = $event"
+        @save-note="saveNote"
+        @delete-note="deleteNote"
+        @select-note="selectedNote = $event"
+      />
 
-  <!-- csak mobilon -->
-  <header class="practice-nav app-header mobile-practice-nav">
-    <button class="practice-back-btn" @click="goToDashboard"></button>
-
-    <div class="practice-title">
-      {{ headerTitle }}
-    </div>
-
-    <div class="practice-nav-spacer"></div>
-  </header>
-
-  <VerbPractice v-if="currentMode === 'perfekt'" />
-  <NomenVerbPractice v-if="currentMode === 'nomen-verb'" />
-  <AdjektivPractice v-if="currentMode === 'adjektiv'" />
-  <OsdPractice v-if="currentMode === 'osd'" />
-  <PraepositionPractice v-if="currentMode === 'praeposition'" />
-  <KonnektorenPractice v-if="currentMode === 'konnektoren'" />
-
-  <ProfileView
-    v-if="currentMode==='profile'"
-    :userSession="userSession"
-    :authFullName="authFullName"
-    :stats="stats"
-    :activityStats="activityStats"
-    @logout="handleLogout"
-  />
-</section>
+      <NoteModal :note="selectedNote" @close="selectedNote = null" />
     </main>
-   <nav v-if="userSession" class="mobile-bottom-nav">
-  <button
-    class="mobile-nav-item"
-    @click="goToDashboard"
-  >
-    <span class="mobile-nav-icon">🏠</span>
-    <span>Főmenü</span>
-  </button>
 
-  <button class="mobile-nav-item">
-    <span class="mobile-nav-icon">💬</span>
-    <span>Üzenetek</span>
-  </button>
+    <MobileBottomNav
+      v-if="userSession"
+      :unread-notifications="unreadNotifications"
+      :unread-messages="unreadMessages"
+      @go-dashboard="goToDashboard"
+      @open-messages="openMessagesPanel"
+      @toggle-notifications="toggleNotificationsMenu"
+      @open-profile="setCurrentMode('profile')"
+      @logout="handleLogout"
+    />
 
-  <button class="mobile-nav-item">
-    <span class="mobile-nav-icon">🔔</span>
-    <span>Értesítés</span>
-  </button>
+    <NotificationsDropdown
+      v-if="userSession && showNotificationsMenu"
+      :notifications="notifications"
+      :unread-notifications="unreadNotifications"
+      @mark-all-read="markAllNotificationsRead"
+    />
 
-<button
-  class="mobile-nav-item"
-  @click="setCurrentMode('profile')"
->
-  <span class="mobile-nav-icon">👤</span>
-  <span>Profil</span>
-</button>
-
-  <button
-    class="mobile-nav-item logout-item"
-    @click="handleLogout"
-  >
-    <span class="mobile-nav-icon">🚪</span>
-    <span>Kilépés</span>
-  </button>
-</nav>
+    <MessagesPanel
+      v-if="userSession && showMessagesPanel"
+      :user-session="userSession"
+      :user-role="userRole"
+      @close="showMessagesPanel = false"
+      @messages-read="fetchUnreadMessages"
+    />
   </div>
 </template>
 
 <script>
-import ProfileView from "./components/ProfileView.vue";
-import KonnektorenPractice from "./components/KonnektorenPractice.vue";
-import PraepositionPractice from "./components/PraepositionPractice.vue";
-import VerbPractice from "./components/VerbPractice.vue";
-import NomenVerbPractice from "./components/NomenVerbPractice.vue";
-import AdjektivPractice from "./components/AdjektivPractice.vue";
-import OsdPractice from "./components/OsdPractice.vue";
+import AppHeader from "./components/AppHeader.vue";
+import MobileBottomNav from "./components/MobileBottomNav.vue";
+import AuthScreen from "./components/auth/AuthScreen.vue";
+import StudentDashboard from "./components/student/StudentDashboard.vue";
+import NoteModal from "./components/student/NoteModal.vue";
+import PracticeScreen from "./components/PracticeScreen.vue";
 import TeacherDashboard from "./components/TeacherDashboard.vue";
-import { supabase } from "./supabase";
+import NotificationsDropdown from "./components/NotificationsDropdown.vue";
+import MessagesPanel from "./components/MessagesPanel.vue";
+import { getTaskName } from "./utils/formatters";
+import {
+  fetchUserNotifications,
+  markUserNotificationsRead,
+} from "./services/notificationService";
+import { fetchUnreadMessageCount } from "./services/messageService";
+import {
+  fetchUserNotes,
+  createUserNote,
+  deleteUserNote,
+} from "./services/notesService";
+import { uploadUserFile, fetchUserFiles } from "./services/filesService";
+import { fetchUserProfile, fetchUserXpProfile } from "./services/profileService";
+import {
+  saveUserDailyActivity,
+  fetchUserActivityDays,
+} from "./services/activityService";
+import { fetchUserExerciseResults } from "./services/statisticsService";
+import {
+  loginWithPassword,
+  registerUser,
+  logoutUser,
+  getCurrentSession,
+  listenToAuthStateChange,
+} from "./services/authService";
+import {
+  getLast30ChartPoints,
+  getCorrectAnswers,
+  getWrongAnswers,
+  getAveragePercent,
+  calculateStatsFromResults,
+  getLast30Trend,
+  getRecommendedPractice,
+  getWeakTopics,
+} from "./utils/statistics";
+import { getDateKey, calculateLoginActivity } from "./utils/activity";
 
 export default {
   name: "App",
 
   components: {
-    ProfileView,
-    VerbPractice,
-    NomenVerbPractice,
-    AdjektivPractice,
-    OsdPractice,
+    AppHeader,
+    MobileBottomNav,
+    AuthScreen,
+    StudentDashboard,
+    NoteModal,
+    PracticeScreen,
     TeacherDashboard,
-    PraepositionPractice,
-    KonnektorenPractice,
+    NotificationsDropdown,
+    MessagesPanel,
   },
 
   data() {
     return {
+      selectedNote: null,
       windowWidth: window.innerWidth,
       isLoggingIn: false,
       isLoggingOut: false,
+      isAuthReady: false,
+      currentSessionUserId: null,
+
       userSession: null,
       userRole: null,
+
       showLoginForm: null,
       isLoginMode: true,
+
+      authListener: null,
       authEmail: "",
       authPassword: "",
       authFullName: "",
+
       currentMode: null,
+      selectedStoryId: null,
+
       newNoteText: "",
       savedNotes: [],
+
       isUploading: false,
       userFiles: [],
+
       recentExercises: [],
+
       stats: {
         accuracy: 0,
         totalDone: 0,
       },
+
       activityStats: {
         streak: 0,
         today: 0,
         activeDays: 0,
         last30Days: 0,
       },
+
+      xpProfile: {
+        xp: 0,
+        level: 1,
+        today_xp: 0,
+        coins: 0,
+      },
+
+      notifications: [],
+      unreadNotifications: 0,
+      showNotificationsMenu: false,
+      unreadMessages: 0,
+      showMessagesPanel: false,
+
       activityCalendar: [],
     };
   },
 
   computed: {
+    last30ChartPoints() {
+      return getLast30ChartPoints(this.recentExercises);
+    },
+
+    last30CorrectAnswers() {
+      return getCorrectAnswers(this.recentExercises);
+    },
+
+    last30WrongAnswers() {
+      return getWrongAnswers(this.recentExercises);
+    },
+
+    last30AveragePercent() {
+      return getAveragePercent(this.recentExercises);
+    },
+
+    recommendedPractice() {
+      return getRecommendedPractice(this.recentExercises);
+    },
+
+    weakTopics() {
+      return getWeakTopics(this.recentExercises);
+    },
+
+    last30Trend() {
+      return getLast30Trend(this.recentExercises);
+    },
+
     headerTitle() {
       if (this.currentMode) return this.getTaskName(this.currentMode);
 
       if (this.userSession) {
-        return this.userRole === "teacher" ? "Tanári felület" : "Diák dashboard";
+        return this.userRole === "teacher"
+          ? "Tanári felület"
+          : "Diák dashboard";
       }
 
       return "Deutsch Übungen";
@@ -509,56 +316,113 @@ export default {
     },
   },
 
-async mounted() {
-  this.updateWindowSize();
+  async mounted() {
+    this.updateWindowSize();
 
-  window.addEventListener(
-    "resize",
-    this.updateWindowSize
-  );
+    window.addEventListener("resize", this.updateWindowSize);
 
-  const {
-    data: { session },
-  } = await supabase.auth.getSession();
+    try {
+      const session = await getCurrentSession();
 
-  if (session) {
-    await this.setupUserSession(session);
-  }
-
-  supabase.auth.onAuthStateChange(
-    async (_event, session) => {
       if (session) {
         await this.setupUserSession(session);
       } else {
         this.clearUserSession();
       }
+    } catch (error) {
+      console.error("Auth inicializálási hiba:", error.message);
+      this.clearUserSession();
+    } finally {
+      this.isAuthReady = true;
     }
-  );
-},
 
-beforeUnmount() {
-  window.removeEventListener(
-    "resize",
-    this.updateWindowSize
-  );
-},
+    this.authListener = listenToAuthStateChange((event, session) => {
+      console.log("AUTH:", event);
+      this.handleAuthStateChange(event, session);
+    });
+  },
+
+  beforeUnmount() {
+    window.removeEventListener("resize", this.updateWindowSize);
+    this.authListener?.data?.subscription?.unsubscribe();
+  },
 
   methods: {
+    async handleAuthStateChange(event, session) {
+      if (
+        ["SIGNED_IN", "TOKEN_REFRESHED", "USER_UPDATED"].includes(event) &&
+        session
+      ) {
+        await this.setupUserSession(session);
+      }
+
+      if (event === "SIGNED_OUT") {
+        this.clearUserSession();
+      }
+
+      this.isAuthReady = true;
+    },
+
     updateWindowSize() {
-  this.windowWidth = window.innerWidth;
-},
+      this.windowWidth = window.innerWidth;
+    },
+
+    scrollToPageTop() {
+      this.$nextTick(() => {
+        window.scrollTo({
+          top: 0,
+          left: 0,
+          behavior: "auto",
+        });
+
+        document.documentElement.scrollTop = 0;
+        document.body.scrollTop = 0;
+      });
+    },
+
     setCurrentMode(mode) {
       this.currentMode = mode;
+      this.selectedStoryId = null;
+      this.showNotificationsMenu = false;
+      this.showMessagesPanel = false;
+      this.scrollToPageTop();
+    },
+
+    openStoryLesson(storyId) {
+      this.selectedStoryId = storyId;
+      this.currentMode = "story-reading";
+      this.showNotificationsMenu = false;
+      this.showMessagesPanel = false;
+      this.scrollToPageTop();
     },
 
     goToDashboard() {
       if (!this.userSession) return;
 
       this.currentMode = null;
+      this.selectedStoryId = null;
+      this.showNotificationsMenu = false;
+      this.showMessagesPanel = false;
+      this.scrollToPageTop();
 
       if (this.userRole === "student") {
         this.fetchStudentDashboardData();
       }
+    },
+
+    async fetchXpProfile() {
+      if (!this.userSession?.id) return;
+
+      try {
+        this.xpProfile = await fetchUserXpProfile(this.userSession.id);
+      } catch (error) {
+        console.error("XP profil betöltési hiba:", error.message);
+      }
+    },
+
+    async handleExerciseFinished() {
+      this.activityStats.today = Math.min(this.activityStats.today + 1, 10);
+      await this.fetchStatistics();
     },
 
     resetAuthForm() {
@@ -586,76 +450,57 @@ beforeUnmount() {
     },
 
     async handleLogin() {
-  if (this.isLoggingIn) return;
+      if (this.isLoggingIn) return;
 
-  if (!this.authEmail || !this.authPassword) {
-    alert("Kérlek, add meg az e-mail címedet és a jelszavadat!");
-    return;
-  }
+      if (!this.authEmail || !this.authPassword) {
+        alert("Kérlek, add meg az e-mail címedet és a jelszavadat!");
+        return;
+      }
 
-  this.isLoggingIn = true;
+      this.isLoggingIn = true;
 
-  try {
-    const { data, error } = await supabase.auth.signInWithPassword({
-  email: this.authEmail,
-  password: this.authPassword,
-});
+      try {
+        const session = await loginWithPassword(
+          this.authEmail,
+          this.authPassword,
+        );
 
-if (error) {
-  alert("Hiba a belépésnél: " + error.message);
-  return;
-}
-
-if (data?.session) {
-  await this.setupUserSession(data.session);
-}
-  } catch (error) {
-    alert("Váratlan hiba a belépésnél: " + error.message);
-  } finally {
-    this.isLoggingIn = false;
-  }
-},
+        if (session) {
+          await this.setupUserSession(session);
+        }
+      } catch (error) {
+        alert("Hiba a belépésnél: " + error.message);
+      } finally {
+        this.isLoggingIn = false;
+      }
+    },
 
     async handleRegister() {
-      if (!this.authEmail || !this.authFullName || this.authPassword.length < 6) {
-        alert("Töltsd ki az összes mezőt! A jelszónak minimum 6 karakternek kell lennie.");
+      if (
+        !this.authEmail ||
+        !this.authFullName ||
+        this.authPassword.length < 6
+      ) {
+        alert(
+          "Töltsd ki az összes mezőt! A jelszónak minimum 6 karakternek kell lennie.",
+        );
         return;
       }
 
-      const { data, error } = await supabase.auth.signUp({
-        email: this.authEmail,
-        password: this.authPassword,
-        options: {
-          data: {
-            role: this.showLoginForm,
-            full_name: this.authFullName,
-          },
-        },
-      });
+      try {
+        const user = await registerUser({
+          email: this.authEmail,
+          password: this.authPassword,
+          role: this.showLoginForm,
+          fullName: this.authFullName,
+        });
 
-      if (error) {
-        alert("Hiba a regisztrációnál: " + error.message);
-        return;
-      }
-
-      if (data.user) {
-        const { error: profileError } = await supabase.from("profiles").insert([
-          {
-            id: data.user.id,
-            email: this.authEmail,
-            role: this.showLoginForm,
-            full_name: this.authFullName,
-          },
-        ]);
-
-        if (profileError) {
-          alert("A fiók létrejött, de a profil mentése nem sikerült: " + profileError.message);
-          return;
+        if (user) {
+          await this.saveDailyActivity(user.id);
+          alert("Sikeres regisztráció!");
         }
-
-        await this.saveDailyActivity(data.user.id);
-
-        alert("Sikeres regisztráció!");
+      } catch (error) {
+        alert("Hiba a regisztrációnál: " + error.message);
       }
     },
 
@@ -665,13 +510,7 @@ if (data?.session) {
       this.isLoggingOut = true;
 
       try {
-        const { error } = await supabase.auth.signOut({
-          scope: "local",
-        });
-
-        if (error) {
-          console.error("Kilépési hiba:", error.message);
-        }
+        await logoutUser();
       } catch (error) {
         console.error("Kilépési hiba:", error.message);
       } finally {
@@ -681,12 +520,30 @@ if (data?.session) {
     },
 
     async setupUserSession(session) {
+      if (!session?.user?.id) return;
+
+      if (this.currentSessionUserId === session.user.id && this.userSession) {
+        return;
+      }
+
       this.userSession = session.user;
-      this.userRole = session.user.user_metadata?.role || "student";
-      this.authFullName = session.user.user_metadata?.full_name || "";
       this.showLoginForm = null;
+      this.currentSessionUserId = session.user.id;
+
+      let profile = null;
+
+      try {
+        profile = await fetchUserProfile(session.user.id);
+      } catch (error) {
+        console.error("Profil betöltési hiba:", error.message);
+      }
+
+      this.userRole = profile?.role || session.user.user_metadata?.role || "student";
+      this.authFullName =
+        profile?.full_name || session.user.user_metadata?.full_name || "";
 
       await this.saveDailyActivity(session.user.id);
+      await this.fetchUnreadMessages();
 
       if (this.userRole === "student") {
         await this.fetchStudentDashboardData();
@@ -696,28 +553,53 @@ if (data?.session) {
     clearUserSession() {
       this.isLoggingIn = false;
       this.isLoggingOut = false;
+
       this.userSession = null;
       this.userRole = null;
+      this.currentSessionUserId = null;
+
       this.showLoginForm = null;
       this.isLoginMode = true;
+
       this.authEmail = "";
       this.authPassword = "";
       this.authFullName = "";
+
       this.currentMode = null;
+      this.selectedNote = null;
+      this.selectedStoryId = null;
+
       this.newNoteText = "";
       this.savedNotes = [];
+
       this.userFiles = [];
       this.recentExercises = [];
+
+      this.notifications = [];
+      this.unreadNotifications = 0;
+      this.showNotificationsMenu = false;
+      this.unreadMessages = 0;
+      this.showMessagesPanel = false;
+
       this.stats = {
         accuracy: 0,
         totalDone: 0,
       };
+
       this.activityStats = {
         streak: 0,
         today: 0,
         activeDays: 0,
         last30Days: 0,
       };
+
+      this.xpProfile = {
+        xp: 0,
+        level: 1,
+        today_xp: 0,
+        coins: 0,
+      };
+
       this.activityCalendar = [];
     },
 
@@ -727,52 +609,111 @@ if (data?.session) {
         this.fetchFiles(),
         this.fetchStatistics(),
         this.fetchActivityStats(),
+        this.fetchNotifications(),
+        this.fetchXpProfile(),
       ]);
+    },
+
+    async fetchNotifications() {
+      if (!this.userSession?.id) return;
+
+      try {
+        this.notifications = await fetchUserNotifications(this.userSession.id);
+        this.unreadNotifications = this.notifications.filter(
+          (notification) => !notification.is_read,
+        ).length;
+      } catch (error) {
+        console.error("Értesítések betöltési hiba:", error.message);
+      }
+    },
+
+    toggleNotificationsMenu() {
+      this.showNotificationsMenu = !this.showNotificationsMenu;
+
+      if (this.showNotificationsMenu) {
+        this.showMessagesPanel = false;
+      }
+    },
+
+    openMessagesPanel() {
+      this.showMessagesPanel = true;
+      this.showNotificationsMenu = false;
+    },
+
+    async fetchUnreadMessages() {
+      if (!this.userSession?.id) return;
+
+      try {
+        this.unreadMessages = await fetchUnreadMessageCount(this.userSession.id);
+      } catch (error) {
+        console.error("Olvasatlan üzenetek betöltési hiba:", error.message);
+      }
+    },
+
+    async markAllNotificationsRead() {
+      if (!this.userSession?.id) return;
+
+      try {
+        await markUserNotificationsRead(this.userSession.id);
+
+        this.notifications = this.notifications.map((notification) => ({
+          ...notification,
+          is_read: true,
+        }));
+
+        this.unreadNotifications = 0;
+      } catch (error) {
+        console.error("Értesítések olvasottra állítási hiba:", error.message);
+      }
     },
 
     async fetchNotes() {
       if (!this.userSession?.id) return;
 
-      const { data, error } = await supabase
-        .from("user_notes")
-        .select("*")
-        .eq("user_id", this.userSession.id)
-        .order("created_at", { ascending: false });
-
-      if (error) {
+      try {
+        this.savedNotes = await fetchUserNotes(this.userSession.id);
+      } catch (error) {
         console.error("Jegyzetek betöltési hiba:", error.message);
-        return;
       }
-
-      this.savedNotes = data || [];
     },
 
     async saveNote() {
       if (!this.userSession?.id || !this.newNoteText.trim()) return;
 
-      const { data, error } = await supabase
-        .from("user_notes")
-        .insert([
-          {
-            user_id: this.userSession.id,
-            content: this.newNoteText.trim(),
-          },
-        ])
-        .select();
+      try {
+        const note = await createUserNote(
+          this.userSession.id,
+          this.newNoteText,
+        );
 
-      if (error) {
+        if (note) {
+          this.savedNotes.unshift(note);
+          this.newNoteText = "";
+        }
+      } catch (error) {
         alert("Hiba a mentésnél: " + error.message);
-        return;
-      }
-
-      if (data?.[0]) {
-        this.savedNotes.unshift(data[0]);
-        this.newNoteText = "";
       }
     },
 
-    triggerFileInput() {
-      this.$refs.fileInput?.click();
+    async deleteNote(noteId) {
+      if (!noteId || !this.userSession?.id) return;
+
+      const confirmDelete = confirm(
+        "Biztosan törölni szeretnéd ezt a jegyzetet?",
+      );
+
+      if (!confirmDelete) return;
+
+      try {
+        await deleteUserNote(this.userSession.id, noteId);
+        this.savedNotes = this.savedNotes.filter((note) => note.id !== noteId);
+
+        if (this.selectedNote?.id === noteId) {
+          this.selectedNote = null;
+        }
+      } catch (error) {
+        alert("Hiba a törlésnél: " + error.message);
+      }
     },
 
     async uploadFile(event) {
@@ -782,229 +723,111 @@ if (data?.session) {
 
       this.isUploading = true;
 
-      const safeFileName = file.name.replace(/[^a-zA-Z0-9._-]/g, "_");
-      const filePath = `${this.userSession.id}/${Date.now()}-${safeFileName}`;
-
-      const { error } = await supabase.storage
-        .from("homeworks")
-        .upload(filePath, file);
-
-      if (error) {
-        alert("Feltöltési hiba: " + error.message);
-      } else {
+      try {
+        await uploadUserFile(this.userSession.id, file);
         await this.fetchFiles();
+      } catch (error) {
+        alert("Feltöltési hiba: " + error.message);
+      } finally {
+        this.isUploading = false;
+        event.target.value = "";
       }
-
-      this.isUploading = false;
-      event.target.value = "";
     },
 
     async fetchFiles() {
       if (!this.userSession?.id) return;
 
-      const { data, error } = await supabase.storage
-        .from("homeworks")
-        .list(`${this.userSession.id}/`, {
-          limit: 20,
-          sortBy: {
-            column: "created_at",
-            order: "desc",
-          },
-        });
-
-      if (error) {
+      try {
+        this.userFiles = await fetchUserFiles(this.userSession.id);
+      } catch (error) {
         console.error("Fájlok betöltési hiba:", error.message);
-        return;
       }
-
-      this.userFiles = data
-        ? data.filter((file) => file.name !== ".emptyFolderPlaceholder")
-        : [];
     },
 
     async fetchStatistics() {
       if (!this.userSession?.id) return;
 
-      const { data, error } = await supabase
-        .from("exercise_results")
-        .select("*")
-        .eq("user_id", this.userSession.id)
-        .order("created_at", { ascending: false });
+      try {
+        const results = await fetchUserExerciseResults(this.userSession.id);
 
-      if (error) {
+        this.updateTodayExerciseCount(results);
+
+        const { recentExercises, stats } = calculateStatsFromResults(results);
+
+        this.recentExercises = recentExercises;
+        this.stats = stats;
+      } catch (error) {
         console.error("Statisztika betöltési hiba:", error.message);
-        return;
       }
+    },
 
-      const results = data || [];
+    updateTodayExerciseCount(results) {
+      const todayKey = this.getDateKey(new Date());
 
-      if (!results.length) {
-        this.recentExercises = [];
-        this.stats = {
-          accuracy: 0,
-          totalDone: 0,
-        };
-        return;
-      }
+      const todayExercises = results.filter((item) => {
+        if (!item.created_at) return false;
 
-      this.recentExercises = results.slice(0, 3);
-      this.stats.totalDone = results.length;
-
-      let totalScore = 0;
-      let totalMaxScore = 0;
-
-      results.forEach((item) => {
-        totalScore += Number(item.score) || 0;
-        totalMaxScore += Number(item.max_score) || 0;
+        return this.getDateKey(new Date(item.created_at)) === todayKey;
       });
 
-      this.stats.accuracy = totalMaxScore
-        ? Math.round((totalScore / totalMaxScore) * 100)
-        : 0;
+      this.activityStats.today = todayExercises.length;
     },
 
     async saveDailyActivity(userId) {
-  if (!userId) return;
+      if (!userId) return;
 
-  const today = new Date().toISOString().split("T")[0];
+      const today = this.getDateKey(new Date());
 
-  const { error } = await supabase
-    .from("user_daily_activity")
-    .upsert(
-      {
-        user_id: userId,
-        activity_date: today,
-      },
-      {
-        onConflict: "user_id,activity_date",
+      try {
+        await saveUserDailyActivity(userId, today);
+      } catch (error) {
+        console.error("Napi aktivitás mentési hiba:", error.message);
       }
-    );
-
-  if (error) {
-    console.error("Napi aktivitás mentési hiba:", error.message);
-  }
-},
+    },
 
     async fetchActivityStats() {
       if (!this.userSession?.id) return;
 
-      const { data, error } = await supabase
-        .from("user_daily_activity")
-        .select("*")
-        .eq("user_id", this.userSession.id)
-        .order("activity_date", { ascending: false });
-
-      if (error) {
+      try {
+        const days = await fetchUserActivityDays(this.userSession.id);
+        this.calculateLoginActivityStats(days);
+      } catch (error) {
         console.error("Aktivitás betöltési hiba:", error.message);
-        return;
       }
-
-      this.calculateLoginActivityStats(data || []);
     },
 
     calculateLoginActivityStats(days) {
-      const today = new Date();
-const todayKey = new Date().toISOString().split("T")[0];
-      const activeDates = new Set(days.map((item) => item.activity_date));
+      const { activityCalendar, activityStats } = calculateLoginActivity(days);
 
-      const last42Days = [];
-      const last30Days = [];
+      this.activityCalendar = activityCalendar;
 
-      for (let i = 41; i >= 0; i -= 1) {
-        const date = new Date(today);
-        date.setDate(today.getDate() - i);
-
-        const key = this.getDateKey(date);
-        const active = activeDates.has(key);
-
-        last42Days.push({
-          date: key,
-          count: active ? 1 : 0,
-          level: active ? "level-3" : "level-0",
-        });
-
-        if (i < 30) {
-          last30Days.push({
-            date: key,
-            active,
-          });
-        }
-      }
-
-      let streak = 0;
-
-      for (let i = 0; i < 365; i += 1) {
-        const date = new Date(today);
-        date.setDate(today.getDate() - i);
-
-        const key = this.getDateKey(date);
-
-        if (activeDates.has(key)) {
-          streak += 1;
-        } else {
-          break;
-        }
-      }
-
-      this.activityCalendar = last42Days;
-
-this.activityStats = {
-  streak: Math.max(streak, activeDates.has(todayKey) ? 1 : 0),
-  today: activeDates.has(todayKey) ? 1 : 0,
-  activeDays: activeDates.size,
-  last30Days: last30Days.filter((day) => day.active).length,
-};
+      this.activityStats = {
+        ...this.activityStats,
+        ...activityStats,
+      };
     },
-
-    getActivityLevel(count) {
-      if (count === 0) return "level-0";
-      if (count === 1) return "level-1";
-      if (count <= 3) return "level-2";
-      if (count <= 6) return "level-3";
-      return "level-4";
-    },
-
-    getDateKey(date) {
-      const year = date.getFullYear();
-      const month = String(date.getMonth() + 1).padStart(2, "0");
-      const day = String(date.getDate()).padStart(2, "0");
-
-      return `${year}-${month}-${day}`;
-    },
-
-    formatDate(dateString) {
-      if (!dateString) return "";
-
-      return new Date(dateString).toLocaleDateString("hu-HU", {
-        year: "numeric",
-        month: "short",
-        day: "numeric",
-        hour: "2-digit",
-        minute: "2-digit",
-      });
-    },
-
-    getTaskName(type) {
-const names = {
-  perfekt: "Perfekt Gyakorló",
-  "nomen-verb": "Nomen-Verb",
-  adjektiv: "Adjektivdekl.",
-  osd: "ÖSD Gyakorló",
-  praeposition: "Präpositionen",
-  konnektoren: "Konnektoren",
-  profile: "Profil",
-};
-
-      return names[type] || "Gyakorlat";
-    },
+    getDateKey,
+    getTaskName,
   },
 };
 </script>
 
 <style>
 @import "./assets/styles/app.css";
+@import "./assets/styles/header.css";
+@import "./assets/styles/auth.css";
+@import "./assets/styles/notifications.css";
+@import "./assets/styles/messages.css";
+@import "./assets/styles/note-modal.css";
 @import "./assets/styles/dashboard.css";
+@import "./assets/styles/student-widgets.css";
+@import "./assets/styles/activity-card.css";
+@import "./assets/styles/daily-goal.css";
+@import "./assets/styles/dashboard-stats.css";
 @import "./assets/styles/practice.css";
+@import "./assets/styles/practice-layout.css";
+@import "./assets/styles/grammar-guide.css";
 @import "./assets/styles/mobile-nav.css";
 @import "./assets/styles/profile.css";
+@import "./assets/styles/teacher-dashboard.css";
 </style>

@@ -42,6 +42,7 @@
   }
 
   .mobile-nav-item {
+    position: relative;
     border: 0;
     background: none;
 

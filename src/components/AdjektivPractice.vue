@@ -13,7 +13,11 @@
     <h1>Adjektivdeklination</h1>
 
     <transition name="fade">
-      <div v-if="showTable" class="modal-overlay" @click.self="showTable = false">
+      <div
+        v-if="showTable"
+        class="modal-overlay"
+        @click.self="showTable = false"
+      >
         <div class="modal-content">
           <button class="close-modal" @click="showTable = false">×</button>
 
@@ -22,29 +26,119 @@
           <div class="table-scroll">
             <h3>Schwache Deklination</h3>
             <table>
-              <tr><th>Kasus</th><th>Maskulin</th><th>Feminin</th><th>Neutral</th><th>Plural</th></tr>
-              <tr><td>Nom.</td><td>-e</td><td>-e</td><td>-e</td><td>-en</td></tr>
-              <tr><td>Akk.</td><td>-en</td><td>-e</td><td>-e</td><td>-en</td></tr>
-              <tr><td>Dat.</td><td>-en</td><td>-en</td><td>-en</td><td>-en</td></tr>
-              <tr><td>Gen.</td><td>-en</td><td>-en</td><td>-en</td><td>-en</td></tr>
+              <tr>
+                <th>Kasus</th>
+                <th>Maskulin</th>
+                <th>Feminin</th>
+                <th>Neutral</th>
+                <th>Plural</th>
+              </tr>
+              <tr>
+                <td>Nom.</td>
+                <td>-e</td>
+                <td>-e</td>
+                <td>-e</td>
+                <td>-en</td>
+              </tr>
+              <tr>
+                <td>Akk.</td>
+                <td>-en</td>
+                <td>-e</td>
+                <td>-e</td>
+                <td>-en</td>
+              </tr>
+              <tr>
+                <td>Dat.</td>
+                <td>-en</td>
+                <td>-en</td>
+                <td>-en</td>
+                <td>-en</td>
+              </tr>
+              <tr>
+                <td>Gen.</td>
+                <td>-en</td>
+                <td>-en</td>
+                <td>-en</td>
+                <td>-en</td>
+              </tr>
             </table>
 
             <h3>Gemischte Deklination</h3>
             <table>
-              <tr><th>Kasus</th><th>Maskulin</th><th>Feminin</th><th>Neutral</th><th>Plural</th></tr>
-              <tr><td>Nom.</td><td>-er</td><td>-e</td><td>-es</td><td>-en</td></tr>
-              <tr><td>Akk.</td><td>-en</td><td>-e</td><td>-es</td><td>-en</td></tr>
-              <tr><td>Dat.</td><td>-en</td><td>-en</td><td>-en</td><td>-en</td></tr>
-              <tr><td>Gen.</td><td>-en</td><td>-en</td><td>-en</td><td>-en</td></tr>
+              <tr>
+                <th>Kasus</th>
+                <th>Maskulin</th>
+                <th>Feminin</th>
+                <th>Neutral</th>
+                <th>Plural</th>
+              </tr>
+              <tr>
+                <td>Nom.</td>
+                <td>-er</td>
+                <td>-e</td>
+                <td>-es</td>
+                <td>-en</td>
+              </tr>
+              <tr>
+                <td>Akk.</td>
+                <td>-en</td>
+                <td>-e</td>
+                <td>-es</td>
+                <td>-en</td>
+              </tr>
+              <tr>
+                <td>Dat.</td>
+                <td>-en</td>
+                <td>-en</td>
+                <td>-en</td>
+                <td>-en</td>
+              </tr>
+              <tr>
+                <td>Gen.</td>
+                <td>-en</td>
+                <td>-en</td>
+                <td>-en</td>
+                <td>-en</td>
+              </tr>
             </table>
 
             <h3>Starke Deklination</h3>
             <table>
-              <tr><th>Kasus</th><th>Maskulin</th><th>Feminin</th><th>Neutral</th><th>Plural</th></tr>
-              <tr><td>Nom.</td><td>-er</td><td>-e</td><td>-es</td><td>-e</td></tr>
-              <tr><td>Akk.</td><td>-en</td><td>-e</td><td>-es</td><td>-e</td></tr>
-              <tr><td>Dat.</td><td>-em</td><td>-er</td><td>-em</td><td>-en</td></tr>
-              <tr><td>Gen.</td><td>-en</td><td>-er</td><td>-en</td><td>-er</td></tr>
+              <tr>
+                <th>Kasus</th>
+                <th>Maskulin</th>
+                <th>Feminin</th>
+                <th>Neutral</th>
+                <th>Plural</th>
+              </tr>
+              <tr>
+                <td>Nom.</td>
+                <td>-er</td>
+                <td>-e</td>
+                <td>-es</td>
+                <td>-e</td>
+              </tr>
+              <tr>
+                <td>Akk.</td>
+                <td>-en</td>
+                <td>-e</td>
+                <td>-es</td>
+                <td>-e</td>
+              </tr>
+              <tr>
+                <td>Dat.</td>
+                <td>-em</td>
+                <td>-er</td>
+                <td>-em</td>
+                <td>-en</td>
+              </tr>
+              <tr>
+                <td>Gen.</td>
+                <td>-en</td>
+                <td>-er</td>
+                <td>-en</td>
+                <td>-er</td>
+              </tr>
             </table>
           </div>
         </div>
@@ -55,104 +149,165 @@
       <p class="subtitle">Válaszd ki, melyik esetet szeretnéd gyakorolni:</p>
 
       <div class="case-grid ui-unit">
-        <button class="btn-case" @click="selectCase('Nominativ')">Nominativ</button>
-        <button class="btn-case" @click="selectCase('Akkusativ')">Akkusativ</button>
+        <button class="btn-case" @click="selectCase('Nominativ')">
+          Nominativ
+        </button>
+
+        <button class="btn-case" @click="selectCase('Akkusativ')">
+          Akkusativ
+        </button>
+
         <button class="btn-case" @click="selectCase('Dativ')">Dativ</button>
+
         <button class="btn-case" @click="selectCase('Genitiv')">Genitiv</button>
-        <button class="btn-case btn-mixed" @click="selectCase('Mixed')">Vegyes gyakorlat</button>
+
+        <button class="btn-case btn-mixed" @click="selectCase('Mixed')">
+          Vegyes gyakorlat
+        </button>
       </div>
     </div>
 
-    <div v-else-if="currentQuestion && !showStatistics" class="quiz-area">
-      <div class="case-indicator">
-        Mód: <strong>{{ selectedCase }}</strong>
-      </div>
+    <PracticeLayout
+      v-else
+      :progress="progressPercentage"
+      :current="displayIndex"
+      :total="totalQuestionsInRound"
+    >
+      <template #xp>
+        <div class="xp-card">
+          <div class="xp-top">
+            <div class="xp-mini-card">
+              <span>🔥</span>
 
-      <div class="progress-container ui-unit">
-        <div class="progress-bar">
-          <div class="progress-fill" :style="{ width: progressPercentage + '%' }"></div>
-        </div>
+              <div>
+                <strong>{{ xpProfile.streak_days }}</strong>
+                <small>napos széria</small>
+              </div>
+            </div>
 
-        <p class="progress-text">
-          Kérdés: <strong>{{ displayIndex }}</strong> / {{ totalQuestionsInRound }}
-        </p>
-      </div>
+            <div class="xp-mini-card">
+              <span>⭐</span>
 
-      <div class="question-card ui-unit">
-        <p class="display-meaning">{{ currentQuestion.context }} ...</p>
+              <div>
+                <strong>{{ xpProfile.xp }}</strong>
+                <small>XP</small>
+              </div>
+            </div>
+          </div>
 
-        <h2 class="adjektiv-display">
-          ({{ currentQuestion.elements.article }} /
-          {{ currentQuestion.elements.adj }} /
-          {{ currentQuestion.elements.noun }})
-        </h2>
-      </div>
+          <div class="level-area">
+            <div class="level-badge">Level {{ xpProfile.level }}</div>
 
-      <div class="input-wrapper ui-unit input-with-icon">
-        <input
-          ref="answerInput"
-          v-model="userAnswer"
-          type="text"
-          class="pill-input"
-          placeholder="Névelő + Melléknév + Főnév"
-          :disabled="isAnswered"
-          :class="{
-            'input-correct': isAnswered && isCorrect,
-            'input-wrong': isAnswered && isCorrect === false
-          }"
-          @keyup.enter="handleEnter"
-        />
+            <div class="xp-progress-info">
+              <span>{{ xpIntoCurrentLevel }}/100 XP</span>
+              <span>Következő szint</span>
+            </div>
 
-        <span v-if="isAnswered && isCorrect" class="input-icon correct-icon">✓</span>
-        <span v-if="isAnswered && isCorrect === false" class="input-icon wrong-icon">✗</span>
-      </div>
+            <div class="xp-progress">
+              <div
+                class="xp-progress-fill"
+                :style="{ width: xpProgressPercent + '%' }"
+              ></div>
+            </div>
 
-      <div class="button-group ui-unit">
-        <button
-          v-if="!isAnswered"
-          class="pill-button btn-green"
-          :disabled="!userAnswer.trim()"
-          @click="checkAnswer"
-        >
-          Ellenőrzés
-        </button>
-
-        <button
-          v-else
-          class="pill-button btn-blue"
-          @click="nextQuestion"
-        >
-          Következő
-        </button>
-      </div>
-
-      <transition name="fade">
-        <div
-          v-if="isAnswered"
-          :class="['feedback-box', isCorrect ? 'fb-correct' : 'fb-wrong']"
-        >
-          <p v-if="!isCorrect" class="wrong-highlight">
-            Helyes:
-            <span>{{ currentQuestion.correct }}</span>
-          </p>
-
-          <div class="rule-details">
-            <p><strong>Szabály:</strong> {{ currentQuestion.rule }}</p>
+            <p class="xp-hint">+5 XP következő helyes válaszért</p>
           </div>
         </div>
-      </transition>
-    </div>
+      </template>
+
+      <div v-if="currentQuestion && !showStatistics" class="quiz-area">
+        <div class="case-indicator">
+          Mód: <strong>{{ selectedCase }}</strong>
+        </div>
+
+        <div class="question-card ui-unit">
+          <p class="display-meaning">{{ currentQuestion.context }} ...</p>
+
+          <h2 class="adjektiv-display">
+            ({{ currentQuestion.elements.article }} /
+            {{ currentQuestion.elements.adj }} /
+            {{ currentQuestion.elements.noun }})
+          </h2>
+        </div>
+
+        <div class="input-wrapper ui-unit input-with-icon">
+          <input
+            ref="answerInput"
+            v-model="userAnswer"
+            type="text"
+            class="pill-input"
+            placeholder="Névelő + Melléknév + Főnév"
+            :disabled="isAnswered"
+            :class="{
+              'input-correct': isAnswered && isCorrect,
+              'input-wrong': isAnswered && isCorrect === false,
+            }"
+            @keyup.enter="handleEnter"
+          />
+
+          <span v-if="isAnswered && isCorrect" class="input-icon correct-icon">
+            ✓
+          </span>
+
+          <span
+            v-if="isAnswered && isCorrect === false"
+            class="input-icon wrong-icon"
+          >
+            ✗
+          </span>
+        </div>
+
+        <div class="button-group ui-unit">
+          <button
+            v-if="!isAnswered"
+            class="pill-button btn-green"
+            :disabled="!userAnswer.trim()"
+            @click="checkAnswer"
+          >
+            Ellenőrzés
+          </button>
+
+          <button v-else class="pill-button btn-blue" @click="nextQuestion">
+            Következő
+          </button>
+        </div>
+
+        <transition name="fade">
+          <div
+            v-if="isAnswered"
+            :class="['feedback-box', isCorrect ? 'fb-correct' : 'fb-wrong']"
+          >
+            <p v-if="!isCorrect" class="wrong-highlight">
+              Helyes:
+              <span>{{ currentQuestion.correct }}</span>
+            </p>
+
+            <div class="rule-details">
+              <p>
+                <strong>Szabály:</strong>
+                {{ currentQuestion.rule }}
+              </p>
+            </div>
+          </div>
+        </transition>
+      </div>
+    </PracticeLayout>
 
     <div v-if="showStatistics" class="ui-overlay">
       <div class="ui-modal">
-        <h2>{{ correctAnswersInRound === totalQuestionsInRound ? 'Tökéletes!' : 'Kör vége' }}</h2>
+        <h2>
+          {{
+            correctAnswersInRound === totalQuestionsInRound
+              ? "Tökéletes!"
+              : "Kör vége"
+          }}
+        </h2>
 
         <div class="stats-summary">
           <p>
             Helyes:
             <span class="correct-text">{{ correctAnswersInRound }}</span>
-            |
-            Helytelen:
+            | Helytelen:
             <span class="wrong-text">{{ incorrectAnswersInRound }}</span>
           </p>
         </div>
@@ -166,11 +321,19 @@
         </p>
 
         <button class="pill-button btn-dark" @click="startNextAction">
-          {{ incorrectAnswersInRound === 0 ? 'Következő kör' : 'Hibásak újragyakorlása' }}
+          {{
+            incorrectAnswersInRound === 0
+              ? "Következő kör"
+              : "Hibásak újragyakorlása"
+          }}
         </button>
 
         <button class="pill-button btn-blue" @click="resetToSelector">
           Másik eset választása
+        </button>
+
+        <button class="pill-button btn-green" @click="$emit('go-dashboard')">
+          Vissza a főmenübe
         </button>
       </div>
     </div>
@@ -179,10 +342,16 @@
 
 <script>
 import adjektivData from "../data/adjektiv.json";
+import { fetchActiveExerciseItems } from "../services/exerciseItemService";
 import { supabase } from "../supabase";
+import PracticeLayout from "./PracticeLayout.vue";
 
 export default {
   name: "AdjektivPractice",
+
+  components: {
+    PracticeLayout,
+  },
 
   data() {
     return {
@@ -202,6 +371,15 @@ export default {
       incorrectAnswersInRound: 0,
       totalQuestionsInRound: 5,
       defaultQuestionsPerRound: 5,
+
+      xpProfile: {
+        xp: 0,
+        level: 1,
+        streak_days: 0,
+        today_xp: 0,
+      },
+
+      xpPerLevel: 100,
     };
   },
 
@@ -209,15 +387,109 @@ export default {
     progressPercentage() {
       if (!this.totalQuestionsInRound) return 0;
 
-      return Math.round((this.roundHistory.length / this.totalQuestionsInRound) * 100);
+      return Math.round(
+        (this.roundHistory.length / this.totalQuestionsInRound) * 100,
+      );
     },
 
     displayIndex() {
       return Math.min(this.roundHistory.length + 1, this.totalQuestionsInRound);
     },
+
+    xpIntoCurrentLevel() {
+      return this.xpProfile.xp % this.xpPerLevel;
+    },
+
+    xpProgressPercent() {
+      return Math.min((this.xpIntoCurrentLevel / this.xpPerLevel) * 100, 100);
+    },
+  },
+
+  async created() {
+    await this.loadQuestions();
+    this.loadXpProfile();
   },
 
   methods: {
+    async loadQuestions() {
+      try {
+        const databaseQuestions = await fetchActiveExerciseItems("adjektiv");
+        this.allQuestions = [...adjektivData, ...databaseQuestions];
+      } catch (error) {
+        console.error("Adjektiv feladatok betöltési hiba:", error.message);
+        this.allQuestions = adjektivData;
+      }
+    },
+
+    async loadXpProfile() {
+      try {
+        const {
+          data: { session },
+        } = await supabase.auth.getSession();
+
+        if (!session?.user?.id) return;
+
+        const { data, error } = await supabase
+          .from("profiles")
+          .select("xp,level,streak_days,today_xp")
+          .eq("id", session.user.id)
+          .single();
+
+        if (error) {
+          console.error("XP betöltési hiba:", error.message);
+          return;
+        }
+
+        if (data) {
+          this.xpProfile = {
+            xp: data.xp || 0,
+            level: data.level || 1,
+            streak_days: data.streak_days || 0,
+            today_xp: data.today_xp || 0,
+          };
+        }
+      } catch (error) {
+        console.error("XP betöltési váratlan hiba:", error.message);
+      }
+    },
+
+    async addXp(amount = 5) {
+      const oldXp = this.xpProfile.xp || 0;
+      const oldTodayXp = this.xpProfile.today_xp || 0;
+
+      const newXp = oldXp + amount;
+      const newTodayXp = oldTodayXp + amount;
+      const newLevel = Math.floor(newXp / this.xpPerLevel) + 1;
+
+      this.xpProfile.xp = newXp;
+      this.xpProfile.today_xp = newTodayXp;
+      this.xpProfile.level = newLevel;
+
+      try {
+        const {
+          data: { session },
+        } = await supabase.auth.getSession();
+
+        if (!session?.user?.id) return;
+
+        const { error } = await supabase
+          .from("profiles")
+          .update({
+            xp: newXp,
+            level: newLevel,
+            today_xp: newTodayXp,
+            last_activity: new Date().toISOString(),
+          })
+          .eq("id", session.user.id);
+
+        if (error) {
+          console.error("XP mentési hiba:", error.message);
+        }
+      } catch (error) {
+        console.error("XP hiba:", error.message);
+      }
+    },
+
     shuffle(array) {
       return [...array].sort(() => Math.random() - 0.5);
     },
@@ -228,14 +500,23 @@ export default {
     },
 
     pickNewSet() {
-      this.totalQuestionsInRound = this.defaultQuestionsPerRound;
-
       const pool =
         this.selectedCase === "Mixed"
           ? [...this.allQuestions]
-          : this.allQuestions.filter((question) => question.case === this.selectedCase);
+          : this.allQuestions.filter(
+              (question) => question.case === this.selectedCase,
+            );
 
-      this.currentRoundBatch = this.shuffle(pool).slice(0, this.totalQuestionsInRound);
+      this.totalQuestionsInRound = Math.min(
+        this.defaultQuestionsPerRound,
+        pool.length,
+      );
+
+      this.currentRoundBatch = this.shuffle(pool).slice(
+        0,
+        this.totalQuestionsInRound,
+      );
+
       this.startRound();
     },
 
@@ -251,7 +532,10 @@ export default {
     },
 
     setNextQuestion() {
-      if (this.roundHistory.length >= this.totalQuestionsInRound || !this.filteredDeck.length) {
+      if (
+        this.roundHistory.length >= this.totalQuestionsInRound ||
+        !this.filteredDeck.length
+      ) {
         this.currentQuestion = null;
         this.showStatistics = true;
         this.saveResults();
@@ -276,7 +560,9 @@ export default {
     },
 
     checkAnswer() {
-      if (this.isAnswered || !this.userAnswer.trim() || !this.currentQuestion) return;
+      if (this.isAnswered || !this.userAnswer.trim() || !this.currentQuestion) {
+        return;
+      }
 
       const userValue = this.normalizeAnswer(this.userAnswer);
       const correctValue = this.normalizeAnswer(this.currentQuestion.correct);
@@ -286,6 +572,7 @@ export default {
 
       if (this.isCorrect) {
         this.correctAnswersInRound += 1;
+        this.addXp(5);
       } else {
         this.incorrectAnswersInRound += 1;
         this.wrongQuestions.push(this.currentQuestion);
@@ -354,6 +641,8 @@ export default {
         ]);
 
         if (error) throw error;
+
+        this.$emit("exercise-finished");
       } catch (error) {
         console.error("Hiba az eredmény mentésekor:", error.message);
       }
@@ -362,198 +651,4 @@ export default {
 };
 </script>
 
-<style scoped>
-.adjektiv-practice {
-  max-width: 600px;
-}
-
-.top-info-wrapper {
-  display: flex;
-  justify-content: center;
-  margin: 10px 0;
-}
-
-.info-btn {
-  width: auto;
-  padding: 9px 16px;
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.06);
-  color: #ffffff;
-  font-size: 0.9rem;
-  font-weight: 700;
-  cursor: pointer;
-}
-
-.case-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 14px;
-}
-
-.btn-case {
-  width: 100%;
-  padding: 15px;
-  border: 1px solid rgba(255, 255, 255, 0.16);
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.08);
-  color: #ffffff;
-  font-size: 1rem;
-  font-weight: 800;
-  cursor: pointer;
-  transition: 0.2s ease;
-}
-
-.btn-case:hover {
-  transform: translateY(-2px);
-  background: rgba(255, 255, 255, 0.16);
-}
-
-.btn-mixed {
-  grid-column: span 2;
-  background: #3498db;
-  border: 0;
-}
-
-.case-indicator {
-  margin-bottom: 12px;
-  color: #3498db;
-  font-size: 0.8rem;
-  font-weight: 800;
-  text-transform: uppercase;
-}
-
-.question-card {
-  margin-bottom: 25px;
-}
-
-.adjektiv-display {
-  margin: 0;
-  color: #ffffff;
-  font-size: 2rem;
-  font-weight: 900;
-  line-height: 1.25;
-}
-
-.input-with-icon {
-  position: relative;
-}
-
-.input-icon {
-  position: absolute;
-  top: 15px;
-  right: 18px;
-  font-size: 20px;
-  font-weight: 900;
-}
-
-.correct-icon {
-  color: #2ecc71;
-}
-
-.wrong-icon {
-  color: #e74c3c;
-}
-
-.rule-details {
-  padding-top: 10px;
-  border-top: 1px solid rgba(255, 255, 255, 0.12);
-  text-align: left;
-  font-size: 0.9rem;
-}
-
-.correct-text {
-  color: #2ecc71;
-  font-weight: 900;
-}
-
-.wrong-text {
-  color: #e74c3c;
-  font-weight: 900;
-}
-
-/* Modal */
-.modal-overlay {
-  position: fixed;
-  inset: 0;
-  z-index: 3000;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
-  background: rgba(0, 0, 0, 0.9);
-}
-
-.modal-content {
-  position: relative;
-  width: min(760px, 100%);
-  max-height: 85vh;
-  padding: 30px;
-  border-radius: 24px;
-  background: #ffffff;
-  color: #2c3e50;
-  overflow: hidden;
-}
-
-.close-modal {
-  position: absolute;
-  top: 12px;
-  right: 16px;
-  width: auto;
-  padding: 0;
-  border: 0;
-  background: transparent;
-  color: #2c3e50;
-  font-size: 32px;
-  cursor: pointer;
-}
-
-.table-scroll {
-  overflow-y: auto;
-  max-height: 68vh;
-  margin-top: 12px;
-}
-
-.modal-content h3 {
-  margin: 22px 0 10px;
-  color: #3498db;
-  font-size: 1.1rem;
-}
-
-table {
-  width: 100%;
-  margin-bottom: 20px;
-  border-collapse: collapse;
-  font-size: 0.85rem;
-}
-
-th,
-td {
-  padding: 8px;
-  border: 1px solid #dddddd;
-  text-align: center;
-}
-
-th {
-  background: #f8f9fa;
-  font-weight: 800;
-}
-
-@media (max-width: 520px) {
-  .case-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .btn-mixed {
-    grid-column: auto;
-  }
-
-  .adjektiv-display {
-    font-size: 1.45rem;
-  }
-
-  .modal-content {
-    padding: 24px 16px;
-  }
-}
-</style>
+<style scoped src="./AdjektivPractice.css"></style>

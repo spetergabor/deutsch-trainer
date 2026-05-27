@@ -4,283 +4,21 @@
 
 .profile-page {
   width: 100%;
-  max-width: 900px;
-  margin: 0 auto;
-
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  align-items: center;
 
   color: white;
 }
 
-.profile-hero {
-  padding: 35px;
-
-  border-radius: var(--radius-xl);
-
-  background: var(--glass-card);
-
-  border: 1px solid var(--glass-border);
-
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-
-  box-shadow: var(--shadow-soft);
-
-  display: flex;
-  align-items: center;
-  gap: 24px;
-}
-
-.profile-avatar-large {
-  width: 100px;
-  height: 100px;
-
-  min-width: 100px;
-
-  border-radius: 30px;
-
-  display: flex;
-  justify-content: center;
-  align-items: center;
-
-  background:
-  linear-gradient(
-  135deg,
-  #667eea,
-  #764ba2
-  );
-
-  font-size: 2.6rem;
-
-  box-shadow:
-  0 10px 30px rgba(102,126,234,.35);
-}
-
-.profile-hero-text h1 {
-  margin:0;
-  font-size:2rem;
-}
-
-.profile-hero-text p{
-margin-top:8px;
-color:var(--color-text-soft);
-}
-
-/* =========================================================
-   PROFILE CARDS
-========================================================= */
-
-.profile-grid{
-display:grid;
-
-grid-template-columns:
-repeat(
-auto-fit,
-minmax(320px,1fr)
-);
-
-gap:22px;
-}
-
-.profile-card{
-padding:24px;
-
-border-radius:
-var(--radius-xl);
-
-background:
-var(--glass-card);
-
-border:
-1px solid
-var(--glass-border);
-
-backdrop-filter:
-blur(18px);
-
--webkit-backdrop-filter:
-blur(18px);
-
-box-shadow:
-var(--shadow-soft);
-}
-
-.profile-card h3{
-margin-top:0;
-margin-bottom:18px;
-
-padding-bottom:10px;
-
-border-bottom:
-1px solid rgba(255,255,255,.08);
-}
-
-/* =========================================================
-   PROFILE INFO ROWS
-========================================================= */
-
-.profile-row{
-display:flex;
-justify-content:space-between;
-
-gap:20px;
-
-padding:12px 0;
-
-border-bottom:
-1px solid rgba(255,255,255,.06);
-}
-
-.profile-row:last-child{
-border-bottom:none;
-}
-
-.profile-label{
-color:
-rgba(255,255,255,.55);
-
-font-size:.9rem;
-}
-
-.profile-value{
-font-weight:800;
-}
-
-/* =========================================================
-   PROFILE ACTIONS
-========================================================= */
-
-.profile-actions{
-display:flex;
-flex-direction:column;
-gap:14px;
-}
-
-.profile-btn{
-width:100%;
-
-padding:14px;
-
-border:none;
-border-radius:999px;
-
-font-weight:800;
-
-cursor:pointer;
-
-transition:.25s;
-}
-
-.profile-btn:hover{
-transform:
-translateY(-2px);
-}
-
-.profile-btn.primary{
-background:
-linear-gradient(
-135deg,
-#667eea,
-#764ba2
-);
-
-color:white;
-}
-
-.profile-btn.danger{
-background:
-rgba(255,71,87,.12);
-
-border:
-1px solid
-rgba(255,71,87,.3);
-
-color:#ff7272;
-}
-
-.profile-btn.danger:hover{
-background:#ff4757;
-color:white;
-}
-
-/* =========================================================
-   MOBILE
-========================================================= */
-
-@media(max-width:700px){
-
-.profile-page{
-padding-bottom:120px;
-}
-
-.profile-hero{
-padding:25px;
-
-flex-direction:column;
-text-align:center;
-}
-
-.profile-avatar-large{
-width:85px;
-height:85px;
-min-width:85px;
-
-font-size:2rem;
-}
-
-.profile-grid{
-grid-template-columns:1fr;
-}
-
-.profile-row{
-flex-direction:column;
-gap:6px;
-}
-
-}
-
-/* ======================
-   PROFILE PAGE
-====================== */
-
-.profile-page {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-/* ugyanaz a szélesség mint a mobil alsó menü */
-
-.profile-hero-card,
-.profile-settings-card,
-.profile-danger-card {
-  width: calc(100% - 20px);
-  max-width: 740px;
-
-  margin-left: auto;
-  margin-right: auto;
-  margin-bottom: 22px;
-
-  box-sizing: border-box;
-}
-
-/* mobil finomhangolás */
-
-@media (max-width:768px){
-
-  .profile-hero-card,
-  .profile-settings-card,
-  .profile-danger-card{
-      width: calc(100% - 20px);
-  }
+.practice-screen.profile-practice-screen {
+  justify-content: flex-start;
+  align-items: stretch;
 }
 
 @media (max-width: 700px) {
   .profile-page {
-    width: calc(100% - 30px) !important;
+    width: calc(100% - 10px) !important;
     max-width: none !important;
 
     margin: 0 auto !important;
@@ -301,4 +39,289 @@ gap:6px;
 
     box-sizing: border-box !important;
   }
+}
+
+/* =========================================================
+   PROFILE HERO
+========================================================= */
+
+.profile-top-card{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    text-align:center;
+
+    padding:50px 35px;
+
+    border-radius:38px;
+
+    background:
+    linear-gradient(
+      135deg,
+      rgba(40,30,55,.95),
+      rgba(35,20,30,.95)
+    );
+
+    border:1px solid rgba(255,255,255,.08);
+
+    backdrop-filter:blur(25px);
+
+    margin-bottom:35px;
+}
+
+
+.profile-avatar-wrapper{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+
+    gap:18px;
+
+    margin-bottom:22px;
+}
+
+
+/* DASHBOARDHOZ UGYANAZ */
+
+.profile-avatar-image{
+    width:130px;
+    height:130px;
+
+    border-radius:50%;
+
+    object-fit:cover;
+
+    padding:4px;
+
+    background:
+    linear-gradient(
+        135deg,
+        #7f7cff,
+        #a66cff
+    );
+
+    border:4px solid rgba(255,255,255,.08);
+
+    box-shadow:
+      0 0 45px rgba(118,92,255,.35);
+
+    transition:.3s;
+}
+
+.profile-avatar-image:hover{
+    transform:scale(1.04);
+}
+
+
+/* file input eltüntetés */
+
+.hidden-avatar-input{
+    display:none;
+}
+
+
+/* profilkép gomb */
+
+.change-avatar-btn{
+    border:none;
+    outline:none;
+
+    background:
+    rgba(255,255,255,.06);
+
+    color:white;
+
+    padding:14px 22px;
+
+    border-radius:999px;
+
+    font-size:.95rem;
+
+    font-weight:700;
+
+    cursor:pointer;
+
+    transition:.25s;
+
+    border:1px solid rgba(255,255,255,.06);
+}
+
+
+.change-avatar-btn:hover{
+
+    background:
+    rgba(255,255,255,.12);
+
+    transform:translateY(-2px);
+
+}
+
+
+.change-avatar-btn:disabled{
+    opacity:.5;
+}
+
+
+/* badge-ek */
+
+.profile-badges{
+    display:flex;
+    gap:14px;
+
+    margin-top:20px;
+}
+
+.profile-badges span{
+
+    padding:12px 18px;
+
+    border-radius:999px;
+
+    background:
+    rgba(255,255,255,.05);
+
+    border:1px solid rgba(255,255,255,.06);
+
+    font-weight:700;
+}
+
+
+
+/* inputok */
+
+.profile-input{
+
+    width:100%;
+
+    padding:18px;
+
+    border:none;
+
+    border-radius:18px;
+
+    background:
+    rgba(15,10,25,.8);
+
+    color:white;
+
+    font-size:16px;
+
+    outline:none;
+
+    border:1px solid rgba(255,255,255,.05);
+}
+
+.profile-input:focus{
+
+border-color:#8877ff;
+
+box-shadow:
+0 0 20px rgba(136,119,255,.2);
+
+}
+
+
+.profile-input.disabled{
+
+opacity:.6;
+
+cursor:not-allowed;
+
+}
+
+
+/* mentés */
+
+.save-profile-btn{
+
+width:100%;
+
+padding:18px;
+
+border:none;
+
+border-radius:20px;
+
+font-size:18px;
+
+font-weight:700;
+
+cursor:pointer;
+
+margin-top:30px;
+
+background:
+linear-gradient(
+90deg,
+#35cf74,
+#31b867
+);
+
+color:white;
+
+transition:.3s;
+
+}
+
+
+.save-profile-btn:hover{
+
+transform:translateY(-3px);
+
+box-shadow:
+0 10px 30px rgba(53,207,116,.25);
+
+}
+
+
+/* danger */
+
+.danger-btn{
+
+width:100%;
+
+padding:16px;
+
+border:none;
+
+border-radius:18px;
+
+background:
+rgba(255,255,255,.06);
+
+color:white;
+
+font-weight:700;
+
+cursor:pointer;
+
+margin-top:12px;
+
+transition:.25s;
+}
+
+
+.danger-btn:hover{
+
+background:
+rgba(255,255,255,.12);
+
+}
+
+
+.danger-btn.red{
+
+background:
+rgba(255,80,80,.18);
+
+color:#ff7777;
+
+}
+
+
+.danger-btn.red:hover{
+
+background:
+rgba(255,80,80,.3);
+
 }
