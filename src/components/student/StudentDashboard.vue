@@ -68,6 +68,57 @@
       </div>
     </section>
 
+    <section v-if="!isGuestMode" class="student-submissions-panel">
+      <div class="student-submissions-header">
+        <div>
+          <span>Beküldött anyagaim</span>
+          <h2>Írások és javítási állapot</h2>
+        </div>
+
+        <button
+          @click="loadWritingSubmissions"
+          :disabled="isLoadingWritingSubmissions"
+        >
+          {{ isLoadingWritingSubmissions ? "Frissítés..." : "Frissítés" }}
+        </button>
+      </div>
+
+      <div v-if="writingSubmissionSetupError" class="student-submissions-empty warning">
+        A beküldött írások táblája még nincs beállítva.
+      </div>
+
+      <div v-else-if="isLoadingWritingSubmissions" class="student-submissions-empty">
+        Beküldések betöltése...
+      </div>
+
+      <div v-else-if="!writingSubmissions.length" class="student-submissions-empty">
+        Még nincs beküldött írásod. Az ÖSD Schreiben feladatnál tudsz levelet beküldeni.
+      </div>
+
+      <div v-else class="student-submissions-list">
+        <article
+          v-for="submission in writingSubmissions.slice(0, 3)"
+          :key="submission.id"
+          class="student-submission-card"
+        >
+          <div>
+            <span :class="['student-submission-status', submission.status]">
+              {{ getSubmissionStatusLabel(submission.status) }}
+            </span>
+            <strong>{{ submission.task_title }}</strong>
+            <small>{{ formatDate(submission.created_at) }}</small>
+          </div>
+
+          <p>{{ submission.task_situation }}</p>
+
+          <div class="student-submission-meta">
+            <span>{{ submission.word_count }} szó</span>
+            <span>Elvárt: {{ submission.expected_word_count }}</span>
+          </div>
+        </article>
+      </div>
+    </section>
+
     <section class="dashboard-challenge-section">
       <h2 class="section-title">Challenge</h2>
 
@@ -232,6 +283,7 @@
 import { formatDate, getTaskName } from "../../utils/formatters";
 import { storyLessons } from "../../data/storyLessons";
 import { grammarGuides } from "../../data/grammarGuides";
+import { fetchStudentWritingSubmissions } from "../../services/writingSubmissionService";
 
 export default {
   name: "StudentDashboard",
@@ -356,6 +408,24 @@ export default {
     "delete-note",
     "select-note",
   ],
+
+  data() {
+    return {
+      writingSubmissions: [],
+      isLoadingWritingSubmissions: false,
+      writingSubmissionSetupError: false,
+    };
+  },
+
+  async mounted() {
+    await this.loadWritingSubmissions();
+  },
+
+  watch: {
+    async userSession() {
+      await this.loadWritingSubmissions();
+    },
+  },
 
   computed: {
     recommendedPracticeMeta() {
@@ -611,6 +681,37 @@ export default {
   methods: {
     triggerFileInput() {
       this.$refs.fileInput?.click();
+    },
+
+    async loadWritingSubmissions() {
+      if (this.isGuestMode || !this.userSession?.id) {
+        this.writingSubmissions = [];
+        return;
+      }
+
+      this.isLoadingWritingSubmissions = true;
+      this.writingSubmissionSetupError = false;
+
+      try {
+        this.writingSubmissions = await fetchStudentWritingSubmissions(
+          this.userSession.id,
+        );
+      } catch (error) {
+        console.error("Diák beküldött írások lekérési hiba:", error.message);
+        this.writingSubmissionSetupError = error.message?.includes("writing_submissions");
+      } finally {
+        this.isLoadingWritingSubmissions = false;
+      }
+    },
+
+    getSubmissionStatusLabel(status) {
+      const labels = {
+        submitted: "Új beküldés",
+        reviewing: "Javítás alatt",
+        reviewed: "Javítva",
+      };
+
+      return labels[status] || "Beküldve";
     },
 
     formatDate,

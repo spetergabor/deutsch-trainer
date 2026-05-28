@@ -172,6 +172,483 @@
   line-height: 1.5;
 }
 
+/* =========================================================
+   STUDENT SUBMISSIONS
+========================================================= */
+
+.student-submissions-panel {
+  margin: 0 0 44px;
+  padding: 24px;
+  border: 1px solid rgba(255, 213, 106, 0.2);
+  border-radius: 30px;
+  background:
+    radial-gradient(circle at left top, rgba(255, 213, 106, 0.13), transparent 34%),
+    rgba(255, 255, 255, 0.055);
+  box-shadow: 0 18px 42px rgba(0, 0, 0, 0.24);
+}
+
+.student-submissions-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  margin-bottom: 18px;
+}
+
+.student-submissions-header span {
+  display: inline-flex;
+  margin-bottom: 8px;
+  padding: 7px 12px;
+  border-radius: 999px;
+  background: rgba(255, 213, 106, 0.16);
+  color: #ffdc7a;
+  font-size: 0.82rem;
+  font-weight: 950;
+}
+
+.student-submissions-header h2 {
+  margin: 0;
+  color: #ffffff;
+  font-size: clamp(1.45rem, 2.4vw, 2rem);
+  font-weight: 950;
+}
+
+.student-submissions-header button {
+  min-width: 120px;
+  padding: 11px 15px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.07);
+  color: #ffffff;
+  font: inherit;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.student-submissions-header button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.student-submissions-empty {
+  padding: 18px;
+  border-radius: 18px;
+  background: rgba(0, 0, 0, 0.18);
+  color: rgba(255, 255, 255, 0.62);
+  font-weight: 800;
+}
+
+.student-submissions-empty.warning {
+  color: #ffdc7a;
+}
+
+.student-submissions-list {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.student-submission-card {
+  min-width: 0;
+  padding: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 22px;
+  background: rgba(0, 0, 0, 0.16);
+}
+
+.student-submission-card > div:first-child {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.student-submission-status {
+  width: max-content;
+  max-width: 100%;
+  padding: 7px 10px;
+  border-radius: 999px;
+  background: rgba(255, 213, 106, 0.14);
+  color: #ffdc7a;
+  font-size: 0.78rem;
+  font-weight: 950;
+}
+
+.student-submission-status.reviewing {
+  background: rgba(79, 172, 254, 0.16);
+  color: #80caff;
+}
+
+.student-submission-status.reviewed {
+  background: rgba(67, 233, 123, 0.15);
+  color: #79f2a8;
+}
+
+.student-submission-card strong {
+  color: #ffffff;
+  font-size: 1.08rem;
+  font-weight: 950;
+}
+
+.student-submission-card small,
+.student-submission-card p,
+.student-submission-meta {
+  color: rgba(255, 255, 255, 0.58);
+  font-weight: 750;
+}
+
+.student-submission-card p {
+  margin: 14px 0;
+  line-height: 1.42;
+}
+
+.student-submission-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.student-submission-meta span {
+  padding: 7px 10px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.07);
+  font-size: 0.8rem;
+  font-weight: 900;
+}
+
+.student-materials-view {
+  width: min(1180px, calc(100% - 40px));
+  margin: 0 auto;
+  padding: 0 0 110px;
+  color: #ffffff;
+}
+
+.student-materials-topbar {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: 22px;
+  margin: 18px 0 26px;
+}
+
+.student-materials-topbar .btn-small {
+  width: auto;
+  min-height: 54px;
+  padding: 14px 22px;
+  border-radius: 999px;
+  font-size: 1rem;
+  font-weight: 950;
+  white-space: nowrap;
+}
+
+.student-materials-topbar h1 {
+  margin: 0;
+  color: #ffffff;
+  font-size: clamp(1.75rem, 3vw, 2.45rem);
+  font-weight: 950;
+  line-height: 1.05;
+  text-align: center;
+}
+
+.student-materials-header {
+  margin-bottom: 22px;
+  text-align: left;
+}
+
+.student-materials-header span {
+  display: inline-flex;
+  margin-bottom: 12px;
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: rgba(255, 213, 106, 0.16);
+  color: #ffdc7a;
+  font-size: 0.82rem;
+  font-weight: 950;
+}
+
+.student-materials-header h2 {
+  margin: 0 0 8px;
+  color: #ffffff;
+  font-size: clamp(2.15rem, 4vw, 3.4rem);
+  font-weight: 950;
+  line-height: 1.05;
+}
+
+.student-materials-header p {
+  max-width: 720px;
+  margin: 0;
+  color: rgba(255, 255, 255, 0.62);
+  font-weight: 800;
+  line-height: 1.45;
+}
+
+.student-materials-empty,
+.student-materials-list,
+.student-materials-detail {
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.055);
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.22);
+}
+
+.student-materials-empty {
+  padding: 22px;
+  color: rgba(255, 255, 255, 0.62);
+  font-weight: 850;
+}
+
+.student-materials-empty.warning {
+  color: #ffdc7a;
+}
+
+.student-materials-layout {
+  display: grid;
+  grid-template-columns: 340px minmax(0, 1fr);
+  gap: 18px;
+  align-items: start;
+}
+
+.student-materials-list {
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.student-materials-item {
+  width: 100%;
+  padding: 14px;
+  border: 1px solid transparent;
+  border-radius: 18px;
+  background: rgba(0, 0, 0, 0.18);
+  color: #ffffff;
+  font-family: inherit;
+  text-align: left;
+  cursor: pointer;
+
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.student-materials-item.active {
+  border-color: rgba(255, 213, 106, 0.4);
+  background: rgba(255, 213, 106, 0.12);
+}
+
+.student-materials-item strong,
+.student-materials-item span,
+.student-materials-item small {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.student-materials-item span,
+.student-materials-item small {
+  color: rgba(255, 255, 255, 0.56);
+  font-weight: 800;
+}
+
+.student-materials-detail {
+  padding: 22px;
+}
+
+.student-materials-detail-head {
+  margin-bottom: 18px;
+}
+
+.student-materials-detail-head h2 {
+  margin: 10px 0 6px;
+  color: #ffffff;
+  font-size: clamp(1.5rem, 3vw, 2.2rem);
+  font-weight: 950;
+}
+
+.student-materials-detail-head p {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.58);
+  font-weight: 800;
+}
+
+.student-materials-meta {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.student-materials-meta div,
+.student-materials-detail section {
+  border-radius: 18px;
+  background: rgba(0, 0, 0, 0.16);
+}
+
+.student-materials-meta div {
+  padding: 14px;
+}
+
+.student-materials-meta span,
+.student-materials-meta strong {
+  display: block;
+}
+
+.student-materials-meta span {
+  color: rgba(255, 255, 255, 0.52);
+  font-size: 0.82rem;
+  font-weight: 850;
+}
+
+.student-materials-meta strong {
+  margin-top: 5px;
+  color: #ffffff;
+  font-weight: 950;
+}
+
+.student-materials-detail section {
+  margin-top: 14px;
+  padding: 18px;
+}
+
+.student-materials-detail h3 {
+  margin: 0 0 8px;
+  color: #ffffff;
+}
+
+.student-materials-detail p,
+.student-materials-detail li {
+  color: rgba(255, 255, 255, 0.72);
+  font-weight: 750;
+  line-height: 1.58;
+}
+
+.student-materials-detail ul {
+  margin: 0 0 0 20px;
+  padding: 0;
+}
+
+.student-materials-content {
+  white-space: pre-wrap;
+}
+
+.student-homework-panel {
+  margin-bottom: 22px;
+  padding: 22px;
+  border: 1px solid rgba(255, 213, 106, 0.2);
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.055);
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.22);
+}
+
+.student-homework-panel h2 {
+  margin: 0 0 16px;
+  color: #ffffff;
+}
+
+.student-homework-list {
+  display: grid;
+  gap: 14px;
+}
+
+.student-homework-card {
+  padding: 18px;
+  border-radius: 18px;
+  background: rgba(0, 0, 0, 0.16);
+}
+
+.student-homework-card-head {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.student-homework-card-head span {
+  width: max-content;
+  padding: 7px 10px;
+  border-radius: 999px;
+  background: rgba(255, 213, 106, 0.14);
+  color: #ffdc7a;
+  font-size: 0.78rem;
+  font-weight: 950;
+}
+
+.student-homework-card-head strong {
+  color: #ffffff;
+  font-size: 1.15rem;
+  font-weight: 950;
+}
+
+.student-homework-card-head small,
+.student-homework-card p {
+  color: rgba(255, 255, 255, 0.62);
+  font-weight: 800;
+}
+
+.student-homework-textarea {
+  width: 100%;
+  min-height: 180px;
+  margin-top: 14px;
+  padding: 15px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 16px;
+  background: rgba(0, 0, 0, 0.22);
+  color: #ffffff;
+  font: inherit;
+  line-height: 1.55;
+  resize: vertical;
+}
+
+.student-homework-submit {
+  width: 100%;
+  margin-top: 12px;
+  padding: 13px 18px;
+  border: none;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #35d06f, #2fc061);
+  color: #ffffff;
+  font: inherit;
+  font-weight: 950;
+  cursor: pointer;
+}
+
+.student-homework-submit:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.student-materials-review {
+  border: 1px solid rgba(67, 233, 123, 0.18);
+  background: rgba(67, 233, 123, 0.08) !important;
+}
+
+.student-materials-grade {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+  padding: 14px;
+  border-radius: 14px;
+  background: rgba(0, 0, 0, 0.18);
+}
+
+.student-materials-grade span {
+  color: rgba(255, 255, 255, 0.58);
+  font-weight: 850;
+}
+
+.student-materials-grade strong {
+  color: #79f2a8;
+  font-size: 1.35rem;
+  font-weight: 950;
+}
+
+.student-materials-review small {
+  display: block;
+  margin-top: 12px;
+  color: rgba(255, 255, 255, 0.5);
+  font-weight: 800;
+}
+
 .daily-plan-primary {
   width: fit-content;
   min-height: 54px;
@@ -1038,6 +1515,14 @@ button.grammar-practice-chip:hover {
     grid-template-columns: 1fr;
   }
 
+  .student-submissions-list {
+    grid-template-columns: 1fr;
+  }
+
+  .student-materials-layout {
+    grid-template-columns: 1fr;
+  }
+
   .dashboard-today-grid {
     grid-template-columns: 1fr;
   }
@@ -1054,6 +1539,40 @@ button.grammar-practice-chip:hover {
 @media (max-width: 768px) {
   .dashboard-daily-plan {
     margin-bottom: 34px;
+  }
+
+  .student-submissions-panel {
+    margin-bottom: 34px;
+    padding: 18px;
+    border-radius: 24px;
+  }
+
+  .student-submissions-header {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .student-submissions-header button {
+    width: 100%;
+  }
+
+  .student-materials-view {
+    width: calc(100% - 20px);
+    padding-bottom: 120px;
+  }
+
+  .student-materials-topbar {
+    grid-template-columns: 1fr;
+    gap: 14px;
+    margin-top: 0;
+  }
+
+  .student-materials-topbar h1 {
+    text-align: left;
+  }
+
+  .student-materials-meta {
+    grid-template-columns: 1fr;
   }
 
   .dashboard-today-grid {

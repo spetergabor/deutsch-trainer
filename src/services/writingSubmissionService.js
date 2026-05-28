@@ -10,6 +10,7 @@ export async function createWritingSubmission({
   expectedWordCount,
   wordCount,
   content,
+  assignmentId,
 }) {
   if (!studentId || !content?.trim()) {
     return null;
@@ -42,6 +43,7 @@ export async function createWritingSubmission({
         expected_word_count: expectedWordCount,
         word_count: wordCount,
         content: content.trim(),
+        assignment_id: assignmentId || null,
       },
     ])
     .select()
@@ -79,6 +81,24 @@ export async function fetchTeacherWritingSubmissions() {
   return data || [];
 }
 
+export async function fetchStudentWritingSubmissions(studentId) {
+  if (!studentId) {
+    return [];
+  }
+
+  const { data, error } = await supabase
+    .from("writing_submissions")
+    .select("*")
+    .eq("student_id", studentId)
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    throw error;
+  }
+
+  return data || [];
+}
+
 export async function updateWritingSubmissionStatus(submissionId, status) {
   if (!submissionId || !status) {
     return null;
@@ -87,6 +107,30 @@ export async function updateWritingSubmissionStatus(submissionId, status) {
   const { data, error } = await supabase
     .from("writing_submissions")
     .update({ status })
+    .eq("id", submissionId)
+    .select()
+    .single();
+
+  if (error) {
+    throw error;
+  }
+
+  return data || null;
+}
+
+export async function reviewWritingSubmission(submissionId, { grade, teacherFeedback }) {
+  if (!submissionId) {
+    return null;
+  }
+
+  const { data, error } = await supabase
+    .from("writing_submissions")
+    .update({
+      grade: grade?.trim() || null,
+      teacher_feedback: teacherFeedback?.trim() || null,
+      status: "reviewed",
+      reviewed_at: new Date().toISOString(),
+    })
     .eq("id", submissionId)
     .select()
     .single();

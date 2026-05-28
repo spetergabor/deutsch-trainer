@@ -23,6 +23,15 @@
       </button>
 
       <button
+        v-else-if="userRole === 'student'"
+        class="header-icon-btn"
+        title="Beküldött anyagaim"
+        @click="$emit('open-student-materials')"
+      >
+        +
+      </button>
+
+      <button
         class="header-icon-btn"
         title="Üzenetek"
         @click.stop="$emit('open-messages')"
@@ -122,6 +131,7 @@ export default {
   emits: [
     "go-dashboard",
     "open-teacher-materials",
+    "open-student-materials",
     "open-messages",
     "toggle-notifications",
     "open-profile",

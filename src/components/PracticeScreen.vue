@@ -17,7 +17,7 @@
     </header>
 
     <div
-      v-if="currentMode !== 'profile'"
+      v-if="currentMode !== 'profile' && currentMode !== 'student-materials'"
       class="desktop-practice-return"
     >
       <button class="btn-outline btn-small" @click="$emit('go-dashboard')">
@@ -141,11 +141,19 @@
       @select-note="$emit('select-note', $event)"
       @logout="$emit('logout')"
     />
+
+    <StudentMaterialsView
+      v-if="currentMode === 'student-materials'"
+      :user-session="userSession"
+      @go-dashboard="$emit('go-dashboard')"
+      @set-mode="$emit('set-mode', $event)"
+    />
   </section>
 </template>
 
 <script>
 import ProfileView from "./ProfileView.vue";
+import StudentMaterialsView from "./student/StudentMaterialsView.vue";
 import KonnektorenPractice from "./KonnektorenPractice.vue";
 import PraepositionPractice from "./PraepositionPractice.vue";
 import VerbPractice from "./VerbPractice.vue";
@@ -166,6 +174,7 @@ export default {
 
   components: {
     ProfileView,
+    StudentMaterialsView,
     VerbPractice,
     NomenVerbPractice,
     AdjektivPractice,

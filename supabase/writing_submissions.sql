@@ -10,10 +10,22 @@ create table if not exists public.writing_submissions (
   expected_word_count integer not null default 120,
   word_count integer not null default 0,
   content text not null check (length(trim(content)) > 0),
+  grade text,
+  teacher_feedback text,
+  reviewed_at timestamptz,
   status text not null default 'submitted'
     check (status in ('submitted', 'reviewing', 'reviewed')),
   created_at timestamptz not null default now()
 );
+
+alter table public.writing_submissions
+  add column if not exists grade text;
+
+alter table public.writing_submissions
+  add column if not exists teacher_feedback text;
+
+alter table public.writing_submissions
+  add column if not exists reviewed_at timestamptz;
 
 alter table public.writing_submissions enable row level security;
 

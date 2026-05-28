@@ -632,6 +632,15 @@
     grid-template-columns: 1fr;
   }
 
+  .homework-form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .homework-assignment-row {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
   .teacher-portal-header,
   .teacher-workspace-header {
     align-items: flex-start;
@@ -1041,6 +1050,139 @@
 .writing-submission-content p {
   margin: 0;
   white-space: pre-wrap;
+}
+
+.homework-create-card,
+.homework-assignment-list {
+  padding: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.055);
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.22);
+}
+
+.homework-create-card h3,
+.homework-assignment-list h3 {
+  margin: 0 0 16px;
+  color: #ffffff;
+}
+
+.homework-form-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.homework-form-grid label,
+.homework-wide-field {
+  color: rgba(255, 255, 255, 0.68);
+  font-weight: 900;
+}
+
+.homework-form-grid input,
+.homework-form-grid select,
+.homework-wide-field textarea {
+  width: 100%;
+  margin-top: 8px;
+  padding: 12px 13px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 14px;
+  background: rgba(0, 0, 0, 0.22);
+  color: #ffffff;
+  font: inherit;
+  font-weight: 750;
+}
+
+.homework-wide-field {
+  display: block;
+  margin-top: 14px;
+}
+
+.homework-wide-field textarea {
+  min-height: 120px;
+  resize: vertical;
+}
+
+.homework-assignment-list {
+  display: grid;
+  gap: 12px;
+}
+
+.homework-assignment-row {
+  padding: 14px;
+  border-radius: 16px;
+  background: rgba(0, 0, 0, 0.16);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.homework-assignment-row strong,
+.homework-assignment-row span {
+  display: block;
+}
+
+.homework-assignment-row strong {
+  color: #ffffff;
+}
+
+.homework-assignment-row span,
+.homework-assignment-row small {
+  color: rgba(255, 255, 255, 0.58);
+  font-weight: 800;
+}
+
+.writing-review-panel {
+  margin-top: 14px;
+  padding: 18px;
+  border: 1px solid rgba(67, 233, 123, 0.18);
+  border-radius: 18px;
+  background: rgba(67, 233, 123, 0.07);
+}
+
+.writing-review-panel label {
+  display: block;
+  margin-top: 14px;
+  color: rgba(255, 255, 255, 0.7);
+  font-weight: 900;
+}
+
+.writing-review-panel input,
+.writing-review-panel textarea {
+  width: 100%;
+  margin-top: 8px;
+  padding: 13px 14px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 14px;
+  background: rgba(0, 0, 0, 0.24);
+  color: #ffffff;
+  font: inherit;
+  font-weight: 750;
+  outline: none;
+}
+
+.writing-review-panel textarea {
+  min-height: 140px;
+  resize: vertical;
+}
+
+.writing-review-panel button {
+  width: 100%;
+  margin-top: 16px;
+  padding: 13px 18px;
+  border: none;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #35d06f, #2fc061);
+  color: #ffffff;
+  font: inherit;
+  font-weight: 950;
+  cursor: pointer;
+}
+
+.writing-review-panel button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 /* =========================================================

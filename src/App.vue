@@ -11,6 +11,7 @@
       :is-logging-out="isLoggingOut"
       @go-dashboard="goToDashboard"
       @open-teacher-materials="openTeacherMaterials"
+      @open-student-materials="openStudentMaterials"
       @open-messages="openMessagesPanel"
       @toggle-notifications="toggleNotificationsMenu"
       @open-profile="setCurrentMode('profile')"
@@ -135,6 +136,7 @@
       :unread-messages="unreadMessages"
       @go-dashboard="goToDashboard"
       @open-teacher-materials="openTeacherMaterials"
+      @open-student-materials="openStudentMaterials"
       @open-messages="openMessagesPanel"
       @toggle-notifications="toggleNotificationsMenu"
       @open-profile="setCurrentMode('profile')"
@@ -407,6 +409,15 @@ export default {
       this.currentMode = null;
       this.selectedStoryId = null;
       this.teacherInitialSection = "writings";
+      this.showNotificationsMenu = false;
+      this.showMessagesPanel = false;
+      this.scrollToPageTop();
+    },
+
+    openStudentMaterials() {
+      this.currentMode = "student-materials";
+      this.selectedStoryId = null;
+      this.teacherInitialSection = null;
       this.showNotificationsMenu = false;
       this.showMessagesPanel = false;
       this.scrollToPageTop();

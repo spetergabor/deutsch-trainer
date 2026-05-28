@@ -15,6 +15,15 @@
     </button>
 
     <button
+      v-else-if="userRole === 'student' && !isGuestMode"
+      class="mobile-nav-item"
+      @click="$emit('open-student-materials')"
+    >
+      <span class="mobile-nav-icon">＋</span>
+      <span>Anyagok</span>
+    </button>
+
+    <button
       v-if="!isGuestMode"
       class="mobile-nav-item"
       @click.stop="$emit('open-messages')"
@@ -91,6 +100,7 @@ export default {
   emits: [
     "go-dashboard",
     "open-teacher-materials",
+    "open-student-materials",
     "open-messages",
     "toggle-notifications",
     "open-profile",

@@ -336,8 +336,8 @@
 
         <div class="writing-submission-toolbar">
           <div>
-            <h2>Beküldött írások</h2>
-            <p>ÖSD Schreiben beadások állapottal és teljes levélszöveggel.</p>
+            <h2>Anyagok és házi feladatok</h2>
+            <p>Házi kiadása, beküldött írások javítása és későbbi leckék kezelése.</p>
           </div>
 
           <button
@@ -347,6 +347,100 @@
           >
             Frissítés
           </button>
+        </div>
+
+        <div class="homework-create-card">
+          <h3>Új házi feladat</h3>
+
+          <div class="homework-form-grid">
+            <label>
+              Diák
+              <select v-model="newHomework.studentId">
+                <option value="">Válassz diákot</option>
+                <option
+                  v-for="student in students"
+                  :key="student.id"
+                  :value="student.id"
+                >
+                  {{ student.full_name || student.email }}
+                </option>
+              </select>
+            </label>
+
+            <label>
+              Feladat típusa
+              <select v-model="newHomework.type">
+                <option value="writing">Fogalmazás / levélírás</option>
+                <option value="practice">Gyakorló feladat</option>
+              </select>
+            </label>
+
+            <label v-if="newHomework.type === 'practice'">
+              Gyakorló típus
+              <select v-model="newHomework.practiceType">
+                <option value="perfekt">Perfekt</option>
+                <option value="adjektiv">Adjektivdeklination</option>
+                <option value="passiv">Passiv</option>
+                <option value="pronominaladverb">Pronominaladverbien</option>
+                <option value="vocabulary">Szókincs</option>
+              </select>
+            </label>
+
+            <label>
+              Cím
+              <input v-model.trim="newHomework.title" type="text" placeholder="pl. Panaszlevél írása" />
+            </label>
+
+            <label v-if="newHomework.type === 'writing'">
+              Elvárt szószám
+              <input v-model.number="newHomework.expectedWordCount" type="number" min="40" />
+            </label>
+
+            <label v-else>
+              Feladatok száma
+              <input v-model.number="newHomework.targetCount" type="number" min="1" />
+            </label>
+
+            <label>
+              Határidő
+              <input v-model="newHomework.dueAt" type="datetime-local" />
+            </label>
+          </div>
+
+          <label class="homework-wide-field">
+            Instrukció / kérés
+            <textarea
+              v-model.trim="newHomework.instructions"
+              placeholder="Írd le pontosan, mit kérsz a diáktól..."
+            ></textarea>
+          </label>
+
+          <button
+            class="send-teacher-note-btn"
+            @click="saveHomeworkAssignment"
+            :disabled="isSavingHomework || !canSaveHomework"
+          >
+            {{ isSavingHomework ? "Kiadás..." : "Házi kiadása" }}
+          </button>
+        </div>
+
+        <div v-if="homeworkAssignments.length" class="homework-assignment-list">
+          <h3>Kiadott házik</h3>
+
+          <article
+            v-for="assignment in homeworkAssignments.slice(0, 6)"
+            :key="assignment.id"
+            class="homework-assignment-row"
+          >
+            <div>
+              <strong>{{ assignment.title }}</strong>
+              <span>{{ assignment.student?.full_name || assignment.student?.email || "Diák" }}</span>
+            </div>
+
+            <small>
+              {{ getHomeworkTypeLabel(assignment) }} · {{ getHomeworkStatusLabel(assignment.status) }}
+            </small>
+          </article>
         </div>
 
         <div v-if="isWritingSubmissionsLoading" class="empty-state small">
@@ -433,6 +527,34 @@
             <section class="writing-submission-content">
               <h3>Diák levele</h3>
               <p>{{ selectedWritingSubmission.content }}</p>
+            </section>
+
+            <section class="writing-review-panel">
+              <h3>Tanári értékelés</h3>
+
+              <label>
+                Osztályzat / értékelés
+                <input
+                  v-model.trim="writingReviewGrade"
+                  type="text"
+                  placeholder="pl. 4, B2: gut, 82%"
+                />
+              </label>
+
+              <label>
+                Vélemény a diáknak
+                <textarea
+                  v-model.trim="writingReviewFeedback"
+                  placeholder="Írd le röviden, mi sikerült jól, min kell javítani, mire figyeljen legközelebb..."
+                ></textarea>
+              </label>
+
+              <button
+                @click="saveWritingReview"
+                :disabled="isSavingWritingReview || !selectedWritingSubmission"
+              >
+                {{ isSavingWritingReview ? "Mentés..." : "Értékelés mentése" }}
+              </button>
             </section>
           </article>
         </div>
@@ -628,8 +750,13 @@ import {
 } from "../services/exerciseItemService";
 import {
   fetchTeacherWritingSubmissions,
+  reviewWritingSubmission,
   updateWritingSubmissionStatus,
 } from "../services/writingSubmissionService";
+import {
+  createHomeworkAssignment,
+  fetchTeacherHomeworkAssignments,
+} from "../services/homeworkService";
 import verbsData from "../data/verbs.json";
 import nomenData from "../data/nomen.json";
 import adjektivData from "../data/adjektiv.json";
@@ -691,6 +818,21 @@ export default {
       selectedWritingSubmission: null,
       isWritingSubmissionsLoading: false,
       writingSubmissionSetupError: false,
+      writingReviewGrade: "",
+      writingReviewFeedback: "",
+      isSavingWritingReview: false,
+      homeworkAssignments: [],
+      isSavingHomework: false,
+      newHomework: {
+        studentId: "",
+        type: "writing",
+        practiceType: "adjektiv",
+        title: "",
+        instructions: "",
+        expectedWordCount: 120,
+        targetCount: 10,
+        dueAt: "",
+      },
       showBaseExercises: false,
       selectedExerciseType: "perfekt",
       exerciseTypes: [
@@ -779,6 +921,10 @@ export default {
         this.exerciseTypes.find((item) => item.type === this.selectedExerciseType) ||
         this.exerciseTypes[0]
       );
+    },
+
+    currentTeacherId() {
+      return this.$root?.userSession?.id || null;
     },
 
     activeTeacherSectionTitle() {
@@ -962,6 +1108,14 @@ export default {
         : this.exerciseItems;
     },
 
+    canSaveHomework() {
+      return Boolean(
+        this.newHomework.studentId &&
+          this.newHomework.title?.trim() &&
+          this.newHomework.instructions?.trim(),
+      );
+    },
+
     teacherFocusTitle() {
       const attentionStudent = this.teacherOverview.attentionStudents[0];
 
@@ -1013,6 +1167,11 @@ export default {
         await this.openTeacherSection(section);
       }
     },
+
+    selectedWritingSubmission(submission) {
+      this.writingReviewGrade = submission?.grade || "";
+      this.writingReviewFeedback = submission?.teacher_feedback || "";
+    },
   },
 
   methods: {
@@ -1024,7 +1183,10 @@ export default {
       }
 
       if (section === "writings" && !this.writingSubmissions.length) {
-        await this.fetchWritingSubmissions();
+        await Promise.all([
+          this.fetchWritingSubmissions(),
+          this.fetchHomeworkAssignments(),
+        ]);
       }
     },
 
@@ -1052,6 +1214,7 @@ export default {
         await Promise.all([
           this.fetchTeacherOverview(),
           this.fetchWritingSubmissions(),
+          this.fetchHomeworkAssignments(),
         ]);
       } catch (error) {
         console.error("Hiba a diákok lekérésekor:", error.message);
@@ -1083,6 +1246,61 @@ export default {
       }
     },
 
+    async fetchHomeworkAssignments() {
+      try {
+        this.homeworkAssignments = await fetchTeacherHomeworkAssignments();
+      } catch (error) {
+        console.error("Kiadott házik lekérési hiba:", error.message);
+      }
+    },
+
+    async saveHomeworkAssignment() {
+      if (!this.canSaveHomework || this.isSavingHomework) return;
+
+      this.isSavingHomework = true;
+
+      try {
+        const assignment = await createHomeworkAssignment({
+          teacherId: this.currentTeacherId,
+          studentId: this.newHomework.studentId,
+          type: this.newHomework.type,
+          practiceType:
+            this.newHomework.type === "practice" ? this.newHomework.practiceType : null,
+          title: this.newHomework.title,
+          instructions: this.newHomework.instructions,
+          expectedWordCount:
+            this.newHomework.type === "writing"
+              ? this.newHomework.expectedWordCount
+              : null,
+          targetCount:
+            this.newHomework.type === "practice" ? this.newHomework.targetCount : null,
+          dueAt: this.newHomework.dueAt
+            ? new Date(this.newHomework.dueAt).toISOString()
+            : null,
+        });
+
+        if (assignment) {
+          await this.fetchHomeworkAssignments();
+        }
+
+        this.newHomework = {
+          studentId: "",
+          type: "writing",
+          practiceType: "adjektiv",
+          title: "",
+          instructions: "",
+          expectedWordCount: 120,
+          targetCount: 10,
+          dueAt: "",
+        };
+      } catch (error) {
+        console.error("Házi kiadási hiba:", error.message);
+        alert("Nem sikerült kiadni a házit.");
+      } finally {
+        this.isSavingHomework = false;
+      }
+    },
+
     async changeWritingSubmissionStatus(submission, status) {
       try {
         const updated = await updateWritingSubmissionStatus(submission.id, status);
@@ -1100,6 +1318,34 @@ export default {
       }
     },
 
+    async saveWritingReview() {
+      if (!this.selectedWritingSubmission || this.isSavingWritingReview) {
+        return;
+      }
+
+      this.isSavingWritingReview = true;
+
+      try {
+        const updated = await reviewWritingSubmission(this.selectedWritingSubmission.id, {
+          grade: this.writingReviewGrade,
+          teacherFeedback: this.writingReviewFeedback,
+        });
+
+        this.writingSubmissions = this.writingSubmissions.map((item) =>
+          item.id === updated.id ? { ...item, ...updated } : item,
+        );
+        this.selectedWritingSubmission = {
+          ...this.selectedWritingSubmission,
+          ...updated,
+        };
+      } catch (error) {
+        console.error("Írás értékelési hiba:", error.message);
+        alert("Nem sikerült menteni az értékelést.");
+      } finally {
+        this.isSavingWritingReview = false;
+      }
+    },
+
     getSubmissionStatusLabel(status) {
       const labels = {
         submitted: "Új beküldés",
@@ -1108,6 +1354,25 @@ export default {
       };
 
       return labels[status] || "Beküldve";
+    },
+
+    getHomeworkStatusLabel(status) {
+      const labels = {
+        assigned: "Kiadva",
+        opened: "Megnyitva",
+        submitted: "Beküldve",
+        reviewed: "Javítva",
+      };
+
+      return labels[status] || "Kiadva";
+    },
+
+    getHomeworkTypeLabel(assignment) {
+      if (assignment.type === "practice") {
+        return `Gyakorló: ${assignment.practice_type || "feladat"}`;
+      }
+
+      return "Fogalmazás / levélírás";
     },
 
     async selectStudent(student) {
