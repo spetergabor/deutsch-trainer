@@ -147,6 +147,7 @@
       :user-session="userSession"
       @go-dashboard="$emit('go-dashboard')"
       @set-mode="$emit('set-mode', $event)"
+      @start-homework-practice="$emit('start-homework-practice', $event)"
     />
   </section>
 </template>
@@ -326,6 +327,7 @@ export default {
     "exercise-finished",
     "logout",
     "set-mode",
+    "start-homework-practice",
     "upload-file",
     "update:new-note-text",
     "save-note",

@@ -109,3 +109,33 @@ export async function updateHomeworkStatus(assignmentId, status) {
 
   return data || null;
 }
+
+export async function countHomeworkPracticeResults(assignment) {
+  if (!assignment?.student_id || !assignment?.practice_type || !assignment?.created_at) {
+    return 0;
+  }
+
+  const exerciseTypesByPractice = {
+    vocabulary: ["vocabulary", "vocabulary-learn", "vocabulary-test"],
+    passiv: ["passiv", "passiv-writing"],
+    pronominaladverb: ["pronominaladverb", "pronominaladverb-writing"],
+  };
+  const exerciseTypes = exerciseTypesByPractice[assignment.practice_type] || [
+    assignment.practice_type,
+  ];
+
+  const { data, error } = await supabase
+    .from("exercise_results")
+    .select("max_score")
+    .eq("user_id", assignment.student_id)
+    .in("exercise_type", exerciseTypes)
+    .gte("created_at", assignment.created_at);
+
+  if (error) {
+    throw error;
+  }
+
+  return (data || []).reduce((sum, item) => {
+    return sum + (Number(item.max_score) || 0);
+  }, 0);
+}

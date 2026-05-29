@@ -68,6 +68,101 @@
       </div>
     </section>
 
+    <section v-if="!isGuestMode" class="student-lesson-panel">
+      <div class="student-lesson-head">
+        <div>
+          <span>Online óra</span>
+          <h2>Következő óra és munkafüzet</h2>
+        </div>
+
+        <button
+          @click="loadLessonSessions"
+          :disabled="isLoadingLessonSessions"
+        >
+          {{ isLoadingLessonSessions ? "Frissítés..." : "Frissítés" }}
+        </button>
+      </div>
+
+      <div v-if="lessonSessionSetupError" class="student-submissions-empty warning">
+        Az órák táblája még nincs beállítva.
+      </div>
+
+      <div v-else-if="isLoadingLessonSessions" class="student-submissions-empty">
+        Órák betöltése...
+      </div>
+
+      <div v-else-if="!lessonSessions.length" class="student-submissions-empty">
+        Még nincs ütemezett online órád.
+      </div>
+
+      <div v-else class="student-lesson-layout">
+        <aside class="student-lesson-list">
+          <button
+            v-for="lesson in lessonSessions.slice(0, 5)"
+            :key="lesson.id"
+            class="student-lesson-item"
+            :class="{ active: selectedLesson?.id === lesson.id }"
+            @click="selectLessonSession(lesson)"
+          >
+            <strong>{{ lesson.topic || "Online óra" }}</strong>
+            <span>{{ formatDate(lesson.scheduled_at) }}</span>
+            <small>{{ getLessonStatusLabel(lesson.status) }}</small>
+          </button>
+        </aside>
+
+        <article v-if="selectedLesson" class="student-lesson-workbook">
+          <div class="student-lesson-summary">
+            <div>
+              <span>{{ getLessonStatusLabel(selectedLesson.status) }}</span>
+              <h3>{{ selectedLesson.topic || "Online óra" }}</h3>
+              <p>{{ formatDate(selectedLesson.scheduled_at) }}</p>
+            </div>
+
+            <a
+              v-if="selectedLesson.meet_url"
+              :href="selectedLesson.meet_url"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Meet megnyitása
+            </a>
+          </div>
+
+          <p v-if="selectedLesson.goal" class="student-lesson-goal">
+            {{ selectedLesson.goal }}
+          </p>
+
+          <label>
+            Közös jegyzet
+            <textarea v-model="lessonWorkbookDraft.sharedNotes"></textarea>
+          </label>
+
+          <label>
+            Új szavak
+            <textarea v-model="lessonWorkbookDraft.vocabularyNotes"></textarea>
+          </label>
+
+          <label>
+            Hibák és javítások
+            <textarea v-model="lessonWorkbookDraft.correctionsNotes"></textarea>
+          </label>
+
+          <label>
+            Házi / következő lépés
+            <textarea v-model="lessonWorkbookDraft.nextSteps"></textarea>
+          </label>
+
+          <button
+            class="student-lesson-save"
+            @click="saveSelectedLessonWorkbook"
+            :disabled="isSavingLessonWorkbook"
+          >
+            {{ isSavingLessonWorkbook ? "Mentés..." : "Munkafüzet mentése" }}
+          </button>
+        </article>
+      </div>
+    </section>
+
     <section v-if="!isGuestMode" class="student-submissions-panel">
       <div class="student-submissions-header">
         <div>
@@ -284,6 +379,10 @@ import { formatDate, getTaskName } from "../../utils/formatters";
 import { storyLessons } from "../../data/storyLessons";
 import { grammarGuides } from "../../data/grammarGuides";
 import { fetchStudentWritingSubmissions } from "../../services/writingSubmissionService";
+import {
+  fetchStudentLessonSessions,
+  updateLessonWorkbook,
+} from "../../services/lessonSessionService";
 
 export default {
   name: "StudentDashboard",
@@ -414,16 +513,37 @@ export default {
       writingSubmissions: [],
       isLoadingWritingSubmissions: false,
       writingSubmissionSetupError: false,
+      lessonSessions: [],
+      selectedLessonId: "",
+      isLoadingLessonSessions: false,
+      isSavingLessonWorkbook: false,
+      lessonSessionSetupError: false,
+      lessonWorkbookDraft: {
+        sharedNotes: "",
+        vocabularyNotes: "",
+        correctionsNotes: "",
+        nextSteps: "",
+      },
     };
   },
 
   async mounted() {
-    await this.loadWritingSubmissions();
+    await Promise.all([
+      this.loadWritingSubmissions(),
+      this.loadLessonSessions(),
+    ]);
   },
 
   watch: {
     async userSession() {
-      await this.loadWritingSubmissions();
+      await Promise.all([
+        this.loadWritingSubmissions(),
+        this.loadLessonSessions(),
+      ]);
+    },
+
+    selectedLesson(lesson) {
+      this.syncLessonWorkbookDraft(lesson);
     },
   },
 
@@ -676,6 +796,27 @@ export default {
 
       return commands.join(" ");
     },
+
+    upcomingLesson() {
+      const now = new Date();
+      const upcoming = this.lessonSessions
+        .filter((lesson) => {
+          return lesson.status === "scheduled" && new Date(lesson.scheduled_at) >= now;
+        })
+        .sort((a, b) => new Date(a.scheduled_at) - new Date(b.scheduled_at));
+
+      return upcoming[0] || null;
+    },
+
+    selectedLesson() {
+      if (!this.lessonSessions.length) {
+        return null;
+      }
+
+      return this.lessonSessions.find((lesson) => lesson.id === this.selectedLessonId)
+        || this.upcomingLesson
+        || this.lessonSessions[0];
+    },
   },
 
   methods: {
@@ -702,6 +843,75 @@ export default {
       } finally {
         this.isLoadingWritingSubmissions = false;
       }
+    },
+
+    async loadLessonSessions() {
+      if (this.isGuestMode || !this.userSession?.id) {
+        this.lessonSessions = [];
+        return;
+      }
+
+      this.isLoadingLessonSessions = true;
+      this.lessonSessionSetupError = false;
+
+      try {
+        this.lessonSessions = await fetchStudentLessonSessions(this.userSession.id);
+        this.selectedLessonId = this.selectedLesson?.id || "";
+        this.syncLessonWorkbookDraft(this.selectedLesson);
+      } catch (error) {
+        console.error("Diák órák lekérési hiba:", error.message);
+        this.lessonSessionSetupError = error.message?.includes("lesson_sessions");
+      } finally {
+        this.isLoadingLessonSessions = false;
+      }
+    },
+
+    selectLessonSession(lesson) {
+      this.selectedLessonId = lesson.id;
+      this.syncLessonWorkbookDraft(lesson);
+    },
+
+    syncLessonWorkbookDraft(lesson) {
+      this.lessonWorkbookDraft = {
+        sharedNotes: lesson?.shared_notes || "",
+        vocabularyNotes: lesson?.vocabulary_notes || "",
+        correctionsNotes: lesson?.corrections_notes || "",
+        nextSteps: lesson?.next_steps || "",
+      };
+    },
+
+    async saveSelectedLessonWorkbook() {
+      if (!this.selectedLesson?.id || this.isSavingLessonWorkbook) {
+        return;
+      }
+
+      this.isSavingLessonWorkbook = true;
+
+      try {
+        const updated = await updateLessonWorkbook(
+          this.selectedLesson.id,
+          this.lessonWorkbookDraft,
+        );
+
+        this.lessonSessions = this.lessonSessions.map((lesson) =>
+          lesson.id === updated.id ? { ...lesson, ...updated } : lesson,
+        );
+      } catch (error) {
+        console.error("Diák munkafüzet mentési hiba:", error.message);
+        alert("Nem sikerült menteni a munkafüzetet.");
+      } finally {
+        this.isSavingLessonWorkbook = false;
+      }
+    },
+
+    getLessonStatusLabel(status) {
+      const labels = {
+        scheduled: "Ütemezve",
+        completed: "Lezárva",
+        cancelled: "Lemondva",
+      };
+
+      return labels[status] || "Óra";
     },
 
     getSubmissionStatusLabel(status) {

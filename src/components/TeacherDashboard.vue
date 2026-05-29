@@ -8,6 +8,65 @@
         </div>
       </div>
 
+      <section class="teacher-upcoming-lessons">
+        <div class="teacher-upcoming-lessons-head">
+          <div>
+            <span>Következő órák</span>
+            <h2>Online órák ma és hamarosan</h2>
+          </div>
+
+          <button @click="openTeacherSection('students')">
+            Óra ütemezése
+          </button>
+        </div>
+
+        <div v-if="lessonSessionSetupError" class="teacher-upcoming-empty">
+          Az órák táblája még nincs beállítva.
+        </div>
+
+        <div v-else-if="isLessonSessionsLoading" class="teacher-upcoming-empty">
+          Órák betöltése...
+        </div>
+
+        <div v-else-if="!upcomingTeacherLessons.length" class="teacher-upcoming-empty">
+          Nincs közelgő online óra.
+        </div>
+
+        <div v-else class="teacher-upcoming-grid">
+          <article
+            v-for="lesson in upcomingTeacherLessons.slice(0, 4)"
+            :key="lesson.id"
+            class="teacher-upcoming-lesson"
+          >
+            <div class="teacher-upcoming-date">
+              <strong>{{ getLessonDayLabel(lesson.scheduled_at) }}</strong>
+              <span>{{ getLessonTimeLabel(lesson.scheduled_at) }}</span>
+            </div>
+
+            <div class="teacher-upcoming-body">
+              <small>{{ lesson.student?.full_name || lesson.student?.email || "Diák" }}</small>
+              <h3>{{ lesson.topic || "Online óra" }}</h3>
+              <p>{{ lesson.goal || "Közös munkafüzet előkészítve." }}</p>
+            </div>
+
+            <div class="teacher-upcoming-actions">
+              <a
+                v-if="lesson.meet_url"
+                :href="lesson.meet_url"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Meet
+              </a>
+
+              <button @click="openLessonFromPortal(lesson)">
+                Munkafüzet
+              </button>
+            </div>
+          </article>
+        </div>
+      </section>
+
       <div class="teacher-overview-grid">
         <article class="teacher-overview-card highlight">
           <span class="teacher-overview-icon">🎓</span>
@@ -266,6 +325,140 @@
                 </button>
               </div>
 
+              <div class="detail-card lesson-workbook-card">
+                <div class="lesson-card-head">
+                  <div>
+                    <h3>📅 Online órák</h3>
+                    <p>Következő óra és közös munkafüzet.</p>
+                  </div>
+
+                  <span v-if="selectedStudentNextLesson">
+                    {{ formatDate(selectedStudentNextLesson.scheduled_at) }}
+                  </span>
+                </div>
+
+                <div class="lesson-schedule-form">
+                  <label>
+                    Időpont
+                    <input v-model="newLesson.scheduledAt" type="datetime-local" />
+                  </label>
+
+                  <label>
+                    Meet link
+                    <input v-model.trim="newLesson.meetUrl" type="url" placeholder="https://meet.google.com/..." />
+                  </label>
+
+                  <label>
+                    Téma
+                    <input v-model.trim="newLesson.topic" type="text" placeholder="pl. Passiv ismétlés" />
+                  </label>
+
+                  <label>
+                    Óra célja
+                    <input v-model.trim="newLesson.goal" type="text" placeholder="pl. panaszlevél javítása + szókincs" />
+                  </label>
+                </div>
+
+                <button
+                  class="send-teacher-note-btn"
+                  @click="scheduleLessonForSelectedStudent"
+                  :disabled="isSavingLesson || !newLesson.scheduledAt"
+                >
+                  {{ isSavingLesson ? "Mentés..." : "Óra ütemezése" }}
+                </button>
+
+                <div v-if="lessonSessionSetupError" class="empty-text warning">
+                  Az órák táblája még nincs beállítva.
+                </div>
+
+                <div v-else-if="isLessonSessionsLoading" class="empty-text">
+                  Órák betöltése...
+                </div>
+
+                <div v-else-if="selectedStudentLessons.length" class="lesson-session-list">
+                  <button
+                    v-for="lesson in selectedStudentLessons"
+                    :key="lesson.id"
+                    class="lesson-session-item"
+                    :class="{ active: selectedLesson?.id === lesson.id }"
+                    @click="selectLessonSession(lesson)"
+                  >
+                    <strong>{{ lesson.topic || "Online óra" }}</strong>
+                    <span>{{ formatDate(lesson.scheduled_at) }}</span>
+                    <small>{{ getLessonStatusLabel(lesson.status) }}</small>
+                  </button>
+                </div>
+
+                <div v-else class="empty-text">
+                  Még nincs ütemezett óra ehhez a diákhoz.
+                </div>
+
+                <div v-if="selectedLesson" class="lesson-workbook-editor">
+                  <div class="lesson-workbook-title">
+                    <div>
+                      <strong>{{ selectedLesson.topic || "Online óra" }}</strong>
+                      <span>{{ selectedLesson.goal || "Közös munkafüzet" }}</span>
+                    </div>
+
+                    <div class="lesson-workbook-title-actions">
+                      <a
+                        v-if="selectedLesson.meet_url"
+                        :href="selectedLesson.meet_url"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        Meet
+                      </a>
+
+                      <button
+                        class="lesson-workbook-close"
+                        type="button"
+                        @click="closeSelectedLesson"
+                      >
+                        Bezárás
+                      </button>
+                    </div>
+                  </div>
+
+                  <label>
+                    Közös jegyzet
+                    <textarea v-model="lessonWorkbookDraft.sharedNotes"></textarea>
+                  </label>
+
+                  <label>
+                    Új szavak
+                    <textarea v-model="lessonWorkbookDraft.vocabularyNotes"></textarea>
+                  </label>
+
+                  <label>
+                    Hibák és javítások
+                    <textarea v-model="lessonWorkbookDraft.correctionsNotes"></textarea>
+                  </label>
+
+                  <label>
+                    Házi / következő lépés
+                    <textarea v-model="lessonWorkbookDraft.nextSteps"></textarea>
+                  </label>
+
+                  <div class="lesson-workbook-actions">
+                    <button
+                      @click="saveSelectedLessonWorkbook"
+                      :disabled="isSavingLessonWorkbook"
+                    >
+                      {{ isSavingLessonWorkbook ? "Mentés..." : "Munkafüzet mentése" }}
+                    </button>
+
+                    <button
+                      v-if="selectedLesson.status !== 'completed'"
+                      class="secondary"
+                      @click="completeSelectedLesson"
+                    >
+                      Óra lezárása
+                    </button>
+                  </div>
+                </div>
+              </div>
+
               <div class="detail-card">
                 <h3>📝 Jegyzetek</h3>
 
@@ -334,230 +527,270 @@
           <p>Futtasd le a `supabase/writing_submissions.sql` fájlt a Supabase SQL editorban.</p>
         </div>
 
-        <div class="writing-submission-toolbar">
-          <div>
-            <h2>Anyagok és házi feladatok</h2>
-            <p>Házi kiadása, beküldött írások javítása és későbbi leckék kezelése.</p>
-          </div>
-
-          <button
-            class="btn-outline btn-small"
-            @click="fetchWritingSubmissions"
-            :disabled="isWritingSubmissionsLoading"
-          >
-            Frissítés
-          </button>
-        </div>
-
-        <div class="homework-create-card">
-          <h3>Új házi feladat</h3>
-
-          <div class="homework-form-grid">
-            <label>
-              Diák
-              <select v-model="newHomework.studentId">
-                <option value="">Válassz diákot</option>
-                <option
-                  v-for="student in students"
-                  :key="student.id"
-                  :value="student.id"
-                >
-                  {{ student.full_name || student.email }}
-                </option>
-              </select>
-            </label>
-
-            <label>
-              Feladat típusa
-              <select v-model="newHomework.type">
-                <option value="writing">Fogalmazás / levélírás</option>
-                <option value="practice">Gyakorló feladat</option>
-              </select>
-            </label>
-
-            <label v-if="newHomework.type === 'practice'">
-              Gyakorló típus
-              <select v-model="newHomework.practiceType">
-                <option value="perfekt">Perfekt</option>
-                <option value="adjektiv">Adjektivdeklination</option>
-                <option value="passiv">Passiv</option>
-                <option value="pronominaladverb">Pronominaladverbien</option>
-                <option value="vocabulary">Szókincs</option>
-              </select>
-            </label>
-
-            <label>
-              Cím
-              <input v-model.trim="newHomework.title" type="text" placeholder="pl. Panaszlevél írása" />
-            </label>
-
-            <label v-if="newHomework.type === 'writing'">
-              Elvárt szószám
-              <input v-model.number="newHomework.expectedWordCount" type="number" min="40" />
-            </label>
-
-            <label v-else>
-              Feladatok száma
-              <input v-model.number="newHomework.targetCount" type="number" min="1" />
-            </label>
-
-            <label>
-              Határidő
-              <input v-model="newHomework.dueAt" type="datetime-local" />
-            </label>
-          </div>
-
-          <label class="homework-wide-field">
-            Instrukció / kérés
-            <textarea
-              v-model.trim="newHomework.instructions"
-              placeholder="Írd le pontosan, mit kérsz a diáktól..."
-            ></textarea>
-          </label>
-
-          <button
-            class="send-teacher-note-btn"
-            @click="saveHomeworkAssignment"
-            :disabled="isSavingHomework || !canSaveHomework"
-          >
-            {{ isSavingHomework ? "Kiadás..." : "Házi kiadása" }}
-          </button>
-        </div>
-
-        <div v-if="homeworkAssignments.length" class="homework-assignment-list">
-          <h3>Kiadott házik</h3>
-
-          <article
-            v-for="assignment in homeworkAssignments.slice(0, 6)"
-            :key="assignment.id"
-            class="homework-assignment-row"
-          >
+        <section class="teacher-homework-panel">
+          <div class="teacher-homework-panel-head">
             <div>
-              <strong>{{ assignment.title }}</strong>
-              <span>{{ assignment.student?.full_name || assignment.student?.email || "Diák" }}</span>
+              <h2>Diákanyagok</h2>
+              <p>Válassz diákot, majd egy helyen látod a házijait és a beküldött írásait.</p>
             </div>
 
-            <small>
-              {{ getHomeworkTypeLabel(assignment) }} · {{ getHomeworkStatusLabel(assignment.status) }}
-            </small>
-          </article>
-        </div>
-
-        <div v-if="isWritingSubmissionsLoading" class="empty-state small">
-          Beküldések betöltése...
-        </div>
-
-        <div v-else-if="!writingSubmissions.length" class="empty-state small">
-          Még nincs beküldött írás.
-        </div>
-
-        <div v-else class="writing-submissions-layout">
-          <aside class="writing-submission-list">
-            <button
-              v-for="submission in writingSubmissions"
-              :key="submission.id"
-              class="writing-submission-item"
-              :class="{ active: selectedWritingSubmission?.id === submission.id }"
-              @click="selectedWritingSubmission = submission"
-            >
-              <strong>{{ submission.student?.full_name || submission.student?.email || "Diák" }}</strong>
-              <span>{{ submission.task_title }}</span>
-              <small>{{ formatDate(submission.created_at) }} · {{ getSubmissionStatusLabel(submission.status) }}</small>
-            </button>
-          </aside>
-
-          <article v-if="selectedWritingSubmission" class="writing-submission-detail">
-            <div class="writing-submission-detail-header">
-              <div>
-                <span class="submission-status-pill">
-                  {{ getSubmissionStatusLabel(selectedWritingSubmission.status) }}
-                </span>
-                <h2>{{ selectedWritingSubmission.task_title }}</h2>
-                <p>
-                  {{ selectedWritingSubmission.student?.full_name || selectedWritingSubmission.student?.email || "Diák" }}
-                  · {{ formatDate(selectedWritingSubmission.created_at) }}
-                </p>
-              </div>
-
-              <select
-                :value="selectedWritingSubmission.status"
-                @change="changeWritingSubmissionStatus(selectedWritingSubmission, $event.target.value)"
+            <div class="teacher-homework-actions">
+              <button
+                class="btn-outline btn-small"
+                @click="fetchWritingSubmissions"
+                :disabled="isWritingSubmissionsLoading"
               >
-                <option value="submitted">Új beküldés</option>
-                <option value="reviewing">Javítás alatt</option>
-                <option value="reviewed">Javítva</option>
-              </select>
-            </div>
-
-            <div class="writing-submission-meta">
-              <div>
-                <span>Elvárt szószám</span>
-                <strong>{{ selectedWritingSubmission.expected_word_count }} szó</strong>
-              </div>
-
-              <div>
-                <span>Diák szószáma</span>
-                <strong>{{ selectedWritingSubmission.word_count }} szó</strong>
-              </div>
-
-              <div>
-                <span>Típus</span>
-                <strong>{{ selectedWritingSubmission.task_type }}</strong>
-              </div>
-            </div>
-
-            <section class="writing-submission-task">
-              <h3>Levél témája</h3>
-              <p>{{ selectedWritingSubmission.task_situation }}</p>
-
-              <h3>Feladat pontjai</h3>
-              <ul>
-                <li
-                  v-for="point in selectedWritingSubmission.task_points"
-                  :key="point"
-                >
-                  {{ point }}
-                </li>
-              </ul>
-
-              <h3>Instrukció</h3>
-              <p>{{ selectedWritingSubmission.task_instructions }}</p>
-            </section>
-
-            <section class="writing-submission-content">
-              <h3>Diák levele</h3>
-              <p>{{ selectedWritingSubmission.content }}</p>
-            </section>
-
-            <section class="writing-review-panel">
-              <h3>Tanári értékelés</h3>
-
-              <label>
-                Osztályzat / értékelés
-                <input
-                  v-model.trim="writingReviewGrade"
-                  type="text"
-                  placeholder="pl. 4, B2: gut, 82%"
-                />
-              </label>
-
-              <label>
-                Vélemény a diáknak
-                <textarea
-                  v-model.trim="writingReviewFeedback"
-                  placeholder="Írd le röviden, mi sikerült jól, min kell javítani, mire figyeljen legközelebb..."
-                ></textarea>
-              </label>
+                Frissítés
+              </button>
 
               <button
-                @click="saveWritingReview"
-                :disabled="isSavingWritingReview || !selectedWritingSubmission"
+                class="btn-outline btn-small"
+                @click="openNewHomeworkForSelectedStudent"
               >
-                {{ isSavingWritingReview ? "Mentés..." : "Értékelés mentése" }}
+                + Új házi
               </button>
-            </section>
-          </article>
-        </div>
+            </div>
+          </div>
+
+          <div class="teacher-materials-unified">
+            <aside class="teacher-materials-list">
+              <button
+                v-for="student in teacherMaterialStudents"
+                :key="student.id"
+                class="teacher-materials-item"
+                :class="{ active: selectedTeacherMaterialStudentId === student.id }"
+                @click="selectTeacherMaterialStudent(student.id)"
+              >
+                <strong>{{ student.full_name || student.email || "Diák" }}</strong>
+                <span>{{ student.email }}</span>
+                <small>
+                  {{ student.homeworkCount }} házi · {{ student.submissionCount }} írás
+                </small>
+              </button>
+            </aside>
+
+            <article class="teacher-materials-detail">
+              <template v-if="selectedTeacherHomeworkKey === 'new'">
+                <div class="teacher-materials-detail-head">
+                  <span>Új házi</span>
+                  <h2>Feladat kiadása</h2>
+                  <p>
+                    {{
+                      selectedTeacherMaterialStudent
+                        ? `${selectedTeacherMaterialStudent.full_name || selectedTeacherMaterialStudent.email} számára`
+                        : "Válaszd ki a diákot, a feladattípust, majd írd le pontosan a kérést."
+                    }}
+                  </p>
+                </div>
+
+                <div class="homework-form-grid">
+                  <label>
+                    Diák
+                    <select v-model="newHomework.studentId">
+                      <option value="">Válassz diákot</option>
+                      <option
+                        v-for="student in students"
+                        :key="student.id"
+                        :value="student.id"
+                      >
+                        {{ student.full_name || student.email }}
+                      </option>
+                    </select>
+                  </label>
+
+                  <label>
+                    Feladat típusa
+                    <select v-model="newHomework.type">
+                      <option value="writing">Fogalmazás / levélírás</option>
+                      <option value="practice">Gyakorló feladat</option>
+                    </select>
+                  </label>
+
+                  <label v-if="newHomework.type === 'practice'">
+                    Gyakorló típus
+                    <select v-model="newHomework.practiceType">
+                      <option value="perfekt">Perfekt</option>
+                      <option value="adjektiv">Adjektivdeklination</option>
+                      <option value="passiv">Passiv</option>
+                      <option value="pronominaladverb">Pronominaladverbien</option>
+                      <option value="vocabulary">Szókincs</option>
+                    </select>
+                  </label>
+
+                  <label>
+                    Cím
+                    <input v-model.trim="newHomework.title" type="text" placeholder="pl. Panaszlevél írása" />
+                  </label>
+
+                  <label v-if="newHomework.type === 'writing'">
+                    Elvárt szószám
+                    <input v-model.number="newHomework.expectedWordCount" type="number" min="40" />
+                  </label>
+
+                  <label v-else>
+                    Feladatok száma
+                    <input v-model.number="newHomework.targetCount" type="number" min="1" />
+                  </label>
+
+                  <label>
+                    Határidő
+                    <input v-model="newHomework.dueAt" type="datetime-local" />
+                  </label>
+                </div>
+
+                <label class="homework-wide-field">
+                  Instrukció / kérés
+                  <textarea
+                    v-model.trim="newHomework.instructions"
+                    placeholder="Írd le pontosan, mit kérsz a diáktól..."
+                  ></textarea>
+                </label>
+
+                <button
+                  class="send-teacher-note-btn"
+                  @click="saveHomeworkAssignment"
+                  :disabled="isSavingHomework || !canSaveHomework"
+                >
+                  {{ isSavingHomework ? "Kiadás..." : "Házi kiadása" }}
+                </button>
+              </template>
+
+              <template v-else-if="selectedTeacherMaterialStudent">
+                <div class="teacher-selected-student-summary">
+                  <div>
+                    <strong>{{ selectedTeacherMaterialStudent.full_name || selectedTeacherMaterialStudent.email }}</strong>
+                    <span>{{ selectedTeacherMaterialStudent.email }}</span>
+                  </div>
+
+                  <em>{{ selectedTeacherStudentMaterials.length }} anyag</em>
+                </div>
+
+                <div v-if="!selectedTeacherStudentMaterials.length" class="empty-state small">
+                  Ennek a diáknak még nincs kiadott vagy beküldött anyaga.
+                </div>
+
+                <div v-else class="teacher-student-materials-layout">
+                  <aside class="teacher-student-material-list">
+                    <button
+                      v-for="item in selectedTeacherStudentMaterials"
+                      :key="item.key"
+                      class="teacher-student-material-item"
+                      :class="{ active: selectedTeacherMaterialKey === item.key }"
+                      @click="selectTeacherMaterial(item)"
+                    >
+                      <div class="teacher-student-material-title-row">
+                        <strong>{{ item.title }}</strong>
+                        <span
+                          :class="['teacher-status-dot', item.statusKey]"
+                          :title="item.statusLabel"
+                          :aria-label="item.statusLabel"
+                        ></span>
+                      </div>
+                      <span>{{ item.statusLabel }}</span>
+                      <small>{{ item.typeLabel }} · {{ formatDate(item.createdAt) }}</small>
+                    </button>
+                  </aside>
+
+                  <article v-if="selectedTeacherMaterial" class="teacher-student-material-detail">
+                    <div class="teacher-materials-detail-head compact">
+                      <span>{{ selectedTeacherMaterial.statusLabel }}</span>
+                      <h2>{{ selectedTeacherMaterial.title }}</h2>
+                      <p>{{ selectedTeacherMaterial.typeLabel }}</p>
+                    </div>
+
+                    <div class="teacher-materials-meta">
+                      <div v-if="selectedTeacherMaterial.expectedWordCount">
+                        <span>Elvárt</span>
+                        <strong>{{ selectedTeacherMaterial.expectedWordCount }} szó</strong>
+                      </div>
+
+                      <div v-if="selectedTeacherMaterial.wordCount">
+                        <span>Szószám</span>
+                        <strong>{{ selectedTeacherMaterial.wordCount }} szó</strong>
+                      </div>
+
+                      <div v-if="selectedTeacherMaterial.targetCount">
+                        <span>Cél</span>
+                        <strong>{{ selectedTeacherMaterial.targetCount }} feladat</strong>
+                      </div>
+
+                      <div v-if="selectedTeacherMaterial.dueAt">
+                        <span>Határidő</span>
+                        <strong>{{ formatDate(selectedTeacherMaterial.dueAt) }}</strong>
+                      </div>
+                    </div>
+
+                    <template v-if="selectedTeacherMaterial.kind === 'homework'">
+                      <section>
+                        <h3>Instrukció</h3>
+                        <p>{{ selectedTeacherMaterial.raw.instructions }}</p>
+                      </section>
+                    </template>
+
+                    <template v-else>
+                      <section class="writing-submission-task">
+                        <h3>Levél témája</h3>
+                        <p>{{ selectedTeacherMaterial.raw.task_situation }}</p>
+
+                        <template v-if="selectedTeacherMaterial.raw.task_points?.length">
+                          <h3>Feladat pontjai</h3>
+                          <ul>
+                            <li
+                              v-for="point in selectedTeacherMaterial.raw.task_points"
+                              :key="point"
+                            >
+                              {{ point }}
+                            </li>
+                          </ul>
+                        </template>
+
+                        <h3>Instrukció</h3>
+                        <p>{{ selectedTeacherMaterial.raw.task_instructions }}</p>
+                      </section>
+
+                      <section class="writing-submission-content">
+                        <h3>Diák levele</h3>
+                        <p>{{ selectedTeacherMaterial.raw.content }}</p>
+                      </section>
+
+                      <section class="writing-review-panel">
+                        <h3>Tanári értékelés</h3>
+
+                        <label>
+                          Osztályzat / értékelés
+                          <input
+                            v-model.trim="writingReviewGrade"
+                            type="text"
+                            placeholder="pl. 4, B2: gut, 82%"
+                          />
+                        </label>
+
+                        <label>
+                          Vélemény a diáknak
+                          <textarea
+                            v-model.trim="writingReviewFeedback"
+                            placeholder="Írd le röviden, mi sikerült jól, min kell javítani, mire figyeljen legközelebb..."
+                          ></textarea>
+                        </label>
+
+                        <button
+                          @click="saveWritingReview"
+                          :disabled="isSavingWritingReview || !selectedWritingSubmission"
+                        >
+                          {{ isSavingWritingReview ? "Mentés..." : "Értékelés mentése" }}
+                        </button>
+                      </section>
+                    </template>
+                  </article>
+                </div>
+              </template>
+
+              <div v-else class="empty-state small">
+                Válassz diákot a listából.
+              </div>
+            </article>
+          </div>
+        </section>
       </section>
 
       <section v-else class="exercise-manager">
@@ -757,6 +990,12 @@ import {
   createHomeworkAssignment,
   fetchTeacherHomeworkAssignments,
 } from "../services/homeworkService";
+import {
+  createLessonSession,
+  fetchTeacherLessonSessions,
+  updateLessonStatus,
+  updateLessonWorkbook,
+} from "../services/lessonSessionService";
 import verbsData from "../data/verbs.json";
 import nomenData from "../data/nomen.json";
 import adjektivData from "../data/adjektiv.json";
@@ -807,6 +1046,24 @@ export default {
 
       teacherNoteText: "",
       isSendingTeacherNote: false,
+      lessonSessions: [],
+      selectedLessonId: "",
+      isLessonSessionsLoading: false,
+      isSavingLesson: false,
+      isSavingLessonWorkbook: false,
+      lessonSessionSetupError: false,
+      newLesson: {
+        scheduledAt: "",
+        meetUrl: "",
+        topic: "",
+        goal: "",
+      },
+      lessonWorkbookDraft: {
+        sharedNotes: "",
+        vocabularyNotes: "",
+        correctionsNotes: "",
+        nextSteps: "",
+      },
 
       isLoading: false,
       isStudentDataLoading: false,
@@ -822,6 +1079,9 @@ export default {
       writingReviewFeedback: "",
       isSavingWritingReview: false,
       homeworkAssignments: [],
+      selectedTeacherHomeworkKey: "new",
+      selectedTeacherMaterialStudentId: "",
+      selectedTeacherMaterialKey: "",
       isSavingHomework: false,
       newHomework: {
         studentId: "",
@@ -1116,6 +1376,134 @@ export default {
       );
     },
 
+    selectedTeacherHomework() {
+      if (this.selectedTeacherHomeworkKey === "new") {
+        return null;
+      }
+
+      return this.homeworkAssignments.find((assignment) => {
+        return assignment.id === this.selectedTeacherHomeworkKey;
+      }) || null;
+    },
+
+    teacherMaterialStudents() {
+      return this.students.map((student) => {
+        const homeworkCount = this.homeworkAssignments.filter((assignment) => {
+          return assignment.student_id === student.id;
+        }).length;
+
+        const submissionCount = this.writingSubmissions.filter((submission) => {
+          return submission.student_id === student.id;
+        }).length;
+
+        return {
+          ...student,
+          homeworkCount,
+          submissionCount,
+        };
+      });
+    },
+
+    selectedTeacherMaterialStudent() {
+      return this.teacherMaterialStudents.find((student) => {
+        return student.id === this.selectedTeacherMaterialStudentId;
+      }) || this.teacherMaterialStudents[0] || null;
+    },
+
+    selectedTeacherStudentMaterials() {
+      const studentId = this.selectedTeacherMaterialStudent?.id;
+
+      if (!studentId) {
+        return [];
+      }
+
+      const homeworkItems = this.homeworkAssignments
+        .filter((assignment) => assignment.student_id === studentId)
+        .map((assignment) => ({
+          key: `homework-${assignment.id}`,
+          kind: "homework",
+          raw: assignment,
+          title: assignment.title,
+          statusKey: assignment.status,
+          statusLabel: this.getHomeworkStatusLabel(assignment.status),
+          typeLabel: this.getHomeworkTypeLabel(assignment),
+          expectedWordCount: assignment.expected_word_count,
+          targetCount: assignment.target_count,
+          dueAt: assignment.due_at,
+          createdAt: assignment.created_at,
+        }));
+
+      const submissionItems = this.writingSubmissions
+        .filter((submission) => submission.student_id === studentId)
+        .map((submission) => ({
+          key: `submission-${submission.id}`,
+          kind: "submission",
+          raw: submission,
+          title: submission.task_title,
+          statusKey: submission.status,
+          statusLabel: this.getSubmissionStatusLabel(submission.status),
+          typeLabel: "Beküldött írás",
+          expectedWordCount: submission.expected_word_count,
+          wordCount: submission.word_count,
+          createdAt: submission.created_at,
+        }));
+
+      return [...homeworkItems, ...submissionItems].sort((a, b) => {
+        return new Date(b.createdAt || 0) - new Date(a.createdAt || 0);
+      });
+    },
+
+    selectedTeacherMaterial() {
+      if (!this.selectedTeacherStudentMaterials.length) {
+        return null;
+      }
+
+      return this.selectedTeacherStudentMaterials.find((item) => {
+        return item.key === this.selectedTeacherMaterialKey;
+      }) || this.selectedTeacherStudentMaterials[0];
+    },
+
+    selectedStudentLessons() {
+      if (!this.selectedStudent?.id) {
+        return [];
+      }
+
+      return this.lessonSessions
+        .filter((lesson) => lesson.student_id === this.selectedStudent.id)
+        .sort((a, b) => new Date(b.scheduled_at || 0) - new Date(a.scheduled_at || 0));
+    },
+
+    selectedStudentNextLesson() {
+      const now = new Date();
+      const upcoming = this.selectedStudentLessons
+        .filter((lesson) => {
+          return lesson.status === "scheduled" && new Date(lesson.scheduled_at) >= now;
+        })
+        .sort((a, b) => new Date(a.scheduled_at) - new Date(b.scheduled_at));
+
+      return upcoming[0] || null;
+    },
+
+    selectedLesson() {
+      if (!this.selectedStudentLessons.length || !this.selectedLessonId) {
+        return null;
+      }
+
+      return this.selectedStudentLessons.find((lesson) => {
+        return lesson.id === this.selectedLessonId;
+      }) || null;
+    },
+
+    upcomingTeacherLessons() {
+      const now = new Date();
+
+      return this.lessonSessions
+        .filter((lesson) => {
+          return lesson.status === "scheduled" && new Date(lesson.scheduled_at) >= now;
+        })
+        .sort((a, b) => new Date(a.scheduled_at) - new Date(b.scheduled_at));
+    },
+
     teacherFocusTitle() {
       const attentionStudent = this.teacherOverview.attentionStudents[0];
 
@@ -1172,6 +1560,15 @@ export default {
       this.writingReviewGrade = submission?.grade || "";
       this.writingReviewFeedback = submission?.teacher_feedback || "";
     },
+
+    selectedTeacherMaterial(material) {
+      this.selectedWritingSubmission =
+        material?.kind === "submission" ? material.raw : null;
+    },
+
+    selectedLesson(lesson) {
+      this.syncLessonWorkbookDraft(lesson);
+    },
   },
 
   methods: {
@@ -1199,6 +1596,18 @@ export default {
       await this.selectStudent(student);
     },
 
+    async openLessonFromPortal(lesson) {
+      const studentId = lesson.student_id || lesson.student?.id;
+      const student = this.students.find((item) => item.id === studentId);
+
+      if (!student) return;
+
+      this.activeTeacherSection = "students";
+      await this.selectStudent(student);
+      this.selectedLessonId = lesson.id;
+      this.syncLessonWorkbookDraft(lesson);
+    },
+
     goToTeacherPortal() {
       this.activeTeacherSection = null;
       this.clearSelectedStudent();
@@ -1211,10 +1620,13 @@ export default {
 
       try {
         this.students = await fetchTeacherStudents();
+        this.selectedTeacherMaterialStudentId =
+          this.selectedTeacherMaterialStudentId || this.students[0]?.id || "";
         await Promise.all([
           this.fetchTeacherOverview(),
           this.fetchWritingSubmissions(),
           this.fetchHomeworkAssignments(),
+          this.fetchLessonSessions(),
         ]);
       } catch (error) {
         console.error("Hiba a diákok lekérésekor:", error.message);
@@ -1249,8 +1661,30 @@ export default {
     async fetchHomeworkAssignments() {
       try {
         this.homeworkAssignments = await fetchTeacherHomeworkAssignments();
+
+        if (
+          this.selectedTeacherHomeworkKey !== "new" &&
+          !this.homeworkAssignments.some((item) => item.id === this.selectedTeacherHomeworkKey)
+        ) {
+          this.selectedTeacherHomeworkKey = "new";
+        }
       } catch (error) {
         console.error("Kiadott házik lekérési hiba:", error.message);
+      }
+    },
+
+    async fetchLessonSessions() {
+      this.isLessonSessionsLoading = true;
+      this.lessonSessionSetupError = false;
+
+      try {
+        this.lessonSessions = await fetchTeacherLessonSessions();
+        this.syncLessonWorkbookDraft(this.selectedLesson);
+      } catch (error) {
+        console.error("Online órák lekérési hiba:", error.message);
+        this.lessonSessionSetupError = error.message?.includes("lesson_sessions");
+      } finally {
+        this.isLessonSessionsLoading = false;
       }
     },
 
@@ -1281,6 +1715,9 @@ export default {
 
         if (assignment) {
           await this.fetchHomeworkAssignments();
+          this.selectedTeacherMaterialStudentId = assignment.student_id;
+          this.selectedTeacherMaterialKey = `homework-${assignment.id}`;
+          this.selectedTeacherHomeworkKey = "";
         }
 
         this.newHomework = {
@@ -1375,9 +1812,32 @@ export default {
       return "Fogalmazás / levélírás";
     },
 
+    selectTeacherHomework(key) {
+      this.selectedTeacherHomeworkKey = key;
+    },
+
+    selectTeacherMaterialStudent(studentId) {
+      this.selectedTeacherMaterialStudentId = studentId;
+      this.selectedTeacherHomeworkKey = "";
+      this.selectedTeacherMaterialKey = "";
+    },
+
+    selectTeacherMaterial(item) {
+      this.selectedTeacherMaterialKey = item.key;
+      this.selectedTeacherHomeworkKey = "";
+      this.selectedWritingSubmission = item.kind === "submission" ? item.raw : null;
+    },
+
+    openNewHomeworkForSelectedStudent() {
+      this.selectedTeacherHomeworkKey = "new";
+      this.selectedTeacherMaterialKey = "";
+      this.newHomework.studentId = this.selectedTeacherMaterialStudent?.id || "";
+    },
+
     async selectStudent(student) {
       this.selectedStudent = student;
       this.isStudentDataLoading = true;
+      this.selectedLessonId = "";
 
       this.teacherNoteText = "";
       this.studentNotes = [];
@@ -1403,11 +1863,14 @@ export default {
         this.fetchStudentResults(student.id),
       ]);
 
+      this.selectedLessonId = this.selectedLesson?.id || "";
+      this.syncLessonWorkbookDraft(this.selectedLesson);
       this.isStudentDataLoading = false;
     },
 
     clearSelectedStudent() {
       this.selectedStudent = null;
+      this.selectedLessonId = "";
       this.teacherNoteText = "";
       this.studentNotes = [];
       this.studentFiles = [];
@@ -1425,6 +1888,7 @@ export default {
         accuracy: 0,
         totalDone: 0,
       };
+      this.syncLessonWorkbookDraft(null);
     },
 
     async fetchStudentNotes(studentId) {
@@ -1459,6 +1923,142 @@ export default {
       } finally {
         this.isSendingTeacherNote = false;
       }
+    },
+
+    selectLessonSession(lesson) {
+      if (this.selectedLessonId === lesson.id) {
+        this.closeSelectedLesson();
+        return;
+      }
+
+      this.selectedLessonId = lesson.id;
+      this.syncLessonWorkbookDraft(lesson);
+    },
+
+    closeSelectedLesson() {
+      this.selectedLessonId = "";
+      this.syncLessonWorkbookDraft(null);
+    },
+
+    syncLessonWorkbookDraft(lesson) {
+      this.lessonWorkbookDraft = {
+        sharedNotes: lesson?.shared_notes || "",
+        vocabularyNotes: lesson?.vocabulary_notes || "",
+        correctionsNotes: lesson?.corrections_notes || "",
+        nextSteps: lesson?.next_steps || "",
+      };
+    },
+
+    async scheduleLessonForSelectedStudent() {
+      if (!this.selectedStudent?.id || !this.newLesson.scheduledAt || this.isSavingLesson) {
+        return;
+      }
+
+      this.isSavingLesson = true;
+
+      try {
+        const lesson = await createLessonSession({
+          teacherId: this.currentTeacherId,
+          studentId: this.selectedStudent.id,
+          scheduledAt: new Date(this.newLesson.scheduledAt).toISOString(),
+          meetUrl: this.newLesson.meetUrl,
+          topic: this.newLesson.topic,
+          goal: this.newLesson.goal,
+        });
+
+        this.newLesson = {
+          scheduledAt: "",
+          meetUrl: "",
+          topic: "",
+          goal: "",
+        };
+
+        await this.fetchLessonSessions();
+
+        if (lesson) {
+          this.selectedLessonId = lesson.id;
+          this.syncLessonWorkbookDraft(lesson);
+        }
+      } catch (error) {
+        console.error("Óra ütemezési hiba:", error.message);
+        alert("Nem sikerült ütemezni az órát.");
+      } finally {
+        this.isSavingLesson = false;
+      }
+    },
+
+    async saveSelectedLessonWorkbook() {
+      if (!this.selectedLesson?.id || this.isSavingLessonWorkbook) {
+        return;
+      }
+
+      this.isSavingLessonWorkbook = true;
+
+      try {
+        const updated = await updateLessonWorkbook(
+          this.selectedLesson.id,
+          this.lessonWorkbookDraft,
+        );
+
+        this.lessonSessions = this.lessonSessions.map((lesson) =>
+          lesson.id === updated.id ? { ...lesson, ...updated } : lesson,
+        );
+      } catch (error) {
+        console.error("Munkafüzet mentési hiba:", error.message);
+        alert("Nem sikerült menteni a munkafüzetet.");
+      } finally {
+        this.isSavingLessonWorkbook = false;
+      }
+    },
+
+    async completeSelectedLesson() {
+      if (!this.selectedLesson?.id) {
+        return;
+      }
+
+      try {
+        const updated = await updateLessonStatus(this.selectedLesson.id, "completed");
+
+        this.lessonSessions = this.lessonSessions.map((lesson) =>
+          lesson.id === updated.id ? { ...lesson, ...updated } : lesson,
+        );
+        this.closeSelectedLesson();
+      } catch (error) {
+        console.error("Óra lezárási hiba:", error.message);
+        alert("Nem sikerült lezárni az órát.");
+      }
+    },
+
+    getLessonStatusLabel(status) {
+      const labels = {
+        scheduled: "Ütemezve",
+        completed: "Lezárva",
+        cancelled: "Lemondva",
+      };
+
+      return labels[status] || "Óra";
+    },
+
+    getLessonDayLabel(dateValue) {
+      if (!dateValue) {
+        return "";
+      }
+
+      return new Intl.DateTimeFormat("hu-HU", {
+        month: "short",
+        day: "numeric",
+      }).format(new Date(dateValue));
+    },
+
+    getLessonTimeLabel(dateValue) {
+      if (!dateValue) {
+        return "";
+      }
+
+      return new Intl.DateTimeFormat("hu-HU", {
+        hour: "2-digit",
+        minute: "2-digit",
+      }).format(new Date(dateValue));
     },
 
     async fetchStudentFiles(studentId) {

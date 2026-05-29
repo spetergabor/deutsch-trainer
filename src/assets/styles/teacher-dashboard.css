@@ -280,6 +280,175 @@
   background: rgba(255, 255, 255, 0.12);
 }
 
+.teacher-upcoming-lessons {
+  padding: 22px;
+  border: 1px solid rgba(79, 172, 254, 0.22);
+  border-radius: 28px;
+  background:
+    radial-gradient(circle at left top, rgba(79, 172, 254, 0.12), transparent 34%),
+    rgba(255, 255, 255, 0.055);
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.22);
+}
+
+.teacher-upcoming-lessons-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.teacher-upcoming-lessons-head span {
+  display: inline-flex;
+  margin-bottom: 8px;
+  padding: 7px 12px;
+  border-radius: 999px;
+  background: rgba(79, 172, 254, 0.16);
+  color: #80caff;
+  font-size: 0.82rem;
+  font-weight: 950;
+}
+
+.teacher-upcoming-lessons-head h2 {
+  margin: 0;
+  color: #ffffff;
+  font-size: clamp(1.25rem, 2.2vw, 1.7rem);
+  font-weight: 950;
+}
+
+.teacher-upcoming-lessons-head button {
+  flex: 0 0 auto;
+  padding: 11px 15px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.07);
+  color: #ffffff;
+  font: inherit;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.teacher-upcoming-empty {
+  padding: 18px;
+  border-radius: 18px;
+  background: rgba(0, 0, 0, 0.18);
+  color: rgba(255, 255, 255, 0.62);
+  font-weight: 850;
+}
+
+.teacher-upcoming-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.teacher-upcoming-lesson {
+  min-width: 0;
+  padding: 16px;
+  border: 1px solid rgba(79, 172, 254, 0.18);
+  border-radius: 20px;
+  background: rgba(0, 0, 0, 0.16);
+
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 14px;
+  align-items: start;
+}
+
+.teacher-upcoming-date {
+  width: 76px;
+  min-height: 74px;
+  padding: 10px;
+  border-radius: 18px;
+  background: rgba(79, 172, 254, 0.14);
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 4px;
+  text-align: center;
+}
+
+.teacher-upcoming-date strong {
+  color: #ffffff;
+  font-size: 0.95rem;
+  font-weight: 950;
+}
+
+.teacher-upcoming-date span {
+  color: #80caff;
+  font-size: 0.85rem;
+  font-weight: 900;
+}
+
+.teacher-upcoming-body {
+  min-width: 0;
+}
+
+.teacher-upcoming-body small,
+.teacher-upcoming-body h3,
+.teacher-upcoming-body p {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.teacher-upcoming-body small {
+  display: block;
+  margin-bottom: 5px;
+  color: rgba(255, 255, 255, 0.54);
+  font-weight: 850;
+  white-space: nowrap;
+}
+
+.teacher-upcoming-body h3 {
+  margin: 0 0 6px;
+  color: #ffffff;
+  font-size: 1.15rem;
+  font-weight: 950;
+  line-height: 1.15;
+  white-space: nowrap;
+}
+
+.teacher-upcoming-body p {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.62);
+  font-weight: 750;
+  line-height: 1.35;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+.teacher-upcoming-actions {
+  grid-column: 1 / -1;
+  display: flex;
+  gap: 10px;
+}
+
+.teacher-upcoming-actions a,
+.teacher-upcoming-actions button {
+  flex: 1;
+  min-height: 42px;
+  padding: 10px 13px;
+  border-radius: 999px;
+  color: #ffffff;
+  font: inherit;
+  font-weight: 950;
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.teacher-upcoming-actions a {
+  background: rgba(79, 172, 254, 0.16);
+  color: #80caff;
+}
+
+.teacher-upcoming-actions button {
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.07);
+}
+
 .teacher-workspace-header {
   align-items: flex-start;
   margin-bottom: 20px;
@@ -604,6 +773,19 @@
 
   .teacher-focus-students {
     grid-template-columns: 1fr;
+  }
+
+  .teacher-upcoming-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .teacher-upcoming-lessons-head {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .teacher-upcoming-lessons-head button {
+    width: 100%;
   }
 
   .teacher-focus-panel {
@@ -1052,6 +1234,7 @@
   white-space: pre-wrap;
 }
 
+.teacher-homework-panel,
 .homework-create-card,
 .homework-assignment-list {
   padding: 20px;
@@ -1059,6 +1242,331 @@
   border-radius: 24px;
   background: rgba(255, 255, 255, 0.055);
   box-shadow: 0 18px 40px rgba(0, 0, 0, 0.22);
+}
+
+.teacher-homework-panel {
+  border-color: rgba(255, 213, 106, 0.2);
+}
+
+.teacher-homework-panel-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 18px;
+  margin-bottom: 18px;
+}
+
+.teacher-homework-panel-head h2 {
+  margin: 0 0 6px;
+  color: #ffffff;
+}
+
+.teacher-homework-panel-head p {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.6);
+  font-weight: 800;
+  line-height: 1.45;
+}
+
+.teacher-homework-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.teacher-materials-unified {
+  display: grid;
+  grid-template-columns: 320px minmax(0, 1fr);
+  gap: 18px;
+  align-items: start;
+}
+
+.teacher-materials-list,
+.teacher-materials-detail {
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.055);
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.22);
+}
+
+.teacher-materials-list {
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.teacher-materials-item {
+  width: 100%;
+  padding: 14px;
+  border: 1px solid transparent;
+  border-radius: 18px;
+  background: rgba(0, 0, 0, 0.18);
+  color: #ffffff;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.teacher-materials-item.active {
+  border-color: rgba(255, 213, 106, 0.4);
+  background: rgba(255, 213, 106, 0.12);
+}
+
+.teacher-materials-item.create {
+  border-color: rgba(67, 233, 123, 0.22);
+  background: rgba(67, 233, 123, 0.08);
+}
+
+.teacher-materials-item strong,
+.teacher-materials-item span,
+.teacher-materials-item small {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.teacher-materials-item strong {
+  color: #ffffff;
+}
+
+.teacher-materials-item span,
+.teacher-materials-item small {
+  color: rgba(255, 255, 255, 0.56);
+  font-weight: 800;
+}
+
+.teacher-materials-detail {
+  min-width: 0;
+  padding: 22px;
+}
+
+.teacher-materials-detail-head {
+  margin-bottom: 18px;
+}
+
+.teacher-materials-detail-head span {
+  width: max-content;
+  max-width: 100%;
+  padding: 7px 10px;
+  border-radius: 999px;
+  background: rgba(255, 213, 106, 0.14);
+  color: #ffdc7a;
+  font-size: 0.78rem;
+  font-weight: 950;
+}
+
+.teacher-materials-detail-head h2 {
+  margin: 10px 0 6px;
+  color: #ffffff;
+  font-size: clamp(1.5rem, 3vw, 2.2rem);
+  font-weight: 950;
+  line-height: 1.08;
+}
+
+.teacher-materials-detail-head p {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.58);
+  font-weight: 800;
+  line-height: 1.45;
+}
+
+.teacher-materials-meta {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.teacher-materials-meta div,
+.teacher-materials-detail section {
+  border-radius: 18px;
+  background: rgba(0, 0, 0, 0.16);
+}
+
+.teacher-materials-meta div {
+  padding: 14px;
+}
+
+.teacher-materials-meta span,
+.teacher-materials-meta strong {
+  display: block;
+}
+
+.teacher-materials-meta span {
+  color: rgba(255, 255, 255, 0.52);
+  font-size: 0.82rem;
+  font-weight: 850;
+}
+
+.teacher-materials-meta strong {
+  margin-top: 5px;
+  color: #ffffff;
+  font-weight: 950;
+}
+
+.teacher-materials-detail section {
+  margin-top: 14px;
+  padding: 18px;
+}
+
+.teacher-materials-detail h3 {
+  margin: 0 0 8px;
+  color: #ffffff;
+}
+
+.teacher-materials-detail p {
+  color: rgba(255, 255, 255, 0.72);
+  font-weight: 750;
+  line-height: 1.58;
+}
+
+.teacher-selected-student-summary {
+  margin-bottom: 18px;
+  padding: 12px 14px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 18px;
+  background: rgba(0, 0, 0, 0.14);
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.teacher-selected-student-summary div {
+  min-width: 0;
+}
+
+.teacher-selected-student-summary strong,
+.teacher-selected-student-summary span {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.teacher-selected-student-summary strong {
+  color: #ffffff;
+  font-size: 1rem;
+  font-weight: 950;
+}
+
+.teacher-selected-student-summary span {
+  margin-top: 3px;
+  color: rgba(255, 255, 255, 0.54);
+  font-weight: 800;
+}
+
+.teacher-selected-student-summary em {
+  flex: 0 0 auto;
+  padding: 7px 10px;
+  border-radius: 999px;
+  background: rgba(255, 213, 106, 0.12);
+  color: #ffdc7a;
+  font-style: normal;
+  font-size: 0.78rem;
+  font-weight: 950;
+}
+
+.teacher-materials-detail-head.compact h2 {
+  font-size: clamp(1.25rem, 2.2vw, 1.8rem);
+}
+
+.teacher-student-materials-layout {
+  display: grid;
+  grid-template-columns: 280px minmax(0, 1fr);
+  gap: 14px;
+  align-items: start;
+}
+
+.teacher-student-material-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.teacher-student-material-item {
+  width: 100%;
+  padding: 13px;
+  border: 1px solid transparent;
+  border-radius: 16px;
+  background: rgba(0, 0, 0, 0.18);
+  color: #ffffff;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.teacher-student-material-item.active {
+  border-color: rgba(255, 213, 106, 0.4);
+  background: rgba(255, 213, 106, 0.12);
+}
+
+.teacher-student-material-title-row {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.teacher-status-dot {
+  display: block;
+  width: 11px;
+  height: 11px;
+  border-radius: 999px;
+  flex: 0 0 11px;
+  background: rgba(255, 255, 255, 0.32);
+  box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.06);
+}
+
+.teacher-status-dot.assigned,
+.teacher-status-dot.opened {
+  background: #ffdc7a;
+  box-shadow: 0 0 0 4px rgba(255, 220, 122, 0.14);
+}
+
+.teacher-status-dot.submitted {
+  background: #62b6ff;
+  box-shadow: 0 0 0 4px rgba(98, 182, 255, 0.14);
+}
+
+.teacher-status-dot.reviewing {
+  background: #b79cff;
+  box-shadow: 0 0 0 4px rgba(183, 156, 255, 0.14);
+}
+
+.teacher-status-dot.reviewed {
+  background: #79f2a8;
+  box-shadow: 0 0 0 4px rgba(121, 242, 168, 0.14);
+}
+
+.teacher-student-material-item strong,
+.teacher-student-material-item span,
+.teacher-student-material-item small {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.teacher-student-material-item span,
+.teacher-student-material-item small {
+  color: rgba(255, 255, 255, 0.56);
+  font-weight: 800;
+}
+
+.teacher-student-material-detail {
+  min-width: 0;
 }
 
 .homework-create-card h3,
@@ -1091,6 +1599,34 @@
   color: #ffffff;
   font: inherit;
   font-weight: 750;
+}
+
+.teacher-dashboard .homework-form-grid input,
+.teacher-dashboard .homework-form-grid select,
+.teacher-dashboard .homework-wide-field textarea,
+.teacher-dashboard .writing-review-panel input,
+.teacher-dashboard .writing-review-panel textarea {
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  border-radius: 14px !important;
+  background: rgba(0, 0, 0, 0.22) !important;
+  color: #ffffff !important;
+  box-shadow: none !important;
+  -webkit-text-fill-color: #ffffff;
+}
+
+.teacher-dashboard .homework-form-grid input::placeholder,
+.teacher-dashboard .homework-wide-field textarea::placeholder,
+.teacher-dashboard .writing-review-panel input::placeholder,
+.teacher-dashboard .writing-review-panel textarea::placeholder {
+  color: rgba(255, 255, 255, 0.38);
+  -webkit-text-fill-color: rgba(255, 255, 255, 0.38);
+}
+
+.teacher-dashboard .homework-form-grid input:-webkit-autofill,
+.teacher-dashboard .writing-review-panel input:-webkit-autofill {
+  box-shadow: inset 0 0 0 1000px #211622 !important;
+  -webkit-text-fill-color: #ffffff !important;
+  caret-color: #ffffff;
 }
 
 .homework-wide-field {
@@ -1538,6 +2074,214 @@
   gap: 18px;
 }
 
+.lesson-workbook-card {
+  order: -1;
+  grid-column: 1 / -1;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.lesson-card-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.lesson-card-head h3 {
+  margin-bottom: 4px;
+}
+
+.lesson-card-head p {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.58);
+  font-weight: 800;
+}
+
+.lesson-card-head > span {
+  flex: 0 0 auto;
+  padding: 8px 11px;
+  border-radius: 999px;
+  background: rgba(255, 213, 106, 0.13);
+  color: #ffdc7a;
+  font-size: 0.8rem;
+  font-weight: 950;
+}
+
+.lesson-schedule-form {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.lesson-schedule-form label,
+.lesson-workbook-editor label {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  color: rgba(255, 255, 255, 0.68);
+  font-weight: 900;
+}
+
+.lesson-schedule-form input,
+.lesson-workbook-editor textarea {
+  width: 100%;
+  padding: 12px 13px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 14px;
+  background: rgba(0, 0, 0, 0.22);
+  color: #ffffff;
+  font: inherit;
+  font-weight: 750;
+  box-sizing: border-box;
+}
+
+.teacher-dashboard .lesson-schedule-form input,
+.teacher-dashboard .lesson-workbook-editor textarea {
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  border-radius: 14px !important;
+  background: rgba(0, 0, 0, 0.22) !important;
+  color: #ffffff !important;
+  box-shadow: none !important;
+  -webkit-text-fill-color: #ffffff;
+}
+
+.teacher-dashboard .lesson-schedule-form input::placeholder,
+.teacher-dashboard .lesson-workbook-editor textarea::placeholder {
+  color: rgba(255, 255, 255, 0.38);
+  -webkit-text-fill-color: rgba(255, 255, 255, 0.38);
+}
+
+.teacher-dashboard .lesson-schedule-form input:-webkit-autofill {
+  box-shadow: inset 0 0 0 1000px #211622 !important;
+  -webkit-text-fill-color: #ffffff !important;
+  caret-color: #ffffff;
+}
+
+.lesson-workbook-editor textarea {
+  min-height: 92px;
+  resize: vertical;
+}
+
+.lesson-session-list {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.lesson-session-item {
+  padding: 13px;
+  border: 1px solid transparent;
+  border-radius: 16px;
+  background: rgba(0, 0, 0, 0.18);
+  color: #ffffff;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.lesson-session-item.active {
+  border-color: rgba(255, 213, 106, 0.38);
+  background: rgba(255, 213, 106, 0.1);
+}
+
+.lesson-session-item strong,
+.lesson-session-item span,
+.lesson-session-item small {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.lesson-session-item span,
+.lesson-session-item small {
+  color: rgba(255, 255, 255, 0.58);
+  font-weight: 800;
+}
+
+.lesson-workbook-editor {
+  padding: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  background: rgba(0, 0, 0, 0.14);
+
+  display: grid;
+  gap: 12px;
+}
+
+.lesson-workbook-title,
+.lesson-workbook-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.lesson-workbook-title-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.lesson-workbook-title strong,
+.lesson-workbook-title span {
+  display: block;
+}
+
+.lesson-workbook-title strong {
+  color: #ffffff;
+  font-weight: 950;
+}
+
+.lesson-workbook-title span {
+  margin-top: 4px;
+  color: rgba(255, 255, 255, 0.58);
+  font-weight: 800;
+}
+
+.lesson-workbook-title a {
+  padding: 9px 13px;
+  border-radius: 999px;
+  background: rgba(79, 172, 254, 0.14);
+  color: #80caff;
+  text-decoration: none;
+  font-weight: 950;
+}
+
+.lesson-workbook-close {
+  padding: 9px 13px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.07);
+  color: #ffffff;
+  font: inherit;
+  font-weight: 950;
+  cursor: pointer;
+}
+
+.lesson-workbook-actions button {
+  flex: 1;
+  padding: 13px 18px;
+  border: none;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #35d06f, #2fc061);
+  color: #ffffff;
+  font: inherit;
+  font-weight: 950;
+  cursor: pointer;
+}
+
+.lesson-workbook-actions button.secondary {
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.07);
+}
+
 .teacher-note-card h3 {
   margin-bottom: 6px;
 }
@@ -1626,4 +2370,60 @@
   cursor: not-allowed;
   transform: none;
   filter: grayscale(0.35);
+}
+
+@media (max-width: 900px) {
+  .teacher-homework-panel-head {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .teacher-homework-actions {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .teacher-homework-actions button {
+    width: 100%;
+  }
+
+  .teacher-materials-unified {
+    grid-template-columns: 1fr;
+  }
+
+  .teacher-student-materials-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .teacher-materials-meta,
+  .homework-form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .lesson-workbook-card {
+    grid-column: span 1;
+  }
+
+  .lesson-card-head,
+  .lesson-workbook-title,
+  .lesson-workbook-actions {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .lesson-workbook-title-actions {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .lesson-workbook-title-actions a,
+  .lesson-workbook-close {
+    text-align: center;
+    width: 100%;
+  }
+
+  .lesson-schedule-form,
+  .lesson-session-list {
+    grid-template-columns: 1fr;
+  }
 }

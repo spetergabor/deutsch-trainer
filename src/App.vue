@@ -118,6 +118,7 @@
         @exercise-finished="handleExerciseFinished"
         @logout="handleLogout"
         @set-mode="setCurrentMode"
+        @start-homework-practice="startHomeworkPractice"
         @upload-file="uploadFile"
         @update:new-note-text="newNoteText = $event"
         @save-note="saveNote"
@@ -206,6 +207,10 @@ import {
   getWeakTopics,
 } from "./utils/statistics";
 import { getDateKey, calculateLoginActivity } from "./utils/activity";
+import {
+  countHomeworkPracticeResults,
+  updateHomeworkStatus,
+} from "./services/homeworkService";
 
 export default {
   name: "App",
@@ -246,6 +251,7 @@ export default {
       currentMode: null,
       selectedStoryId: null,
       teacherInitialSection: null,
+      activeHomeworkAssignment: null,
 
       newNoteText: "",
       savedNotes: [],
@@ -400,6 +406,7 @@ export default {
       this.currentMode = mode;
       this.selectedStoryId = null;
       this.teacherInitialSection = null;
+      this.activeHomeworkAssignment = null;
       this.showNotificationsMenu = false;
       this.showMessagesPanel = false;
       this.scrollToPageTop();
@@ -418,6 +425,19 @@ export default {
       this.currentMode = "student-materials";
       this.selectedStoryId = null;
       this.teacherInitialSection = null;
+      this.activeHomeworkAssignment = null;
+      this.showNotificationsMenu = false;
+      this.showMessagesPanel = false;
+      this.scrollToPageTop();
+    },
+
+    startHomeworkPractice(assignment) {
+      if (!assignment?.practice_type) return;
+
+      this.activeHomeworkAssignment = assignment;
+      this.currentMode = assignment.practice_type;
+      this.selectedStoryId = null;
+      this.teacherInitialSection = null;
       this.showNotificationsMenu = false;
       this.showMessagesPanel = false;
       this.scrollToPageTop();
@@ -427,6 +447,7 @@ export default {
       this.selectedStoryId = storyId;
       this.currentMode = "story-reading";
       this.teacherInitialSection = null;
+      this.activeHomeworkAssignment = null;
       this.showNotificationsMenu = false;
       this.showMessagesPanel = false;
       this.scrollToPageTop();
@@ -438,6 +459,7 @@ export default {
       this.currentMode = null;
       this.selectedStoryId = null;
       this.teacherInitialSection = null;
+      this.activeHomeworkAssignment = null;
       this.showNotificationsMenu = false;
       this.showMessagesPanel = false;
       this.scrollToPageTop();
@@ -462,6 +484,33 @@ export default {
 
       this.activityStats.today = Math.min(this.activityStats.today + 1, 10);
       await this.fetchStatistics();
+      await this.checkActiveHomeworkPracticeProgress();
+    },
+
+    async checkActiveHomeworkPracticeProgress() {
+      const assignment = this.activeHomeworkAssignment;
+
+      if (
+        !assignment ||
+        assignment.type !== "practice" ||
+        assignment.status === "submitted" ||
+        assignment.status === "reviewed"
+      ) {
+        return;
+      }
+
+      try {
+        const completedCount = await countHomeworkPracticeResults(assignment);
+        const targetCount = Number(assignment.target_count) || 0;
+
+        if (targetCount && completedCount >= targetCount) {
+          const updated = await updateHomeworkStatus(assignment.id, "submitted");
+          this.activeHomeworkAssignment = updated;
+          alert("A gyakorló házi elkészült.");
+        }
+      } catch (error) {
+        console.error("Gyakorló házi haladás ellenőrzési hiba:", error.message);
+      }
     },
 
     resetAuthForm() {
