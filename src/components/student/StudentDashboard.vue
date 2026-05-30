@@ -1,74 +1,139 @@
 <template>
   <section class="dashboard-layout">
-    <div class="dashboard-header">
-      <div class="dashboard-avatar-wrap">
-        <img
-          :src="
-            userSession?.user_metadata?.avatar_url ||
-            'https://ui-avatars.com/api/?name=' + authFullName
-          "
-          class="dashboard-avatar"
-        />
-      </div>
+    <section class="student-home-hero">
+      <div class="student-home-main">
+        <div class="student-home-person">
+          <img
+            :src="
+              userSession?.user_metadata?.avatar_url ||
+              'https://ui-avatars.com/api/?name=' + authFullName
+            "
+            class="dashboard-avatar student-home-avatar"
+          />
 
-      <h1>Üdvözlünk, {{ authFullName || "Diák" }}!</h1>
-
-      <div v-if="!isGuestMode" class="dashboard-profile-xp">
-        <div class="profile-level-pill streak">🔥 {{ activityStats.streak }} nap</div>
-
-        <div class="profile-level-pill">⭐ {{ xpProfile.xp }} XP</div>
-
-        <div class="profile-level-pill blue">Level {{ xpProfile.level }}</div>
-      </div>
-
-      <p class="subtitle">
-        {{
-          isGuestMode
-            ? "Vendégként kipróbálhatod a feladatokat. Profil, statisztika és mentés nem készül."
-            : "Kezdj egy rövid napi edzéssel, vagy válassz szabadon a leckék közül."
-        }}
-      </p>
-    </div>
-
-    <section class="dashboard-daily-plan">
-      <div class="daily-plan-main">
-        <div class="daily-plan-eyebrow">
-          <span>Mai edzés</span>
-          <small>kb. 12-15 perc</small>
+          <div>
+            <span class="student-home-kicker">Mai tanulási irány</span>
+            <h1>Üdv, {{ authFullName || "Diák" }}!</h1>
+          </div>
         </div>
 
-        <h2>{{ recommendedPracticeMeta.label }} indításával kezdenék</h2>
+        <div v-if="!isGuestMode" class="dashboard-profile-xp student-home-stats">
+          <div class="profile-level-pill streak">🔥 {{ activityStats.streak }} nap</div>
+          <div class="profile-level-pill">⭐ {{ xpProfile.xp }} XP</div>
+          <div class="profile-level-pill blue">Level {{ xpProfile.level }}</div>
+        </div>
+
         <p>
-          {{ recommendedPracticeMeta.reason }} Utána jöhet egy rövid challenge
-          és egy szókincs kör, hogy ne csak szabályt tanulj, hanem használatba is kerüljön.
+          {{
+            isGuestMode
+              ? "Vendégként kipróbálhatod a feladatokat. Profil, statisztika és mentés nem készül."
+              : "Először nézd meg, van-e teendőd, aztán indítsd a mai ajánlott edzést."
+          }}
         </p>
 
-        <button
-          class="daily-plan-primary"
-          @click="$emit('set-mode', recommendedPracticeMeta.mode)"
-        >
-          Mai edzés indítása
-        </button>
+        <div class="student-home-recommendation">
+          <div class="student-home-recommendation-icon">
+            {{ recommendedPracticeMeta.icon }}
+          </div>
+
+          <div>
+            <span>Ma ezt ajánlom</span>
+            <strong>{{ recommendedPracticeMeta.label }}</strong>
+            <small>{{ recommendedPracticeMeta.reason }}</small>
+          </div>
+
+          <button
+            class="daily-plan-primary"
+            @click="$emit('set-mode', recommendedPracticeMeta.mode)"
+          >
+            Indítás
+          </button>
+        </div>
       </div>
 
-      <div class="daily-plan-steps">
+      <aside class="student-home-status">
         <button
-          v-for="step in dailyPlanSteps"
-          :key="step.label"
-          class="daily-plan-step"
-          @click="$emit('set-mode', step.mode)"
+          v-if="!isGuestMode"
+          class="student-status-card"
+          type="button"
+          @click="openLessonRoute"
         >
-          <span>{{ step.number }}</span>
-          <div>
-            <small>{{ step.kicker }}</small>
-            <strong>{{ step.label }}</strong>
-            <p>{{ step.description }}</p>
-          </div>
+          <span>Online óra</span>
+          <strong>{{ upcomingLessonTitle }}</strong>
+          <small>{{ upcomingLessonMeta }}</small>
+        </button>
+
+        <button
+          v-if="!isGuestMode"
+          class="student-status-card"
+          type="button"
+          @click="$emit('set-mode', 'student-materials')"
+        >
+          <span>Házi és anyagok</span>
+          <strong>{{ activeHomeworkCount }} teendő</strong>
+          <small>{{ reviewedHomeworkCount }} javított anyag</small>
+        </button>
+
+        <article class="student-status-card">
+          <span>Haladás</span>
+          <strong>{{ last30AveragePercent }}% átlag</strong>
+          <small>{{ weakTopicSummary }}</small>
+        </article>
+      </aside>
+    </section>
+
+    <section class="student-route-section">
+      <div class="student-route-head">
+        <span>Útvonalválasztó</span>
+        <h2>Mivel szeretnél haladni?</h2>
+      </div>
+
+      <div class="student-route-grid">
+        <button
+          class="student-route-card is-primary"
+          type="button"
+          @click="$emit('set-mode', recommendedPracticeMeta.mode)"
+        >
+          <span>{{ recommendedPracticeMeta.icon }}</span>
+          <strong>Mai edzés</strong>
+          <small>Ajánlott útvonal az eredményeid alapján.</small>
+        </button>
+
+        <button
+          v-if="!isGuestMode"
+          class="student-route-card"
+          type="button"
+          @click="$emit('set-mode', 'student-materials')"
+        >
+          <span>📥</span>
+          <strong>Házi feladat</strong>
+          <small>{{ activeHomeworkCount }} aktív teendő, {{ submittedHomeworkCount }} leadva.</small>
+        </button>
+
+        <button
+          v-if="!isGuestMode"
+          class="student-route-card"
+          type="button"
+          @click="openLessonRoute"
+        >
+          <span>🗓️</span>
+          <strong>Online óra</strong>
+          <small>Következő óra és közös munkafüzet.</small>
+        </button>
+
+        <button
+          class="student-route-card"
+          type="button"
+          @click="scrollToLearningLibrary"
+        >
+          <span>🧭</span>
+          <strong>Szabad tanulás</strong>
+          <small>Gyakorlók, challenge-ek, szókincs és storyk.</small>
         </button>
       </div>
     </section>
 
-    <section v-if="!isGuestMode" class="student-lesson-panel">
+    <section v-if="!isGuestMode" ref="lessonPanel" class="student-lesson-panel">
       <div class="student-lesson-head">
         <div>
           <span>Online óra</span>
@@ -118,14 +183,24 @@
               <p>{{ formatDate(selectedLesson.scheduled_at) }}</p>
             </div>
 
-            <a
-              v-if="selectedLesson.meet_url"
-              :href="selectedLesson.meet_url"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Meet megnyitása
-            </a>
+            <div class="student-lesson-summary-actions">
+              <a
+                v-if="selectedLesson.meet_url"
+                :href="selectedLesson.meet_url"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Meet megnyitása
+              </a>
+
+              <button
+                type="button"
+                class="student-lesson-close"
+                @click="closeSelectedLesson"
+              >
+                Bezárás
+              </button>
+            </div>
           </div>
 
           <p v-if="selectedLesson.goal" class="student-lesson-goal">
@@ -160,83 +235,82 @@
             {{ isSavingLessonWorkbook ? "Mentés..." : "Munkafüzet mentése" }}
           </button>
         </article>
-      </div>
-    </section>
 
-    <section v-if="!isGuestMode" class="student-submissions-panel">
-      <div class="student-submissions-header">
-        <div>
-          <span>Beküldött anyagaim</span>
-          <h2>Írások és javítási állapot</h2>
-        </div>
-
-        <button
-          @click="loadWritingSubmissions"
-          :disabled="isLoadingWritingSubmissions"
-        >
-          {{ isLoadingWritingSubmissions ? "Frissítés..." : "Frissítés" }}
-        </button>
-      </div>
-
-      <div v-if="writingSubmissionSetupError" class="student-submissions-empty warning">
-        A beküldött írások táblája még nincs beállítva.
-      </div>
-
-      <div v-else-if="isLoadingWritingSubmissions" class="student-submissions-empty">
-        Beküldések betöltése...
-      </div>
-
-      <div v-else-if="!writingSubmissions.length" class="student-submissions-empty">
-        Még nincs beküldött írásod. Az ÖSD Schreiben feladatnál tudsz levelet beküldeni.
-      </div>
-
-      <div v-else class="student-submissions-list">
-        <article
-          v-for="submission in writingSubmissions.slice(0, 3)"
-          :key="submission.id"
-          class="student-submission-card"
-        >
-          <div>
-            <span :class="['student-submission-status', submission.status]">
-              {{ getSubmissionStatusLabel(submission.status) }}
-            </span>
-            <strong>{{ submission.task_title }}</strong>
-            <small>{{ formatDate(submission.created_at) }}</small>
-          </div>
-
-          <p>{{ submission.task_situation }}</p>
-
-          <div class="student-submission-meta">
-            <span>{{ submission.word_count }} szó</span>
-            <span>Elvárt: {{ submission.expected_word_count }}</span>
-          </div>
+        <article v-else class="student-lesson-workbook student-lesson-workbook-empty">
+          <strong>Válassz órát a munkafüzet megnyitásához.</strong>
+          <p>Az óra kártyájára kattintva megnyílik a közös jegyzet, ugyanarra kattintva pedig bezárható.</p>
         </article>
       </div>
     </section>
 
-    <section class="dashboard-challenge-section">
-      <h2 class="section-title">Challenge</h2>
-
-      <div class="lessons-ios-grid challenge-ios-grid">
-        <div class="ios-app" @click="$emit('set-mode', 'daily-challenge')">
-          <div class="ios-icon daily-challenge">🗞️</div>
-          <span>Passiv</span>
+    <section class="dashboard-daily-plan">
+      <div class="daily-plan-main">
+        <div class="daily-plan-eyebrow">
+          <span>Mai edzés</span>
+          <small>kb. 12-15 perc</small>
         </div>
 
-        <div class="ios-app" @click="$emit('set-mode', 'daily-challenge-adjektiv')">
-          <div class="ios-icon challenge-adjektiv">🎨</div>
-          <span>Adjektiv</span>
-        </div>
+        <h2>{{ recommendedPracticeMeta.label }} indításával kezdenék</h2>
+        <p>
+          {{ recommendedPracticeMeta.reason }} Utána jöhet egy rövid challenge
+          és egy szókincs kör, hogy ne csak szabályt tanulj, hanem használatba is kerüljön.
+        </p>
 
-        <div
-          class="ios-app"
-          @click="$emit('set-mode', 'daily-challenge-konjunktiv-ii')"
+        <button
+          class="daily-plan-primary"
+          @click="$emit('set-mode', recommendedPracticeMeta.mode)"
         >
-          <div class="ios-icon challenge-konjunktiv">💭</div>
-          <span>Konj. II</span>
-        </div>
+          Mai edzés indítása
+        </button>
+      </div>
+
+      <div class="daily-plan-steps">
+        <button
+          v-for="step in dailyPlanSteps"
+          :key="step.label"
+          class="daily-plan-step"
+          @click="$emit('set-mode', step.mode)"
+        >
+          <span>{{ step.number }}</span>
+          <div>
+            <small>{{ step.kicker }}</small>
+            <strong>{{ step.label }}</strong>
+            <p>{{ step.description }}</p>
+          </div>
+        </button>
       </div>
     </section>
+
+    <section ref="learningLibrary" class="dashboard-learning-library">
+      <div class="dashboard-library-head">
+        <span>Szabad tanulás</span>
+        <h2>Tanulási könyvtár</h2>
+        <p>Ha nem a napi útvonalat követed, innen választhatsz témát.</p>
+      </div>
+
+      <section class="dashboard-challenge-section">
+        <h2 class="section-title">Challenge</h2>
+
+        <div class="lessons-ios-grid challenge-ios-grid">
+          <div class="ios-app" @click="$emit('set-mode', 'daily-challenge')">
+            <div class="ios-icon daily-challenge">🗞️</div>
+            <span>Passiv</span>
+          </div>
+
+          <div class="ios-app" @click="$emit('set-mode', 'daily-challenge-adjektiv')">
+            <div class="ios-icon challenge-adjektiv">🎨</div>
+            <span>Adjektiv</span>
+          </div>
+
+          <div
+            class="ios-app"
+            @click="$emit('set-mode', 'daily-challenge-konjunktiv-ii')"
+          >
+            <div class="ios-icon challenge-konjunktiv">💭</div>
+            <span>Konj. II</span>
+          </div>
+        </div>
+      </section>
 
     <h2 class="section-title">Elérhető leckék</h2>
 
@@ -370,6 +444,7 @@
         </article>
       </div>
     </section>
+    </section>
 
   </section>
 </template>
@@ -378,11 +453,11 @@
 import { formatDate, getTaskName } from "../../utils/formatters";
 import { storyLessons } from "../../data/storyLessons";
 import { grammarGuides } from "../../data/grammarGuides";
-import { fetchStudentWritingSubmissions } from "../../services/writingSubmissionService";
 import {
   fetchStudentLessonSessions,
   updateLessonWorkbook,
 } from "../../services/lessonSessionService";
+import { fetchStudentHomeworkAssignments } from "../../services/homeworkService";
 
 export default {
   name: "StudentDashboard",
@@ -510,14 +585,13 @@ export default {
 
   data() {
     return {
-      writingSubmissions: [],
-      isLoadingWritingSubmissions: false,
-      writingSubmissionSetupError: false,
       lessonSessions: [],
       selectedLessonId: "",
       isLoadingLessonSessions: false,
       isSavingLessonWorkbook: false,
       lessonSessionSetupError: false,
+      homeworkAssignments: [],
+      isLoadingHomeworkSummary: false,
       lessonWorkbookDraft: {
         sharedNotes: "",
         vocabularyNotes: "",
@@ -529,16 +603,16 @@ export default {
 
   async mounted() {
     await Promise.all([
-      this.loadWritingSubmissions(),
       this.loadLessonSessions(),
+      this.loadHomeworkSummary(),
     ]);
   },
 
   watch: {
     async userSession() {
       await Promise.all([
-        this.loadWritingSubmissions(),
         this.loadLessonSessions(),
+        this.loadHomeworkSummary(),
       ]);
     },
 
@@ -809,13 +883,52 @@ export default {
     },
 
     selectedLesson() {
-      if (!this.lessonSessions.length) {
+      if (!this.lessonSessions.length || !this.selectedLessonId) {
         return null;
       }
 
       return this.lessonSessions.find((lesson) => lesson.id === this.selectedLessonId)
-        || this.upcomingLesson
-        || this.lessonSessions[0];
+        || null;
+    },
+
+    activeHomeworkCount() {
+      return this.homeworkAssignments.filter((assignment) => {
+        return ["assigned", "opened"].includes(assignment.status);
+      }).length;
+    },
+
+    submittedHomeworkCount() {
+      return this.homeworkAssignments.filter((assignment) => {
+        return assignment.status === "submitted";
+      }).length;
+    },
+
+    reviewedHomeworkCount() {
+      return this.homeworkAssignments.filter((assignment) => {
+        return assignment.status === "reviewed";
+      }).length;
+    },
+
+    upcomingLessonTitle() {
+      return this.upcomingLesson?.topic || "Nincs közelgő óra";
+    },
+
+    upcomingLessonMeta() {
+      if (!this.upcomingLesson) {
+        return "A munkafüzet akkor jelenik meg, ha a tanár órát ütemez.";
+      }
+
+      return this.formatDate(this.upcomingLesson.scheduled_at);
+    },
+
+    weakTopicSummary() {
+      const topic = this.weakTopics?.[0];
+
+      if (topic) {
+        return `Gyenge pont: ${topic.label} (${topic.accuracy}%).`;
+      }
+
+      return this.last30Trend?.label || "Oldj meg pár feladatot a pontosabb képhez.";
     },
   },
 
@@ -824,30 +937,10 @@ export default {
       this.$refs.fileInput?.click();
     },
 
-    async loadWritingSubmissions() {
-      if (this.isGuestMode || !this.userSession?.id) {
-        this.writingSubmissions = [];
-        return;
-      }
-
-      this.isLoadingWritingSubmissions = true;
-      this.writingSubmissionSetupError = false;
-
-      try {
-        this.writingSubmissions = await fetchStudentWritingSubmissions(
-          this.userSession.id,
-        );
-      } catch (error) {
-        console.error("Diák beküldött írások lekérési hiba:", error.message);
-        this.writingSubmissionSetupError = error.message?.includes("writing_submissions");
-      } finally {
-        this.isLoadingWritingSubmissions = false;
-      }
-    },
-
     async loadLessonSessions() {
       if (this.isGuestMode || !this.userSession?.id) {
         this.lessonSessions = [];
+        this.closeSelectedLesson();
         return;
       }
 
@@ -856,8 +949,15 @@ export default {
 
       try {
         this.lessonSessions = await fetchStudentLessonSessions(this.userSession.id);
-        this.selectedLessonId = this.selectedLesson?.id || "";
-        this.syncLessonWorkbookDraft(this.selectedLesson);
+        const selectedLessonStillExists = this.lessonSessions.find((lesson) => {
+          return lesson.id === this.selectedLessonId;
+        });
+
+        if (selectedLessonStillExists) {
+          this.syncLessonWorkbookDraft(selectedLessonStillExists);
+        } else {
+          this.closeSelectedLesson();
+        }
       } catch (error) {
         console.error("Diák órák lekérési hiba:", error.message);
         this.lessonSessionSetupError = error.message?.includes("lesson_sessions");
@@ -866,9 +966,62 @@ export default {
       }
     },
 
+    async loadHomeworkSummary() {
+      if (this.isGuestMode || !this.userSession?.id) {
+        this.homeworkAssignments = [];
+        return;
+      }
+
+      this.isLoadingHomeworkSummary = true;
+
+      try {
+        this.homeworkAssignments = await fetchStudentHomeworkAssignments(
+          this.userSession.id,
+        );
+      } catch (error) {
+        console.error("Diák házi összegzés lekérési hiba:", error.message);
+        this.homeworkAssignments = [];
+      } finally {
+        this.isLoadingHomeworkSummary = false;
+      }
+    },
+
     selectLessonSession(lesson) {
+      if (this.selectedLessonId === lesson.id) {
+        this.closeSelectedLesson();
+        return;
+      }
+
       this.selectedLessonId = lesson.id;
       this.syncLessonWorkbookDraft(lesson);
+    },
+
+    closeSelectedLesson() {
+      this.selectedLessonId = "";
+      this.syncLessonWorkbookDraft(null);
+    },
+
+    openLessonRoute() {
+      if (this.upcomingLesson && this.selectedLessonId !== this.upcomingLesson.id) {
+        this.selectedLessonId = this.upcomingLesson.id;
+        this.syncLessonWorkbookDraft(this.upcomingLesson);
+      }
+
+      this.$nextTick(() => {
+        this.$refs.lessonPanel?.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+        });
+      });
+    },
+
+    scrollToLearningLibrary() {
+      this.$nextTick(() => {
+        this.$refs.learningLibrary?.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+        });
+      });
     },
 
     syncLessonWorkbookDraft(lesson) {
@@ -912,16 +1065,6 @@ export default {
       };
 
       return labels[status] || "Óra";
-    },
-
-    getSubmissionStatusLabel(status) {
-      const labels = {
-        submitted: "Új beküldés",
-        reviewing: "Javítás alatt",
-        reviewed: "Javítva",
-      };
-
-      return labels[status] || "Beküldve";
     },
 
     formatDate,

@@ -9,6 +9,9 @@
       :unread-notifications="unreadNotifications"
       :unread-messages="unreadMessages"
       :is-logging-out="isLoggingOut"
+      :show-back-navigation="showHeaderBackNavigation"
+      :back-parent-label="headerBackParentLabel"
+      :back-current-label="headerBackCurrentLabel"
       @go-dashboard="goToDashboard"
       @open-teacher-materials="openTeacherMaterials"
       @open-student-materials="openStudentMaterials"
@@ -84,7 +87,11 @@
         v-else-if="userRole === 'teacher' && !currentMode"
         class="welcome-screen teacher-dashboard-shell"
       >
-        <TeacherDashboard :initial-section="teacherInitialSection" />
+        <TeacherDashboard
+          :key="teacherDashboardKey"
+          :initial-section="teacherInitialSection"
+          @section-change="teacherActiveSection = $event"
+        />
       </section>
 
       <!-- GYAKORLATOK / APP AL-OLDALAK -->
@@ -251,6 +258,8 @@ export default {
       currentMode: null,
       selectedStoryId: null,
       teacherInitialSection: null,
+      teacherActiveSection: null,
+      teacherDashboardKey: 0,
       activeHomeworkAssignment: null,
 
       newNoteText: "",
@@ -322,6 +331,10 @@ export default {
     headerTitle() {
       if (this.currentMode) return this.getTaskName(this.currentMode);
 
+      if (this.userRole === "teacher" && this.teacherActiveSection) {
+        return this.teacherSectionTitle(this.teacherActiveSection);
+      }
+
       if (this.userSession) {
         if (this.isGuestMode) return "Vendég mód";
 
@@ -331,6 +344,28 @@ export default {
       }
 
       return "Deutsch Übungen";
+    },
+
+    showHeaderBackNavigation() {
+      return Boolean(
+        this.currentMode ||
+          (this.userRole === "teacher" && this.teacherActiveSection),
+      );
+    },
+
+    headerBackParentLabel() {
+      if (this.userRole === "teacher") return "Tanári felület";
+      if (this.isGuestMode) return "Vendég mód";
+      return "Diák dashboard";
+    },
+
+    headerBackCurrentLabel() {
+      if (this.currentMode) return this.getTaskName(this.currentMode);
+      if (this.userRole === "teacher" && this.teacherActiveSection) {
+        return this.teacherSectionTitle(this.teacherActiveSection);
+      }
+
+      return this.headerTitle;
     },
 
     selectedRoleLabel() {
@@ -406,6 +441,7 @@ export default {
       this.currentMode = mode;
       this.selectedStoryId = null;
       this.teacherInitialSection = null;
+      this.teacherActiveSection = null;
       this.activeHomeworkAssignment = null;
       this.showNotificationsMenu = false;
       this.showMessagesPanel = false;
@@ -416,6 +452,7 @@ export default {
       this.currentMode = null;
       this.selectedStoryId = null;
       this.teacherInitialSection = "writings";
+      this.teacherActiveSection = "writings";
       this.showNotificationsMenu = false;
       this.showMessagesPanel = false;
       this.scrollToPageTop();
@@ -425,6 +462,7 @@ export default {
       this.currentMode = "student-materials";
       this.selectedStoryId = null;
       this.teacherInitialSection = null;
+      this.teacherActiveSection = null;
       this.activeHomeworkAssignment = null;
       this.showNotificationsMenu = false;
       this.showMessagesPanel = false;
@@ -438,6 +476,7 @@ export default {
       this.currentMode = assignment.practice_type;
       this.selectedStoryId = null;
       this.teacherInitialSection = null;
+      this.teacherActiveSection = null;
       this.showNotificationsMenu = false;
       this.showMessagesPanel = false;
       this.scrollToPageTop();
@@ -447,6 +486,7 @@ export default {
       this.selectedStoryId = storyId;
       this.currentMode = "story-reading";
       this.teacherInitialSection = null;
+      this.teacherActiveSection = null;
       this.activeHomeworkAssignment = null;
       this.showNotificationsMenu = false;
       this.showMessagesPanel = false;
@@ -459,10 +499,15 @@ export default {
       this.currentMode = null;
       this.selectedStoryId = null;
       this.teacherInitialSection = null;
+      this.teacherActiveSection = null;
       this.activeHomeworkAssignment = null;
       this.showNotificationsMenu = false;
       this.showMessagesPanel = false;
       this.scrollToPageTop();
+
+      if (this.userRole === "teacher") {
+        this.teacherDashboardKey += 1;
+      }
 
       if (this.userRole === "student" && !this.isGuestMode) {
         this.fetchStudentDashboardData();
@@ -544,6 +589,8 @@ export default {
       this.showLoginForm = null;
       this.currentMode = null;
       this.selectedStoryId = null;
+      this.teacherInitialSection = null;
+      this.teacherActiveSection = null;
       this.scrollToPageTop();
     },
 
@@ -680,6 +727,8 @@ export default {
       this.currentMode = null;
       this.selectedNote = null;
       this.selectedStoryId = null;
+      this.teacherInitialSection = null;
+      this.teacherActiveSection = null;
 
       this.newNoteText = "";
       this.savedNotes = [];
@@ -920,6 +969,16 @@ export default {
     },
     getDateKey,
     getTaskName,
+
+    teacherSectionTitle(section) {
+      const titles = {
+        students: "Diákkezelő",
+        exercises: "Feladatkezelő",
+        writings: "Beküldött írások",
+      };
+
+      return titles[section] || "Tanári felület";
+    },
   },
 };
 </script>

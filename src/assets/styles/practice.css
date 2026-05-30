@@ -69,6 +69,11 @@
   letter-spacing: 0;
 }
 
+.desktop-practice-title {
+  grid-template-columns: 1fr;
+  text-align: center;
+}
+
 .practice-screen:has(.story-reading) {
   --active-practice-width: min(1080px, calc(100% - 40px));
   align-items: stretch;

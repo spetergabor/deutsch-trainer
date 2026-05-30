@@ -1013,6 +1013,8 @@ export default {
     },
   },
 
+  emits: ["section-change"],
+
   data() {
     return {
       activeTeacherSection: null,
@@ -1553,7 +1555,13 @@ export default {
     async initialSection(section) {
       if (section) {
         await this.openTeacherSection(section);
+      } else if (this.activeTeacherSection) {
+        this.goToTeacherPortal();
       }
+    },
+
+    activeTeacherSection(section) {
+      this.$emit("section-change", section);
     },
 
     selectedWritingSubmission(submission) {

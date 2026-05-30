@@ -18,12 +18,8 @@
 
     <div
       v-if="currentMode !== 'profile' && currentMode !== 'student-materials'"
-      class="desktop-practice-return"
+      class="desktop-practice-return desktop-practice-title"
     >
-      <button class="btn-outline btn-small" @click="$emit('go-dashboard')">
-        ← Vissza
-      </button>
-
       <h1>{{ headerTitle }}</h1>
     </div>
 

@@ -1,17 +1,12 @@
 <template>
   <section class="student-materials-view">
-    <div class="student-materials-topbar">
-      <button class="btn-outline btn-small" @click="$emit('go-dashboard')">
-        ← Vissza
-      </button>
-
-      <h1>Beküldött anyagaim</h1>
-    </div>
-
     <div class="student-materials-header">
       <span>Anyagok</span>
       <h2>Házi feladataim és beküldéseim</h2>
-      <p>A tanári feladatokat, beküldött írásokat és javítási állapotokat itt követheted.</p>
+      <p>
+        A tanári feladatokat, beküldött írásokat és javítási állapotokat itt
+        követheted.
+      </p>
     </div>
 
     <section class="student-homework-panel">
@@ -37,7 +32,10 @@
         Még nincs kiadott vagy beküldött anyagod.
       </div>
 
-      <div v-else-if="!filteredMaterialItems.length" class="student-materials-empty">
+      <div
+        v-else-if="!filteredMaterialItems.length"
+        class="student-materials-empty"
+      >
         {{ emptyHomeworkFilterText }}
       </div>
 
@@ -53,7 +51,9 @@
             <strong>{{ item.title }}</strong>
             <span>{{ item.statusLabel }}</span>
             <small>{{ item.typeLabel }}</small>
-            <small v-if="item.createdAt">{{ formatDate(item.createdAt) }}</small>
+            <small v-if="item.createdAt">{{
+              formatDate(item.createdAt)
+            }}</small>
           </button>
         </aside>
 
@@ -61,7 +61,10 @@
           <div class="student-materials-detail-head">
             <span
               v-if="selectedMaterialItem.kind === 'submission'"
-              :class="['student-submission-status', selectedMaterialItem.raw.status]"
+              :class="[
+                'student-submission-status',
+                selectedMaterialItem.raw.status,
+              ]"
             >
               {{ selectedMaterialItem.statusLabel }}
             </span>
@@ -114,7 +117,11 @@
             </section>
 
             <section
-              v-if="selectedMaterialItem.raw.type === 'writing' && selectedMaterialItem.raw.status !== 'submitted' && selectedMaterialItem.raw.status !== 'reviewed'"
+              v-if="
+                selectedMaterialItem.raw.type === 'writing' &&
+                selectedMaterialItem.raw.status !== 'submitted' &&
+                selectedMaterialItem.raw.status !== 'reviewed'
+              "
               class="student-homework-workspace"
             >
               <h3>Megoldás</h3>
@@ -127,16 +134,25 @@
               <button
                 class="student-homework-submit"
                 @click="submitHomeworkWriting(selectedMaterialItem.raw)"
-                :disabled="isSubmittingHomework || !homeworkDrafts[selectedMaterialItem.raw.id]?.trim()"
+                :disabled="
+                  isSubmittingHomework ||
+                  !homeworkDrafts[selectedMaterialItem.raw.id]?.trim()
+                "
               >
                 {{ isSubmittingHomework ? "Beküldés..." : "Házi beküldése" }}
               </button>
             </section>
 
             <button
-              v-else-if="selectedMaterialItem.raw.type === 'practice' && selectedMaterialItem.raw.status !== 'submitted' && selectedMaterialItem.raw.status !== 'reviewed'"
+              v-else-if="
+                selectedMaterialItem.raw.type === 'practice' &&
+                selectedMaterialItem.raw.status !== 'submitted' &&
+                selectedMaterialItem.raw.status !== 'reviewed'
+              "
               class="student-homework-submit"
-              @click="$emit('start-homework-practice', selectedMaterialItem.raw)"
+              @click="
+                $emit('start-homework-practice', selectedMaterialItem.raw)
+              "
             >
               Gyakorlás indítása
             </button>
@@ -148,12 +164,18 @@
 
           <template v-else>
             <section
-              v-if="selectedMaterialItem.raw.grade || selectedMaterialItem.raw.teacher_feedback"
+              v-if="
+                selectedMaterialItem.raw.grade ||
+                selectedMaterialItem.raw.teacher_feedback
+              "
               class="student-materials-review"
             >
               <h3>Tanári értékelés</h3>
 
-              <div v-if="selectedMaterialItem.raw.grade" class="student-materials-grade">
+              <div
+                v-if="selectedMaterialItem.raw.grade"
+                class="student-materials-grade"
+              >
                 <span>Osztályzat / értékelés</span>
                 <strong>{{ selectedMaterialItem.raw.grade }}</strong>
               </div>
@@ -186,7 +208,9 @@
 
             <section>
               <h3>Beküldött szöveg</h3>
-              <p class="student-materials-content">{{ selectedMaterialItem.raw.content }}</p>
+              <p class="student-materials-content">
+                {{ selectedMaterialItem.raw.content }}
+              </p>
             </section>
           </template>
         </article>
@@ -323,9 +347,11 @@ export default {
         return null;
       }
 
-      return this.filteredMaterialItems.find((item) => {
-        return this.getMaterialItemKey(item) === this.selectedMaterialKey;
-      }) || this.filteredMaterialItems[0];
+      return (
+        this.filteredMaterialItems.find((item) => {
+          return this.getMaterialItemKey(item) === this.selectedMaterialKey;
+        }) || this.filteredMaterialItems[0]
+      );
     },
 
     emptyHomeworkFilterText() {
@@ -336,7 +362,9 @@ export default {
         all: "Még nincs kiadott vagy beküldött anyagod.",
       };
 
-      return messages[this.activeHomeworkFilter] || "Nincs házi ebben a nézetben.";
+      return (
+        messages[this.activeHomeworkFilter] || "Nincs házi ebben a nézetben."
+      );
     },
   },
 
@@ -348,7 +376,9 @@ export default {
       this.setupError = false;
 
       try {
-        this.submissions = await fetchStudentWritingSubmissions(this.userSession.id);
+        this.submissions = await fetchStudentWritingSubmissions(
+          this.userSession.id,
+        );
         this.selectedSubmission = this.submissions[0] || null;
       } catch (error) {
         console.error("Diák anyagok lekérési hiba:", error.message);
@@ -461,7 +491,10 @@ export default {
     },
 
     isSelectedMaterialItem(item) {
-      return this.getMaterialItemKey(item) === this.getMaterialItemKey(this.selectedMaterialItem);
+      return (
+        this.getMaterialItemKey(item) ===
+        this.getMaterialItemKey(this.selectedMaterialItem)
+      );
     },
 
     selectMaterialItem(item) {

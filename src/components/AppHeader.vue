@@ -1,12 +1,27 @@
 <template>
   <header class="app-header">
-    <button
-      class="logo-btn"
-      @click="$emit('go-dashboard')"
-      title="Vissza a kezdőlapra"
-    >
-      D
-    </button>
+    <div class="header-left-cluster">
+      <button
+        class="logo-btn"
+        @click="$emit('go-dashboard')"
+        title="Vissza a kezdőlapra"
+      >
+        D
+      </button>
+
+      <button
+        v-if="showBackNavigation"
+        class="header-breadcrumb"
+        @click="$emit('go-dashboard')"
+      >
+        <span class="header-breadcrumb-arrow">←</span>
+        <span class="header-breadcrumb-parent">{{ backParentLabel }}</span>
+        <span class="header-breadcrumb-separator">/</span>
+        <span class="header-breadcrumb-current">
+          {{ backCurrentLabel || headerTitle }}
+        </span>
+      </button>
+    </div>
 
     <div class="current-task-title">
       {{ headerTitle }}
@@ -125,6 +140,21 @@ export default {
     isGuestMode: {
       type: Boolean,
       default: false,
+    },
+
+    showBackNavigation: {
+      type: Boolean,
+      default: false,
+    },
+
+    backParentLabel: {
+      type: String,
+      default: "Főmenü",
+    },
+
+    backCurrentLabel: {
+      type: String,
+      default: "",
     },
   },
 

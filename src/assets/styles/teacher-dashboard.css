@@ -455,6 +455,12 @@
   padding: 0 4px;
 }
 
+@media (min-width: 701px) {
+  .teacher-workspace-header > .btn-small {
+    display: none;
+  }
+}
+
 .teacher-section-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
