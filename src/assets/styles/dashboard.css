@@ -95,26 +95,38 @@
 
 .student-home-main {
   min-width: 0;
-  min-height: 360px;
-  padding: 30px;
+  min-height: 340px;
+  padding: 44px 50px;
   border-radius: 32px;
 
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  gap: 22px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-content: start;
+  gap: 20px 32px;
 }
 
 .student-home-person {
-  display: flex;
+  grid-column: 1 / -1;
+
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 124px;
+  column-gap: 32px;
   align-items: center;
-  gap: 18px;
+  min-width: 0;
+}
+
+.student-home-person > div {
+  grid-column: 1;
+  grid-row: 1;
   min-width: 0;
 }
 
 .student-home-avatar {
-  width: 92px;
-  height: 92px;
+  grid-column: 2;
+  grid-row: 1;
+  justify-self: end;
+  width: 112px;
+  height: 112px;
   flex: 0 0 auto;
   margin: 0;
 }
@@ -138,14 +150,15 @@
 .student-home-main h1 {
   margin: 0;
   color: #ffffff;
-  font-size: 3.4rem;
+  font-size: 3.25rem;
   font-weight: 950;
-  line-height: 0.98;
+  line-height: 1;
 }
 
 .student-home-main p {
+  grid-column: 1;
   max-width: 680px;
-  margin: 0;
+  margin: 2px 0 0;
   color: rgba(255, 255, 255, 0.64);
   font-size: 1.03rem;
   font-weight: 850;
@@ -153,22 +166,40 @@
 }
 
 .student-home-stats {
+  grid-column: 1;
   justify-content: flex-start;
+  gap: 12px;
+  margin: 0;
+}
+
+.student-home-stats .profile-level-pill {
+  min-height: 42px;
+  min-width: 122px;
+  padding: 0 16px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 0.92rem;
+  line-height: 1;
+  white-space: nowrap;
 }
 
 .student-home-recommendation {
+  grid-column: 1 / -1;
   display: grid;
-  grid-template-columns: auto minmax(0, 1fr) auto;
-  gap: 16px;
+  grid-template-columns: 72px minmax(0, 1fr) auto;
+  gap: 18px;
   align-items: center;
-  padding: 16px;
+  padding: 18px 22px;
   border-radius: 24px;
   background: rgba(0, 0, 0, 0.18);
 }
 
 .student-home-recommendation-icon {
-  width: 64px;
-  height: 64px;
+  width: 72px;
+  height: 72px;
   border-radius: 22px;
   background: linear-gradient(135deg, #65a8ff, #51dd91);
   display: grid;
@@ -188,7 +219,7 @@
 .student-status-card strong,
 .student-route-card strong {
   display: block;
-  margin-top: 4px;
+  margin-top: 6px;
   color: #ffffff;
   font-size: 1.24rem;
   font-weight: 950;
@@ -2137,16 +2168,25 @@ button.grammar-practice-chip:hover {
   }
 
   .student-home-main {
+    grid-template-columns: 1fr;
     min-height: auto;
   }
 
   .student-home-person {
-    align-items: flex-start;
-    flex-direction: column;
+    grid-template-columns: 1fr;
+    align-items: start;
     gap: 14px;
   }
 
+  .student-home-person > div {
+    grid-column: 1;
+    grid-row: auto;
+  }
+
   .student-home-avatar {
+    grid-column: 1;
+    grid-row: auto;
+    justify-self: start;
     width: 82px;
     height: 82px;
   }
@@ -2155,8 +2195,18 @@ button.grammar-practice-chip:hover {
     font-size: 2.6rem;
   }
 
+  .student-home-stats {
+    grid-column: 1;
+    margin-top: 0;
+  }
+
+  .student-home-stats .profile-level-pill {
+    min-width: 0;
+    flex: 1 1 auto;
+  }
+
   .student-home-recommendation {
-    grid-template-columns: auto minmax(0, 1fr);
+    grid-template-columns: 72px minmax(0, 1fr);
   }
 
   .student-home-recommendation button {

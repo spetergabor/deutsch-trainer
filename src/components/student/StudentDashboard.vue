@@ -12,7 +12,6 @@
           />
 
           <div>
-            <span class="student-home-kicker">Mai tanulási irány</span>
             <h1>Üdv, {{ authFullName || "Diák" }}!</h1>
           </div>
         </div>
