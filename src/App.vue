@@ -1,7 +1,7 @@
 <template>
-  <div id="app">
+  <div id="app" :class="{ 'with-desktop-sidebar': showDesktopSidebar }">
     <AppHeader
-      v-if="!currentMode || windowWidth > 700"
+      v-if="showAppHeader"
       :header-title="headerTitle"
       :user-session="userSession"
       :is-guest-mode="isGuestMode"
@@ -19,6 +19,40 @@
       @toggle-notifications="toggleNotificationsMenu"
       @open-profile="setCurrentMode('profile')"
       @logout="handleLogout"
+    />
+
+    <DesktopSidebar
+      v-if="showDesktopSidebar"
+      :user-session="userSession"
+      :is-guest-mode="isGuestMode"
+      :user-role="userRole"
+      :auth-full-name="authFullName"
+      :current-mode="currentMode"
+      :teacher-active-section="teacherActiveSection"
+      :unread-notifications="unreadNotifications"
+      :unread-messages="unreadMessages"
+      :is-logging-out="isLoggingOut"
+      @go-dashboard="goToDashboard"
+      @set-mode="setCurrentMode"
+      @open-teacher-section="openTeacherSection"
+      @open-student-materials="openStudentMaterials"
+      @open-messages="openMessagesPanel"
+      @toggle-notifications="toggleNotificationsMenu"
+      @open-profile="setCurrentMode('profile')"
+      @logout="handleLogout"
+    />
+
+    <DesktopTopbar
+      v-if="showDesktopSidebar"
+      :header-title="desktopTopbarTitle"
+      :user-role="userRole"
+      :can-go-back="canGoDesktopBack"
+      :can-go-forward="canGoDesktopForward"
+      @go-back="goDesktopBack"
+      @go-forward="goDesktopForward"
+      @set-mode="setCurrentMode"
+      @open-teacher-section="openTeacherSection"
+      @open-student-materials="openStudentMaterials"
     />
 
     <main class="content-wrapper">
@@ -121,10 +155,12 @@
         :weak-topics="weakTopics"
         :last30-trend="last30Trend"
         :initial-story-id="selectedStoryId"
+        :active-homework-assignment="activeHomeworkAssignment"
         @go-dashboard="goToDashboard"
         @exercise-finished="handleExerciseFinished"
         @logout="handleLogout"
         @set-mode="setCurrentMode"
+        @open-story="openStoryLesson"
         @start-homework-practice="startHomeworkPractice"
         @upload-file="uploadFile"
         @update:new-note-text="newNoteText = $event"
@@ -170,6 +206,8 @@
 
 <script>
 import AppHeader from "./components/AppHeader.vue";
+import DesktopSidebar from "./components/DesktopSidebar.vue";
+import DesktopTopbar from "./components/DesktopTopbar.vue";
 import MobileBottomNav from "./components/MobileBottomNav.vue";
 import AuthScreen from "./components/auth/AuthScreen.vue";
 import StudentDashboard from "./components/student/StudentDashboard.vue";
@@ -224,6 +262,8 @@ export default {
 
   components: {
     AppHeader,
+    DesktopSidebar,
+    DesktopTopbar,
     MobileBottomNav,
     AuthScreen,
     StudentDashboard,
@@ -296,6 +336,9 @@ export default {
       showMessagesPanel: false,
 
       activityCalendar: [],
+      navigationBackStack: [],
+      navigationForwardStack: [],
+      isRestoringNavigation: false,
     };
   },
 
@@ -328,6 +371,16 @@ export default {
       return getLast30Trend(this.recentExercises);
     },
 
+    showDesktopSidebar() {
+      return Boolean(this.userSession && this.windowWidth > 900);
+    },
+
+    showAppHeader() {
+      if (this.showDesktopSidebar) return false;
+
+      return !this.currentMode || this.windowWidth > 700;
+    },
+
     headerTitle() {
       if (this.currentMode) return this.getTaskName(this.currentMode);
 
@@ -344,6 +397,19 @@ export default {
       }
 
       return "Deutsch Übungen";
+    },
+
+    desktopTopbarTitle() {
+      if (this.currentMode) return this.getTaskName(this.currentMode);
+
+      if (this.userRole === "teacher" && this.teacherActiveSection) {
+        return this.teacherSectionTitle(this.teacherActiveSection);
+      }
+
+      if (this.userRole === "teacher") return "Áttekintés";
+      if (this.userRole === "student") return "Főmenü";
+
+      return this.headerTitle;
     },
 
     showHeaderBackNavigation() {
@@ -370,6 +436,14 @@ export default {
 
     selectedRoleLabel() {
       return this.showLoginForm === "teacher" ? "Tanár" : "Diák";
+    },
+
+    canGoDesktopBack() {
+      return this.navigationBackStack.length > 0;
+    },
+
+    canGoDesktopForward() {
+      return this.navigationForwardStack.length > 0;
     },
   },
 
@@ -425,19 +499,135 @@ export default {
     },
 
     scrollToPageTop() {
-      this.$nextTick(() => {
+      const resetScroll = () => {
+        const scrollingElement =
+          document.scrollingElement || document.documentElement;
+
         window.scrollTo({
           top: 0,
           left: 0,
           behavior: "auto",
         });
 
+        scrollingElement.scrollTop = 0;
         document.documentElement.scrollTop = 0;
         document.body.scrollTop = 0;
+      };
+
+      resetScroll();
+
+      this.$nextTick(() => {
+        resetScroll();
+
+        window.requestAnimationFrame(() => {
+          resetScroll();
+          window.requestAnimationFrame(resetScroll);
+        });
       });
     },
 
+    getNavigationSnapshot() {
+      return {
+        currentMode: this.currentMode,
+        selectedStoryId: this.selectedStoryId,
+        teacherInitialSection: this.teacherInitialSection,
+        teacherActiveSection: this.teacherActiveSection,
+        activeHomeworkAssignment: this.activeHomeworkAssignment,
+      };
+    },
+
+    isSameNavigationSnapshot(first, second) {
+      if (!first || !second) return false;
+
+      return (
+        first.currentMode === second.currentMode &&
+        first.selectedStoryId === second.selectedStoryId &&
+        first.teacherInitialSection === second.teacherInitialSection &&
+        first.teacherActiveSection === second.teacherActiveSection &&
+        (first.activeHomeworkAssignment?.id || null) ===
+          (second.activeHomeworkAssignment?.id || null)
+      );
+    },
+
+    prepareNavigation(targetSnapshot) {
+      if (this.isRestoringNavigation || !this.userSession) return;
+
+      const currentSnapshot = this.getNavigationSnapshot();
+      if (this.isSameNavigationSnapshot(currentSnapshot, targetSnapshot)) return;
+
+      const lastSnapshot = this.navigationBackStack[this.navigationBackStack.length - 1];
+      if (!this.isSameNavigationSnapshot(currentSnapshot, lastSnapshot)) {
+        this.navigationBackStack.push(currentSnapshot);
+      }
+
+      if (this.navigationBackStack.length > 40) {
+        this.navigationBackStack.shift();
+      }
+
+      this.navigationForwardStack = [];
+    },
+
+    applyNavigationSnapshot(snapshot) {
+      if (!snapshot) return;
+
+      this.isRestoringNavigation = true;
+      this.currentMode = snapshot.currentMode || null;
+      this.selectedStoryId = snapshot.selectedStoryId || null;
+      this.teacherInitialSection = snapshot.teacherInitialSection || null;
+      this.teacherActiveSection = snapshot.teacherActiveSection || null;
+      this.activeHomeworkAssignment = snapshot.activeHomeworkAssignment || null;
+      this.showNotificationsMenu = false;
+      this.showMessagesPanel = false;
+      this.scrollToPageTop();
+
+      if (
+        this.userRole === "teacher" &&
+        !this.currentMode &&
+        !this.teacherActiveSection
+      ) {
+        this.teacherDashboardKey += 1;
+      }
+
+      if (
+        this.userRole === "student" &&
+        !this.isGuestMode &&
+        !this.currentMode
+      ) {
+        this.fetchStudentDashboardData();
+      }
+
+      this.$nextTick(() => {
+        this.isRestoringNavigation = false;
+      });
+    },
+
+    goDesktopBack() {
+      if (!this.navigationBackStack.length) return;
+
+      const currentSnapshot = this.getNavigationSnapshot();
+      const previousSnapshot = this.navigationBackStack.pop();
+      this.navigationForwardStack.push(currentSnapshot);
+      this.applyNavigationSnapshot(previousSnapshot);
+    },
+
+    goDesktopForward() {
+      if (!this.navigationForwardStack.length) return;
+
+      const currentSnapshot = this.getNavigationSnapshot();
+      const nextSnapshot = this.navigationForwardStack.pop();
+      this.navigationBackStack.push(currentSnapshot);
+      this.applyNavigationSnapshot(nextSnapshot);
+    },
+
     setCurrentMode(mode) {
+      this.prepareNavigation({
+        currentMode: mode,
+        selectedStoryId: null,
+        teacherInitialSection: null,
+        teacherActiveSection: null,
+        activeHomeworkAssignment: null,
+      });
+
       this.currentMode = mode;
       this.selectedStoryId = null;
       this.teacherInitialSection = null;
@@ -449,16 +639,37 @@ export default {
     },
 
     openTeacherMaterials() {
+      this.openTeacherSection("writings");
+    },
+
+    openTeacherSection(section) {
+      this.prepareNavigation({
+        currentMode: null,
+        selectedStoryId: null,
+        teacherInitialSection: section,
+        teacherActiveSection: section,
+        activeHomeworkAssignment: null,
+      });
+
       this.currentMode = null;
       this.selectedStoryId = null;
-      this.teacherInitialSection = "writings";
-      this.teacherActiveSection = "writings";
+      this.teacherInitialSection = section;
+      this.teacherActiveSection = section;
+      this.activeHomeworkAssignment = null;
       this.showNotificationsMenu = false;
       this.showMessagesPanel = false;
       this.scrollToPageTop();
     },
 
     openStudentMaterials() {
+      this.prepareNavigation({
+        currentMode: "student-materials",
+        selectedStoryId: null,
+        teacherInitialSection: null,
+        teacherActiveSection: null,
+        activeHomeworkAssignment: null,
+      });
+
       this.currentMode = "student-materials";
       this.selectedStoryId = null;
       this.teacherInitialSection = null;
@@ -472,6 +683,14 @@ export default {
     startHomeworkPractice(assignment) {
       if (!assignment?.practice_type) return;
 
+      this.prepareNavigation({
+        currentMode: assignment.practice_type,
+        selectedStoryId: null,
+        teacherInitialSection: null,
+        teacherActiveSection: null,
+        activeHomeworkAssignment: assignment,
+      });
+
       this.activeHomeworkAssignment = assignment;
       this.currentMode = assignment.practice_type;
       this.selectedStoryId = null;
@@ -483,6 +702,14 @@ export default {
     },
 
     openStoryLesson(storyId) {
+      this.prepareNavigation({
+        currentMode: "story-reading",
+        selectedStoryId: storyId,
+        teacherInitialSection: null,
+        teacherActiveSection: null,
+        activeHomeworkAssignment: null,
+      });
+
       this.selectedStoryId = storyId;
       this.currentMode = "story-reading";
       this.teacherInitialSection = null;
@@ -495,6 +722,14 @@ export default {
 
     goToDashboard() {
       if (!this.userSession) return;
+
+      this.prepareNavigation({
+        currentMode: null,
+        selectedStoryId: null,
+        teacherInitialSection: null,
+        teacherActiveSection: null,
+        activeHomeworkAssignment: null,
+      });
 
       this.currentMode = null;
       this.selectedStoryId = null;
@@ -591,6 +826,8 @@ export default {
       this.selectedStoryId = null;
       this.teacherInitialSection = null;
       this.teacherActiveSection = null;
+      this.navigationBackStack = [];
+      this.navigationForwardStack = [];
       this.scrollToPageTop();
     },
 
@@ -716,6 +953,9 @@ export default {
       this.userRole = null;
       this.isGuestMode = false;
       this.currentSessionUserId = null;
+      this.navigationBackStack = [];
+      this.navigationForwardStack = [];
+      this.isRestoringNavigation = false;
 
       this.showLoginForm = null;
       this.isLoginMode = true;
@@ -986,6 +1226,7 @@ export default {
 <style>
 @import "./assets/styles/app.css";
 @import "./assets/styles/header.css";
+@import "./assets/styles/sidebar.css";
 @import "./assets/styles/auth.css";
 @import "./assets/styles/notifications.css";
 @import "./assets/styles/messages.css";

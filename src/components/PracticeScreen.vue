@@ -16,73 +16,177 @@
       <div class="practice-nav-spacer"></div>
     </header>
 
+    <nav
+      v-if="desktopBreadcrumb"
+      class="desktop-page-breadcrumb"
+      aria-label="Oldal útvonala"
+    >
+      <button
+        type="button"
+        class="desktop-page-breadcrumb-back"
+        @click="handleDesktopBreadcrumbBack"
+      >
+        <span aria-hidden="true">←</span>
+        {{ desktopBreadcrumb.parentLabel }}
+      </button>
+
+      <span class="desktop-page-breadcrumb-separator">/</span>
+
+      <span
+        v-if="desktopBreadcrumb.groupLabel"
+        class="desktop-page-breadcrumb-group"
+      >
+        {{ desktopBreadcrumb.groupLabel }}
+      </span>
+
+      <span
+        v-if="desktopBreadcrumb.groupLabel"
+        class="desktop-page-breadcrumb-separator"
+      >
+        /
+      </span>
+
+      <strong class="desktop-page-breadcrumb-current">
+        {{ desktopBreadcrumb.currentLabel }}
+      </strong>
+    </nav>
+
     <div
-      v-if="currentMode !== 'profile' && currentMode !== 'student-materials'"
+      v-if="
+        currentMode !== 'profile' &&
+        currentMode !== 'student-materials' &&
+        currentMode !== 'learning-library'
+      "
       class="desktop-practice-return desktop-practice-title"
     >
       <h1>{{ headerTitle }}</h1>
     </div>
 
-    <VerbPractice
-      v-if="currentMode === 'perfekt'"
-      @exercise-finished="$emit('exercise-finished')"
-      @go-dashboard="$emit('go-dashboard')"
-    />
+    <section v-if="isExerciseMode" class="desktop-exercise-hero">
+      <div class="desktop-exercise-hero-copy">
+        <span class="desktop-exercise-kicker">Gyakorló</span>
+        <h2>{{ headerTitle }}</h2>
+        <p>{{ exercisePanelCopy }}</p>
+      </div>
 
-    <NomenVerbPractice
-      v-if="currentMode === 'nomen-verb'"
-      @exercise-finished="$emit('exercise-finished')"
-      @go-dashboard="$emit('go-dashboard')"
-    />
+      <div class="desktop-exercise-hero-stats" aria-label="Gyakorló adatok">
+        <div>
+          <span>Streak</span>
+          <strong>🔥 {{ displayStreak }} nap</strong>
+        </div>
 
-    <AdjektivPractice
-      v-if="currentMode === 'adjektiv'"
-      @exercise-finished="$emit('exercise-finished')"
-      @go-dashboard="$emit('go-dashboard')"
-    />
+        <div>
+          <span>XP</span>
+          <strong>⭐ {{ xpProfile.xp || 0 }}</strong>
+        </div>
 
-    <OsdPractice
-      v-if="currentMode === 'osd'"
-      :user-session="userSession"
-      @exercise-finished="$emit('exercise-finished')"
-      @go-dashboard="$emit('go-dashboard')"
-    />
+        <div>
+          <span>{{ exerciseFocusLabel }}</span>
+          <strong>{{ exerciseFocusValue }}</strong>
+        </div>
+      </div>
+    </section>
 
-    <PraepositionPractice
-      v-if="currentMode === 'praeposition'"
-      @exercise-finished="$emit('exercise-finished')"
-      @go-dashboard="$emit('go-dashboard')"
-    />
+    <div v-if="isExerciseMode" class="desktop-exercise-workspace">
+      <div class="desktop-exercise-main">
+        <VerbPractice
+          v-if="currentMode === 'perfekt'"
+          @exercise-finished="$emit('exercise-finished')"
+          @go-dashboard="$emit('go-dashboard')"
+        />
 
-    <KonnektorenPractice
-      v-if="currentMode === 'konnektoren'"
-      @exercise-finished="$emit('exercise-finished')"
-      @go-dashboard="$emit('go-dashboard')"
-    />
+        <NomenVerbPractice
+          v-if="currentMode === 'nomen-verb'"
+          @exercise-finished="$emit('exercise-finished')"
+          @go-dashboard="$emit('go-dashboard')"
+        />
 
-    <SichVerbenPractice
-      v-if="currentMode === 'sich-verben'"
-      @exercise-finished="$emit('exercise-finished')"
-      @go-dashboard="$emit('go-dashboard')"
-    />
+        <AdjektivPractice
+          v-if="currentMode === 'adjektiv'"
+          @exercise-finished="$emit('exercise-finished')"
+          @go-dashboard="$emit('go-dashboard')"
+        />
 
-    <PassivPractice
-      v-if="currentMode === 'passiv'"
-      @exercise-finished="$emit('exercise-finished')"
-      @go-dashboard="$emit('go-dashboard')"
-    />
+        <OsdPractice
+          v-if="currentMode === 'osd'"
+          :user-session="userSession"
+          @exercise-finished="$emit('exercise-finished')"
+          @go-dashboard="$emit('go-dashboard')"
+        />
 
-    <PronominaladverbPractice
-      v-if="currentMode === 'pronominaladverb'"
-      @exercise-finished="$emit('exercise-finished')"
-      @go-dashboard="$emit('go-dashboard')"
-    />
+        <PraepositionPractice
+          v-if="currentMode === 'praeposition'"
+          @exercise-finished="$emit('exercise-finished')"
+          @go-dashboard="$emit('go-dashboard')"
+        />
 
-    <VocabularyPractice
-      v-if="currentMode === 'vocabulary'"
-      @exercise-finished="$emit('exercise-finished')"
-      @go-dashboard="$emit('go-dashboard')"
-    />
+        <KonnektorenPractice
+          v-if="currentMode === 'konnektoren'"
+          @exercise-finished="$emit('exercise-finished')"
+          @go-dashboard="$emit('go-dashboard')"
+        />
+
+        <SichVerbenPractice
+          v-if="currentMode === 'sich-verben'"
+          @exercise-finished="$emit('exercise-finished')"
+          @go-dashboard="$emit('go-dashboard')"
+        />
+
+        <PassivPractice
+          v-if="currentMode === 'passiv'"
+          @exercise-finished="$emit('exercise-finished')"
+          @go-dashboard="$emit('go-dashboard')"
+        />
+
+        <PronominaladverbPractice
+          v-if="currentMode === 'pronominaladverb'"
+          @exercise-finished="$emit('exercise-finished')"
+          @go-dashboard="$emit('go-dashboard')"
+        />
+
+        <VocabularyPractice
+          v-if="currentMode === 'vocabulary'"
+          @exercise-finished="$emit('exercise-finished')"
+          @go-dashboard="$emit('go-dashboard')"
+        />
+      </div>
+
+      <aside class="desktop-exercise-panel" aria-label="Gyakorló infó">
+        <span class="desktop-exercise-kicker">Gyakorló</span>
+        <h2>{{ headerTitle }}</h2>
+        <p>{{ exercisePanelCopy }}</p>
+
+        <div class="desktop-exercise-stat-grid">
+          <div>
+            <span>Streak</span>
+            <strong>🔥 {{ displayStreak }} nap</strong>
+          </div>
+
+          <div>
+            <span>XP</span>
+            <strong>⭐ {{ xpProfile.xp || 0 }}</strong>
+          </div>
+
+          <div>
+            <span>Szint</span>
+            <strong>Level {{ xpProfile.level || 1 }}</strong>
+          </div>
+        </div>
+
+        <div class="desktop-exercise-focus">
+          <span>{{ exerciseFocusLabel }}</span>
+          <strong>{{ exerciseFocusValue }}</strong>
+        </div>
+
+        <button
+          type="button"
+          class="desktop-exercise-secondary"
+          @click="handleDesktopBreadcrumbBack"
+        >
+          {{ desktopBreadcrumb?.parentLabel || "Tanulási könyvtár" }}
+        </button>
+      </aside>
+    </div>
 
     <DailyChallengePractice
       v-if="isDailyChallenge"
@@ -96,6 +200,12 @@
       :initial-lesson-id="initialStoryId"
       @exercise-finished="$emit('exercise-finished')"
       @go-dashboard="$emit('go-dashboard')"
+    />
+
+    <StudentLearningLibrary
+      v-if="currentMode === 'learning-library'"
+      @set-mode="$emit('set-mode', $event)"
+      @open-story="$emit('open-story', $event)"
     />
 
     <div
@@ -151,6 +261,7 @@
 <script>
 import ProfileView from "./ProfileView.vue";
 import StudentMaterialsView from "./student/StudentMaterialsView.vue";
+import StudentLearningLibrary from "./student/StudentLearningLibrary.vue";
 import KonnektorenPractice from "./KonnektorenPractice.vue";
 import PraepositionPractice from "./PraepositionPractice.vue";
 import VerbPractice from "./VerbPractice.vue";
@@ -172,6 +283,7 @@ export default {
   components: {
     ProfileView,
     StudentMaterialsView,
+    StudentLearningLibrary,
     VerbPractice,
     NomenVerbPractice,
     AdjektivPractice,
@@ -316,6 +428,11 @@ export default {
       type: String,
       default: null,
     },
+
+    activeHomeworkAssignment: {
+      type: Object,
+      default: null,
+    },
   },
 
   emits: [
@@ -323,6 +440,7 @@ export default {
     "exercise-finished",
     "logout",
     "set-mode",
+    "open-story",
     "start-homework-practice",
     "upload-file",
     "update:new-note-text",
@@ -354,12 +472,148 @@ export default {
       return challengeMap[this.currentMode] || "passiv-news-traffic";
     },
 
+    isExerciseMode() {
+      return [
+        "perfekt",
+        "nomen-verb",
+        "adjektiv",
+        "osd",
+        "praeposition",
+        "konnektoren",
+        "sich-verben",
+        "passiv",
+        "pronominaladverb",
+        "vocabulary",
+      ].includes(this.currentMode);
+    },
+
     activeGrammarGuide() {
       if (!this.isGrammarGuide) return null;
 
       return (
         grammarGuides.find((guide) => guide.mode === this.currentMode) || null
       );
+    },
+
+    desktopBreadcrumb() {
+      if (!this.currentMode) return null;
+      if (this.isTopLevelDesktopPage) return null;
+
+      const parent = this.breadcrumbParent;
+
+      return {
+        ...parent,
+        groupLabel: this.breadcrumbGroupLabel,
+        currentLabel: this.breadcrumbCurrentLabel,
+      };
+    },
+
+    isTopLevelDesktopPage() {
+      return ["student-materials", "learning-library", "profile"].includes(
+        this.currentMode,
+      );
+    },
+
+    breadcrumbParent() {
+      if (this.activeHomeworkAssignment) {
+        return {
+          parentLabel: "Házi és anyagok",
+          targetMode: "student-materials",
+        };
+      }
+
+      return {
+        parentLabel: "Tanulási könyvtár",
+        targetMode: "learning-library",
+      };
+    },
+
+    breadcrumbGroupLabel() {
+      if (this.activeHomeworkAssignment) return "Házi feladat";
+      if (this.currentMode === "student-materials") return null;
+      if (this.currentMode === "learning-library") return null;
+      if (this.currentMode === "profile") return null;
+      if (this.isGrammarGuide) return "Nyelvtani segédletek";
+      if (this.isDailyChallenge) return "Challenge";
+      if (this.currentMode === "story-reading") return "Storyk";
+      return "Gyakorló feladatok";
+    },
+
+    breadcrumbCurrentLabel() {
+      const labels = {
+        "student-materials": "Házi és anyagok",
+        "learning-library": "Tanulási könyvtár",
+        profile: "Profil",
+      };
+
+      if (labels[this.currentMode]) return labels[this.currentMode];
+      if (this.activeHomeworkAssignment?.title) {
+        return this.activeHomeworkAssignment.title;
+      }
+      if (this.activeGrammarGuide?.title) return this.activeGrammarGuide.title;
+
+      return this.headerTitle;
+    },
+
+    displayStreak() {
+      return (
+        this.xpProfile?.streak_days ||
+        this.activityStats?.streak ||
+        0
+      );
+    },
+
+    exercisePanelCopy() {
+      if (this.activeHomeworkAssignment) {
+        return "Házi feladathoz kapcsolt gyakorló kör.";
+      }
+
+      const copyByMode = {
+        perfekt: "Igealakok és Partizip II gyors automatizálása.",
+        "nomen-verb": "Tipikus Nomen-Verb-Verbindungen gyakorlása.",
+        adjektiv: "Melléknévragozás eset, névelő és nem alapján.",
+        osd: "Vizsgahelyzetek és írásfeladatok gyakorlása.",
+        praeposition: "Vonzatok és prepozíciós kapcsolatok rögzítése.",
+        konnektoren: "Mondatkapcsolók és kötőszórend gyakorlása.",
+        "sich-verben": "Sich-Verben és reflexív szerkezetek ismétlése.",
+        passiv: "Passiv szerkezetek felismerése és átalakítása.",
+        pronominaladverb: "Worauf, darauf és hasonló alakok használata.",
+        vocabulary: "Szókártyák és névelős szókincs teszt.",
+      };
+
+      return copyByMode[this.currentMode] || "Célzott gyakorló kör.";
+    },
+
+    exerciseFocusLabel() {
+      if (this.activeHomeworkAssignment) return "Házi állapot";
+      if (this.currentMode === "vocabulary") return "Teszt XP";
+      if (this.currentMode === "osd") return "Feladattípus";
+      return "Kör";
+    },
+
+    exerciseFocusValue() {
+      if (this.activeHomeworkAssignment) {
+        return this.activeHomeworkAssignment.status === "submitted"
+          ? "Beküldve"
+          : "Folyamatban";
+      }
+
+      if (this.currentMode === "vocabulary") return "+5 XP tesztben";
+      if (this.currentMode === "osd") return "ÖSD Schreiben";
+      return "10 kérdés";
+    },
+  },
+
+  methods: {
+    handleDesktopBreadcrumbBack() {
+      const targetMode = this.desktopBreadcrumb?.targetMode;
+
+      if (targetMode) {
+        this.$emit("set-mode", targetMode);
+        return;
+      }
+
+      this.$emit("go-dashboard");
     },
   },
 };

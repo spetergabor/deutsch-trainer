@@ -55,6 +55,38 @@
     inset 0 1px 0 rgba(255, 255, 255, 0.08);
 }
 
+.with-desktop-sidebar .global-notifications-dropdown {
+  top: 18px;
+  right: auto;
+  bottom: 18px;
+  left: var(--desktop-shell-left, 317px);
+
+  width: 380px;
+  max-height: none;
+
+  display: flex;
+  flex-direction: column;
+
+  animation: sidebar-notifications-enter 0.18s ease-out;
+}
+
+.with-desktop-sidebar .notifications-list {
+  max-height: none;
+  min-height: 0;
+}
+
+@keyframes sidebar-notifications-enter {
+  from {
+    opacity: 0;
+    transform: translateX(-10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
 .notifications-dropdown-header {
   display: flex;
   align-items: center;

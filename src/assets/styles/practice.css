@@ -74,6 +74,90 @@
   text-align: center;
 }
 
+.desktop-page-breadcrumb {
+  display: none;
+}
+
+.with-desktop-sidebar .desktop-page-breadcrumb {
+  width: min(
+    var(--active-practice-width, var(--container-practice)),
+    calc(100% - 40px)
+  );
+  min-height: 42px;
+  margin: 18px auto 12px;
+  color: rgba(255, 255, 255, 0.58);
+  font-size: 0.92rem;
+  font-weight: 800;
+  text-align: left;
+
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.with-desktop-sidebar
+  .practice-screen:has(.learning-library-view)
+  > .desktop-page-breadcrumb,
+.with-desktop-sidebar
+  .practice-screen:has(.student-materials-view)
+  > .desktop-page-breadcrumb,
+.with-desktop-sidebar
+  .practice-screen.profile-practice-screen
+  > .desktop-page-breadcrumb {
+  width: 100%;
+  margin: 0 0 18px;
+}
+
+.with-desktop-sidebar .desktop-page-breadcrumb + .desktop-practice-return {
+  margin-top: 0;
+}
+
+.desktop-page-breadcrumb-back {
+  min-height: 42px;
+  padding: 0 16px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.065);
+  color: #ffffff;
+  font: inherit;
+  font-weight: 900;
+  white-space: nowrap;
+
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+
+  transition:
+    transform 0.18s ease,
+    border-color 0.18s ease,
+    background 0.18s ease;
+}
+
+.desktop-page-breadcrumb-back:hover {
+  transform: translateY(-1px);
+  border-color: rgba(255, 213, 106, 0.28);
+  background: rgba(255, 213, 106, 0.12);
+}
+
+.desktop-page-breadcrumb-back span {
+  font-size: 1.05rem;
+  line-height: 1;
+}
+
+.desktop-page-breadcrumb-separator,
+.desktop-page-breadcrumb-group {
+  color: rgba(255, 255, 255, 0.42);
+}
+
+.desktop-page-breadcrumb-current {
+  min-width: 0;
+  overflow: hidden;
+  color: rgba(255, 255, 255, 0.82);
+  font-weight: 900;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .practice-screen:has(.story-reading) {
   --active-practice-width: min(1080px, calc(100% - 40px));
   align-items: stretch;
@@ -107,6 +191,343 @@
   max-width: var(--active-practice-width) !important;
 }
 
+.practice-screen:has(.desktop-exercise-workspace) {
+  --active-practice-width: min(1120px, calc(100% - 40px));
+  align-items: stretch;
+}
+
+.desktop-exercise-workspace {
+  width: var(--active-practice-width);
+  margin: 0 auto 90px;
+}
+
+.desktop-exercise-main {
+  min-width: 0;
+}
+
+.desktop-exercise-main
+  > :is(
+    .practice-container,
+    .verb-practice,
+    .adjektiv-practice,
+    .praeposition-practice,
+    .konnektoren-practice,
+    .sich-verben-practice
+  ) {
+  width: 100% !important;
+  max-width: 100% !important;
+  margin: 0 !important;
+  padding-top: 0 !important;
+}
+
+.desktop-exercise-main
+  > :is(
+    .practice-container,
+    .verb-practice,
+    .adjektiv-practice,
+    .praeposition-practice,
+    .konnektoren-practice,
+    .sich-verben-practice
+  )
+  > h1,
+.desktop-exercise-main .exam-header > h1 {
+  display: none;
+}
+
+.desktop-exercise-panel {
+  display: none;
+}
+
+.desktop-exercise-hero {
+  display: none;
+}
+
+.with-desktop-sidebar .practice-screen:has(.desktop-exercise-workspace) {
+  --active-practice-width: var(
+    --desktop-shell-width,
+    min(1240px, calc(100% - 34px))
+  );
+  width: var(--active-practice-width);
+  max-width: var(--active-practice-width);
+  margin-right: 0;
+  margin-left: 0;
+  padding: 26px 0 24px;
+  align-items: stretch;
+  text-align: left;
+}
+
+.with-desktop-sidebar
+  .practice-screen:has(.desktop-exercise-workspace)
+  > .desktop-page-breadcrumb,
+.with-desktop-sidebar
+  .practice-screen:has(.desktop-exercise-workspace)
+  > .desktop-practice-return {
+  display: none;
+}
+
+.with-desktop-sidebar
+  .practice-screen:has(.desktop-exercise-workspace)
+  > .desktop-page-breadcrumb,
+.with-desktop-sidebar
+  .practice-screen:has(.desktop-exercise-workspace)
+  > .desktop-practice-return,
+.with-desktop-sidebar
+  .practice-screen:has(.desktop-exercise-workspace)
+  > .desktop-exercise-hero,
+.with-desktop-sidebar
+  .practice-screen:has(.desktop-exercise-workspace)
+  > .desktop-exercise-workspace {
+  width: 100%;
+}
+
+.with-desktop-sidebar .desktop-exercise-hero {
+  margin: 0 0 24px;
+  padding: 30px 34px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 28px;
+  background:
+    radial-gradient(circle at 18% 8%, rgba(102, 126, 234, 0.14), transparent 34%),
+    rgba(255, 255, 255, 0.055);
+  box-shadow: 0 18px 42px rgba(0, 0, 0, 0.28);
+  color: #ffffff;
+
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(260px, 0.46fr);
+  gap: 24px;
+  align-items: center;
+}
+
+.desktop-exercise-hero-copy {
+  min-width: 0;
+}
+
+.desktop-exercise-hero h2 {
+  margin: 12px 0 0;
+  color: #ffffff;
+  font-size: clamp(2.1rem, 4vw, 3.5rem);
+  font-weight: 950;
+  line-height: 1.04;
+}
+
+.desktop-exercise-hero p {
+  max-width: 760px;
+  margin: 12px 0 0;
+  color: rgba(255, 255, 255, 0.64);
+  font-size: 1.04rem;
+  font-weight: 560;
+  line-height: 1.55;
+}
+
+.desktop-exercise-hero-stats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  min-width: 0;
+}
+
+.desktop-exercise-hero-stats div {
+  min-width: 0;
+  padding: 14px;
+  border-radius: 18px;
+  background: rgba(0, 0, 0, 0.18);
+}
+
+.desktop-exercise-hero-stats span {
+  display: block;
+  margin-bottom: 6px;
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 0.78rem;
+  font-weight: 850;
+}
+
+.desktop-exercise-hero-stats strong {
+  display: block;
+  overflow: hidden;
+  color: #ffffff;
+  font-size: 1rem;
+  font-weight: 950;
+  line-height: 1.2;
+  text-overflow: ellipsis;
+}
+
+.with-desktop-sidebar .desktop-exercise-workspace {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(280px, 320px);
+  gap: 24px;
+  align-items: start;
+}
+
+.with-desktop-sidebar .desktop-exercise-main {
+  min-width: 0;
+}
+
+.with-desktop-sidebar
+  .desktop-exercise-main
+  :is(.xp-card, .practice-box, .passiv-task-card, .passiv-mode-grid) {
+  width: 100% !important;
+  max-width: none !important;
+}
+
+.with-desktop-sidebar
+  .desktop-exercise-main
+  :is(.question-card, .passiv-question-card) {
+  max-width: none !important;
+}
+
+.with-desktop-sidebar .desktop-exercise-panel {
+  position: sticky;
+  top: 26px;
+  min-height: 360px;
+  padding: 22px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 28px;
+  background:
+    radial-gradient(circle at 18% 8%, rgba(102, 126, 234, 0.14), transparent 34%),
+    rgba(255, 255, 255, 0.055);
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.22);
+  color: #ffffff;
+
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.desktop-exercise-kicker {
+  width: fit-content;
+  padding: 7px 11px;
+  border-radius: 999px;
+  background: rgba(255, 213, 106, 0.15);
+  color: #ffdc7a;
+  font-size: 0.78rem;
+  font-weight: 950;
+}
+
+.desktop-exercise-panel h2 {
+  margin: 0;
+  color: #ffffff;
+  font-size: 1.45rem;
+  font-weight: 950;
+  line-height: 1.12;
+}
+
+.desktop-exercise-panel p {
+  margin: -6px 0 0;
+  color: rgba(255, 255, 255, 0.62);
+  font-weight: 560;
+  line-height: 1.55;
+}
+
+.desktop-exercise-stat-grid {
+  display: grid;
+  gap: 10px;
+}
+
+.desktop-exercise-stat-grid div,
+.desktop-exercise-focus {
+  padding: 14px;
+  border-radius: 18px;
+  background: rgba(0, 0, 0, 0.18);
+}
+
+.desktop-exercise-stat-grid span,
+.desktop-exercise-focus span {
+  display: block;
+  margin-bottom: 6px;
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 0.78rem;
+  font-weight: 850;
+}
+
+.desktop-exercise-stat-grid strong,
+.desktop-exercise-focus strong {
+  color: #ffffff;
+  font-size: 1.02rem;
+  font-weight: 950;
+}
+
+.desktop-exercise-focus {
+  margin-top: auto;
+  border: 1px solid rgba(67, 233, 123, 0.18);
+  background: rgba(67, 233, 123, 0.08);
+}
+
+.desktop-exercise-focus strong {
+  color: #8cffb6;
+}
+
+.desktop-exercise-secondary {
+  width: 100%;
+  min-height: 46px;
+  padding: 0 16px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.07);
+  color: #ffffff;
+  font: inherit;
+  font-weight: 900;
+}
+
+.desktop-exercise-secondary:hover {
+  border-color: rgba(255, 213, 106, 0.28);
+  background: rgba(255, 213, 106, 0.12);
+}
+
+.practice-screen:has(.learning-library-view) {
+  --active-practice-width: min(1180px, calc(100% - 40px));
+  align-items: stretch;
+}
+
+.practice-screen:has(.learning-library-view) > .learning-library-view {
+  width: var(--active-practice-width);
+}
+
+.with-desktop-sidebar .practice-screen:has(.learning-library-view) {
+  --active-practice-width: var(
+    --desktop-shell-width,
+    min(1240px, calc(100% - 34px))
+  );
+  width: var(--active-practice-width);
+  max-width: var(--active-practice-width);
+  margin-right: 0;
+  margin-left: 0;
+  padding: 26px 0 24px;
+  align-items: stretch;
+  text-align: left;
+}
+
+.with-desktop-sidebar .practice-screen:has(.learning-library-view)
+  > .learning-library-view {
+  width: 100% !important;
+  max-width: none !important;
+  align-self: stretch;
+  margin: 0 0 90px !important;
+}
+
+.with-desktop-sidebar .practice-screen:has(.student-materials-view),
+.with-desktop-sidebar .practice-screen.profile-practice-screen {
+  --active-practice-width: var(
+    --desktop-shell-width,
+    min(1240px, calc(100% - 34px))
+  );
+  width: var(--active-practice-width);
+  max-width: var(--active-practice-width);
+  margin-right: 0;
+  margin-left: 0;
+  padding: 26px 0 24px;
+  align-items: stretch;
+  text-align: left;
+}
+
+.with-desktop-sidebar .practice-screen:has(.student-materials-view)
+  > .student-materials-view,
+.with-desktop-sidebar .practice-screen.profile-practice-screen
+  > .profile-page {
+  width: 100% !important;
+  max-width: none !important;
+  align-self: stretch;
+  margin: 0 0 90px !important;
+}
+
 .desktop-practice-return + .practice-container > h1,
 .desktop-practice-return + .verb-practice > h1,
 .desktop-practice-return + .adjektiv-practice > h1,
@@ -125,16 +546,16 @@
 }
 
 @media (min-width: 701px) {
-  .practice-screen:not(.grammar-practice-screen):not(:has(.story-reading)):not(:has(.osd-practice)):not(:has(.vocab-pack-library)):not(:has(.daily-challenge-practice)) {
+  .practice-screen:not(.grammar-practice-screen):not(.profile-practice-screen):not(:has(.story-reading)):not(:has(.osd-practice)):not(:has(.vocab-pack-library)):not(:has(.daily-challenge-practice)):not(:has(.desktop-exercise-workspace)):not(:has(.learning-library-view)):not(:has(.student-materials-view)) {
     --active-practice-width: var(--practice-desktop-width);
   }
 
-  .practice-screen:not(.grammar-practice-screen):not(:has(.story-reading)):not(:has(.osd-practice)):not(:has(.vocab-pack-library)):not(:has(.daily-challenge-practice))
+  .practice-screen:not(.grammar-practice-screen):not(.profile-practice-screen):not(:has(.story-reading)):not(:has(.osd-practice)):not(:has(.vocab-pack-library)):not(:has(.daily-challenge-practice)):not(:has(.desktop-exercise-workspace)):not(:has(.learning-library-view)):not(:has(.student-materials-view))
     > .desktop-practice-return {
     width: min(calc(var(--practice-desktop-width) * 0.92), calc(100% - 40px));
   }
 
-  .practice-screen:not(.grammar-practice-screen):not(:has(.story-reading)):not(:has(.osd-practice)):not(:has(.vocab-pack-library)):not(:has(.daily-challenge-practice))
+  .practice-screen:not(.grammar-practice-screen):not(.profile-practice-screen):not(:has(.story-reading)):not(:has(.osd-practice)):not(:has(.vocab-pack-library)):not(:has(.daily-challenge-practice)):not(:has(.desktop-exercise-workspace)):not(:has(.learning-library-view)):not(:has(.student-materials-view))
     > :is(
       .practice-container,
       .verb-practice,
