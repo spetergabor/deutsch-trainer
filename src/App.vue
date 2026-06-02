@@ -55,6 +55,24 @@
       @open-student-materials="openStudentMaterials"
     />
 
+    <MobileDrawerMenu
+      v-if="showMobileStudentDrawer"
+      :user-session="userSession"
+      :is-guest-mode="isGuestMode"
+      :auth-full-name="authFullName"
+      :current-mode="currentMode"
+      :unread-notifications="unreadNotifications"
+      :unread-messages="unreadMessages"
+      :is-logging-out="isLoggingOut"
+      @go-dashboard="goToDashboard"
+      @set-mode="setCurrentMode"
+      @open-student-materials="openStudentMaterials"
+      @open-messages="openMessagesPanel"
+      @toggle-notifications="toggleNotificationsMenu"
+      @open-profile="setCurrentMode('profile')"
+      @logout="handleLogout"
+    />
+
     <main class="content-wrapper">
       <div v-if="!isAuthReady" class="auth-loading-screen">
         <div class="auth-loading-card">
@@ -208,6 +226,7 @@
 import AppHeader from "./components/AppHeader.vue";
 import DesktopSidebar from "./components/DesktopSidebar.vue";
 import DesktopTopbar from "./components/DesktopTopbar.vue";
+import MobileDrawerMenu from "./components/MobileDrawerMenu.vue";
 import MobileBottomNav from "./components/MobileBottomNav.vue";
 import AuthScreen from "./components/auth/AuthScreen.vue";
 import StudentDashboard from "./components/student/StudentDashboard.vue";
@@ -264,6 +283,7 @@ export default {
     AppHeader,
     DesktopSidebar,
     DesktopTopbar,
+    MobileDrawerMenu,
     MobileBottomNav,
     AuthScreen,
     StudentDashboard,
@@ -373,6 +393,14 @@ export default {
 
     showDesktopSidebar() {
       return Boolean(this.userSession && this.windowWidth > 900);
+    },
+
+    showMobileStudentDrawer() {
+      return Boolean(
+        this.userSession &&
+          this.userRole === "student" &&
+          this.windowWidth <= 700,
+      );
     },
 
     showAppHeader() {

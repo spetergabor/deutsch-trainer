@@ -2294,6 +2294,19 @@ button.grammar-practice-chip:hover {
     padding-bottom: 120px;
   }
 
+  .student-materials-header {
+    padding-inline: 28px;
+  }
+
+  .student-homework-panel {
+    padding: 14px;
+    border-radius: 24px;
+  }
+
+  .student-homework-panel > h2 {
+    padding-inline: 22px;
+  }
+
   .student-materials-topbar {
     grid-template-columns: 1fr;
     gap: 14px;
@@ -2315,6 +2328,14 @@ button.grammar-practice-chip:hover {
 
   .student-materials-meta {
     grid-template-columns: 1fr;
+  }
+
+  .student-materials-detail {
+    padding: 18px;
+  }
+
+  .student-materials-detail-head {
+    padding-right: 0;
   }
 
   .dashboard-today-grid {
@@ -2365,8 +2386,31 @@ button.grammar-practice-chip:hover {
   .welcome-screen {
     width: calc(100% - 30px);
 
-    padding-top: 80px;
+    padding-top: 64px;
     padding-bottom: 120px;
+  }
+
+  .student-home-main {
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
+  }
+
+  .student-home-person,
+  .student-home-stats,
+  .student-home-main > p {
+    padding-inline: 22px;
+  }
+
+  .student-home-main p {
+    margin-top: 4px;
+  }
+
+  .student-home-recommendation {
+    margin-top: 2px;
+    padding-inline: 22px;
   }
 
   .lessons-ios-grid {

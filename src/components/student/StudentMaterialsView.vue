@@ -258,6 +258,7 @@ export default {
       setupError: false,
       activeHomeworkFilter: "todo",
       selectedMaterialKey: "",
+      isMaterialDetailOpen: true,
     };
   },
 
@@ -344,6 +345,10 @@ export default {
 
     selectedMaterialItem() {
       if (!this.filteredMaterialItems.length) {
+        return null;
+      }
+
+      if (!this.isMaterialDetailOpen) {
         return null;
       }
 
@@ -491,6 +496,10 @@ export default {
     },
 
     isSelectedMaterialItem(item) {
+      if (!this.selectedMaterialItem) {
+        return false;
+      }
+
       return (
         this.getMaterialItemKey(item) ===
         this.getMaterialItemKey(this.selectedMaterialItem)
@@ -498,7 +507,17 @@ export default {
     },
 
     selectMaterialItem(item) {
-      this.selectedMaterialKey = this.getMaterialItemKey(item);
+      const itemKey = this.getMaterialItemKey(item);
+      const currentKey = this.getMaterialItemKey(this.selectedMaterialItem);
+
+      if (this.isMaterialDetailOpen && currentKey === itemKey) {
+        this.selectedMaterialKey = "";
+        this.isMaterialDetailOpen = false;
+        return;
+      }
+
+      this.selectedMaterialKey = itemKey;
+      this.isMaterialDetailOpen = true;
     },
 
     formatDate,

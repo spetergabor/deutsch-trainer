@@ -951,4 +951,18 @@
     padding-left: 16px;
     padding-right: 16px;
   }
+
+  .practice-screen:has(.student-materials-view) {
+    width: 100% !important;
+    max-width: none !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+
+  .practice-screen:has(.student-materials-view) > .student-materials-view {
+    width: calc(100% - 20px) !important;
+    max-width: none !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
 }
