@@ -174,7 +174,7 @@
     </section>
 
     <section v-else class="teacher-workspace">
-      <header class="teacher-workspace-header">
+      <header v-if="activeTeacherSection !== 'exercises'" class="teacher-workspace-header">
         <button class="btn-outline btn-small" @click="goToTeacherPortal">
           ← Vissza
         </button>
@@ -794,21 +794,6 @@
       </section>
 
       <section v-else class="exercise-manager">
-        <div class="exercise-manager-header">
-          <div>
-            <h2>Feladatok kezelése</h2>
-            <p>Válassz feladattípust, majd adj hozzá vagy szerkessz feladatokat.</p>
-          </div>
-
-          <button
-            class="btn-outline btn-small"
-            @click="fetchExerciseItems"
-            :disabled="isExerciseItemsLoading"
-          >
-            Frissítés
-          </button>
-        </div>
-
         <div class="teacher-exercise-apps">
           <button
             v-for="exerciseType in exerciseTypes"

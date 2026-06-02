@@ -12,10 +12,43 @@
   margin: 20px auto 0;
 }
 
+.with-desktop-sidebar .teacher-portal,
+.with-desktop-sidebar .teacher-workspace {
+  width: 100%;
+  max-width: none;
+  margin: 0;
+}
+
+.with-desktop-sidebar .teacher-dashboard-shell {
+  width: var(--desktop-shell-width, min(1240px, calc(100% - 34px))) !important;
+  max-width: var(--desktop-shell-width, 1240px) !important;
+  margin-right: 0 !important;
+  margin-left: 0 !important;
+  padding-top: 0;
+}
+
+.with-desktop-sidebar .teacher-dashboard {
+  width: 100%;
+  max-width: none;
+}
+
 .teacher-portal {
   display: flex;
   flex-direction: column;
   gap: 18px;
+}
+
+.teacher-workspace {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.with-desktop-sidebar .teacher-portal,
+.with-desktop-sidebar .teacher-workspace,
+.with-desktop-sidebar .teacher-home,
+.with-desktop-sidebar .exercise-manager {
+  gap: var(--desktop-shell-gap, 24px);
 }
 
 .teacher-portal-header,
@@ -50,6 +83,18 @@
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 16px;
+}
+
+.with-desktop-sidebar .teacher-overview-grid,
+.with-desktop-sidebar .teacher-focus-students,
+.with-desktop-sidebar .teacher-upcoming-grid,
+.with-desktop-sidebar .teacher-section-grid,
+.with-desktop-sidebar .teacher-exercise-apps,
+.with-desktop-sidebar .exercise-form-grid,
+.with-desktop-sidebar .teacher-materials-meta,
+.with-desktop-sidebar .lesson-schedule-form,
+.with-desktop-sidebar .lesson-session-list {
+  gap: var(--desktop-shell-gap, 24px);
 }
 
 .teacher-overview-card {
@@ -290,6 +335,23 @@
   box-shadow: 0 18px 40px rgba(0, 0, 0, 0.22);
 }
 
+.with-desktop-sidebar .teacher-upcoming-lessons,
+.with-desktop-sidebar .teacher-focus-panel,
+.with-desktop-sidebar .teacher-focus-list,
+.with-desktop-sidebar .student-list,
+.with-desktop-sidebar .student-details,
+.with-desktop-sidebar .teacher-section-card,
+.with-desktop-sidebar .teacher-homework-panel,
+.with-desktop-sidebar .teacher-materials-list,
+.with-desktop-sidebar .teacher-materials-detail,
+.with-desktop-sidebar .teacher-materials-item,
+.with-desktop-sidebar .teacher-student-material-item,
+.with-desktop-sidebar .exercise-editor-card,
+.with-desktop-sidebar .exercise-list-card,
+.with-desktop-sidebar .teacher-home-intro {
+  box-sizing: border-box;
+}
+
 .teacher-upcoming-lessons-head {
   display: flex;
   align-items: flex-start;
@@ -455,6 +517,12 @@
   padding: 0 4px;
 }
 
+.with-desktop-sidebar .teacher-workspace-header {
+  margin-bottom: var(--desktop-shell-gap, 24px);
+  padding-right: 0;
+  padding-left: 0;
+}
+
 @media (min-width: 701px) {
   .teacher-workspace-header > .btn-small {
     display: none;
@@ -465,6 +533,10 @@
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 20px;
+}
+
+.with-desktop-sidebar .teacher-section-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
 .teacher-section-card {
@@ -549,6 +621,14 @@
   min-height: 70vh;
 }
 
+.with-desktop-sidebar .teacher-container {
+  display: grid;
+  grid-template-columns: minmax(270px, 0.34fr) minmax(0, 1fr);
+  gap: var(--desktop-shell-gap, 24px);
+  align-items: start;
+  min-height: 0;
+}
+
 .student-list {
   flex: 1;
   min-width: 280px;
@@ -558,6 +638,14 @@
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 20px;
   background: rgba(255, 255, 255, 0.05);
+}
+
+.with-desktop-sidebar .student-list {
+  width: 100%;
+  min-width: 0;
+  max-height: calc(100vh - var(--desktop-content-top, 102px) - 24px);
+  padding: 16px;
+  border-radius: 28px;
 }
 
 .student-list-header {
@@ -590,6 +678,12 @@
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 20px;
   background: rgba(255, 255, 255, 0.05);
+}
+
+.with-desktop-sidebar .student-details {
+  min-width: 0;
+  padding: 24px;
+  border-radius: 28px;
 }
 
 .student-item {
@@ -671,6 +765,11 @@
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   gap: 16px;
+}
+
+.with-desktop-sidebar .details-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--desktop-shell-gap, 24px);
 }
 
 .detail-card {
@@ -1030,6 +1129,10 @@
   gap: 18px;
 }
 
+.with-desktop-sidebar .writing-submissions-manager {
+  gap: var(--desktop-shell-gap, 24px);
+}
+
 .setup-warning-card,
 .writing-submission-toolbar,
 .writing-submission-detail,
@@ -1081,11 +1184,24 @@
   align-items: start;
 }
 
+.with-desktop-sidebar .writing-submissions-layout {
+  grid-template-columns: minmax(270px, 0.34fr) minmax(0, 1fr);
+  gap: var(--desktop-shell-gap, 24px);
+}
+
 .writing-submission-list {
   padding: 12px;
   display: flex;
   flex-direction: column;
   gap: 10px;
+}
+
+.with-desktop-sidebar .writing-submission-list {
+  max-height: calc(100vh - var(--desktop-content-top, 102px) - 24px);
+  padding: 16px;
+  border-radius: 28px;
+  gap: 12px;
+  overflow-y: auto;
 }
 
 .writing-submission-item {
@@ -1129,6 +1245,15 @@
 
 .writing-submission-detail {
   padding: 22px;
+}
+
+.with-desktop-sidebar .writing-submission-detail,
+.with-desktop-sidebar .writing-submission-toolbar,
+.with-desktop-sidebar .teacher-homework-panel,
+.with-desktop-sidebar .homework-create-card,
+.with-desktop-sidebar .homework-assignment-list {
+  padding: 24px;
+  border-radius: 28px;
 }
 
 .writing-submission-detail-header {
@@ -1262,6 +1387,11 @@
   margin-bottom: 18px;
 }
 
+.with-desktop-sidebar .teacher-homework-panel-head {
+  gap: var(--desktop-shell-gap, 24px);
+  margin-bottom: var(--desktop-shell-gap, 24px);
+}
+
 .teacher-homework-panel-head h2 {
   margin: 0 0 6px;
   color: #ffffff;
@@ -1288,6 +1418,11 @@
   align-items: start;
 }
 
+.with-desktop-sidebar .teacher-materials-unified {
+  grid-template-columns: minmax(270px, 0.34fr) minmax(0, 1fr);
+  gap: var(--desktop-shell-gap, 24px);
+}
+
 .teacher-materials-list,
 .teacher-materials-detail {
   border: 1px solid rgba(255, 255, 255, 0.1);
@@ -1301,6 +1436,14 @@
   display: flex;
   flex-direction: column;
   gap: 10px;
+}
+
+.with-desktop-sidebar .teacher-materials-list {
+  max-height: calc(100vh - var(--desktop-content-top, 102px) - 24px);
+  padding: 16px;
+  border-radius: 28px;
+  gap: 12px;
+  overflow-y: auto;
 }
 
 .teacher-materials-item {
@@ -1350,6 +1493,11 @@
 .teacher-materials-detail {
   min-width: 0;
   padding: 22px;
+}
+
+.with-desktop-sidebar .teacher-materials-detail {
+  padding: 24px;
+  border-radius: 28px;
 }
 
 .teacher-materials-detail-head {
@@ -1445,6 +1593,10 @@
   gap: 14px;
 }
 
+.with-desktop-sidebar .teacher-selected-student-summary {
+  margin-bottom: var(--desktop-shell-gap, 24px);
+}
+
 .teacher-selected-student-summary div {
   min-width: 0;
 }
@@ -1491,10 +1643,19 @@
   align-items: start;
 }
 
+.with-desktop-sidebar .teacher-student-materials-layout {
+  grid-template-columns: minmax(240px, 0.36fr) minmax(0, 1fr);
+  gap: var(--desktop-shell-gap, 24px);
+}
+
 .teacher-student-material-list {
   display: flex;
   flex-direction: column;
   gap: 10px;
+}
+
+.with-desktop-sidebar .teacher-student-material-list {
+  gap: 12px;
 }
 
 .teacher-student-material-item {
@@ -1585,6 +1746,10 @@
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 14px;
+}
+
+.with-desktop-sidebar .homework-form-grid {
+  gap: var(--desktop-shell-gap, 24px);
 }
 
 .homework-form-grid label,
@@ -1758,8 +1923,7 @@
   color: #ffffff;
 }
 
-.teacher-home-intro p,
-.exercise-manager-header p {
+.teacher-home-intro p {
   margin: 0;
   color: rgba(255, 255, 255, 0.62);
 }
@@ -1776,11 +1940,16 @@
   gap: 14px;
 }
 
+.with-desktop-sidebar .teacher-exercise-apps {
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+}
+
 .teacher-exercise-app {
   min-width: 0;
-  padding: 14px 10px;
+  min-height: 116px;
+  padding: 18px 12px;
   border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 22px;
+  border-radius: 24px;
 
   display: flex;
   flex-direction: column;
@@ -1798,7 +1967,9 @@
 .teacher-exercise-app:hover,
 .teacher-exercise-app.active {
   border-color: rgba(102, 126, 234, 0.55);
-  background: rgba(102, 126, 234, 0.13);
+  background:
+    radial-gradient(circle at 50% 0%, rgba(102, 126, 234, 0.16), transparent 58%),
+    rgba(102, 126, 234, 0.13);
   transform: translateY(-2px);
 }
 
@@ -1848,13 +2019,6 @@
   background: linear-gradient(135deg, #f093fb, #f5576c);
 }
 
-.exercise-manager-header {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 16px;
-}
-
 .exercise-editor-card,
 .exercise-list-card {
   padding: 20px;
@@ -1863,8 +2027,21 @@
   border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
+.exercise-editor-card {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  background:
+    radial-gradient(circle at 18% 0%, rgba(102, 126, 234, 0.1), transparent 34%),
+    rgba(255, 255, 255, 0.055);
+}
+
+.with-desktop-sidebar .exercise-editor-card {
+  padding: 28px;
+}
+
 .exercise-editor-card .send-teacher-note-btn {
-  margin-top: 4px;
+  margin-top: 2px;
 }
 
 .cancel-edit-btn {
@@ -1892,8 +2069,13 @@
 
 .exercise-editor-card h3,
 .exercise-list-card h3 {
-  margin: 0 0 16px;
+  margin: 0;
   color: #ffffff;
+}
+
+.exercise-editor-card h3 {
+  font-size: clamp(1.2rem, 1.7vw, 1.55rem);
+  line-height: 1.15;
 }
 
 .exercise-list-header {
@@ -1922,48 +2104,73 @@
 .exercise-form-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 14px;
+  gap: 18px 24px;
 }
 
 .exercise-editor-card label,
 .exercise-field {
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  margin-bottom: 14px;
+  gap: 10px;
+  margin: 0;
 
-  color: rgba(255, 255, 255, 0.72);
-  font-size: 0.82rem;
-  font-weight: 850;
+  color: rgba(255, 255, 255, 0.66);
+  font-size: 0.84rem;
+  font-weight: 900;
+  line-height: 1.2;
 }
 
-.exercise-editor-card input,
-.exercise-editor-card textarea {
+.teacher-dashboard .exercise-editor-card input,
+.teacher-dashboard .exercise-editor-card textarea {
+  appearance: none;
+  -webkit-appearance: none;
   width: 100%;
-  padding: 13px 15px;
-  border-radius: 16px;
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  min-height: 56px;
+  padding: 0 18px;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  border-radius: 18px !important;
   outline: none;
 
-  background: rgba(0, 0, 0, 0.24);
-  color: #ffffff;
+  background: rgba(0, 0, 0, 0.24) !important;
+  color: #ffffff !important;
   font-family: inherit;
-  font-size: 0.95rem;
-  font-weight: 700;
+  font-size: 1rem;
+  font-weight: 800;
   line-height: 1.35;
+  caret-color: #ffffff;
+  -webkit-text-fill-color: #ffffff;
 
   box-sizing: border-box;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.04),
+    0 10px 24px rgba(0, 0, 0, 0.12) !important;
 }
 
-.exercise-editor-card textarea {
-  min-height: 84px;
+.teacher-dashboard .exercise-editor-card textarea {
+  min-height: 120px;
+  padding: 16px 18px;
   resize: vertical;
 }
 
-.exercise-editor-card input:focus,
-.exercise-editor-card textarea:focus {
-  border-color: rgba(102, 126, 234, 0.78);
-  box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.13);
+.teacher-dashboard .exercise-editor-card input::placeholder,
+.teacher-dashboard .exercise-editor-card textarea::placeholder {
+  color: rgba(255, 255, 255, 0.34);
+  -webkit-text-fill-color: rgba(255, 255, 255, 0.34);
+}
+
+.teacher-dashboard .exercise-editor-card input:focus,
+.teacher-dashboard .exercise-editor-card textarea:focus {
+  border-color: rgba(102, 126, 234, 0.78) !important;
+  background: rgba(0, 0, 0, 0.3) !important;
+  box-shadow:
+    0 0 0 4px rgba(102, 126, 234, 0.13),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05) !important;
+}
+
+.teacher-dashboard .exercise-editor-card input:-webkit-autofill {
+  box-shadow: inset 0 0 0 1000px #211622 !important;
+  -webkit-text-fill-color: #ffffff !important;
+  caret-color: #ffffff;
 }
 
 .exercise-item-list {
@@ -2046,7 +2253,6 @@
 
 @media (max-width: 700px) {
   .teacher-home-intro,
-  .exercise-manager-header,
   .exercise-list-header,
   .exercise-item-row {
     flex-direction: column;

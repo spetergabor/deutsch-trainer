@@ -5,12 +5,19 @@
 .with-desktop-sidebar {
   --desktop-sidebar-width: clamp(275px, 20vw, 460px);
   --desktop-shell-gap: 24px;
+  --desktop-shell-edge: 18px;
+  --desktop-topbar-height: 60px;
+  --desktop-content-top: calc(
+    var(--desktop-shell-edge) + var(--desktop-topbar-height) +
+      var(--desktop-shell-gap)
+  );
   --desktop-shell-left: calc(
-    18px + var(--desktop-sidebar-width) + var(--desktop-shell-gap)
+    var(--desktop-shell-edge) + var(--desktop-sidebar-width) +
+      var(--desktop-shell-gap)
   );
   --desktop-shell-width: min(
     1240px,
-    calc(100vw - var(--desktop-shell-left) - 18px)
+    calc(100vw - var(--desktop-shell-left) - var(--desktop-shell-edge))
   );
 }
 
@@ -49,13 +56,14 @@
 
 .desktop-topbar {
   position: fixed;
-  top: 18px;
+  top: var(--desktop-shell-edge, 18px);
   right: auto;
   left: var(--desktop-shell-left, 317px);
   z-index: 980;
 
   width: var(--desktop-shell-width, calc(100vw - 335px));
-  min-height: 58px;
+  height: var(--desktop-topbar-height, 60px);
+  min-height: var(--desktop-topbar-height, 60px);
   padding: 8px 10px;
   box-sizing: border-box;
 
@@ -545,8 +553,8 @@
 
 .with-desktop-sidebar .content-wrapper {
   align-items: flex-start;
-  padding-top: 94px;
-  padding-right: 18px;
+  padding-top: var(--desktop-content-top, 102px);
+  padding-right: var(--desktop-shell-edge, 18px);
   padding-left: var(--desktop-shell-left, 317px);
 }
 
@@ -556,11 +564,11 @@
   max-width: var(--desktop-shell-width, 1240px);
   margin-right: 0;
   margin-left: 0;
-  padding-top: 26px;
+  padding-top: 0;
 }
 
 .with-desktop-sidebar .practice-screen.profile-practice-screen {
-  padding-top: 18px;
+  padding-top: 0;
 }
 
 @media (max-width: 900px) {

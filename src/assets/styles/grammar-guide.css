@@ -34,7 +34,7 @@
   max-width: var(--grammar-guide-width);
   margin-right: 0;
   margin-left: 0;
-  padding: 26px 0 24px;
+  padding: 0 0 24px;
 }
 
 .with-desktop-sidebar
@@ -283,7 +283,7 @@
 
 .grammar-guide-side {
   position: sticky;
-  top: 112px;
+  top: var(--desktop-content-top, 102px);
   align-self: start;
   padding: 22px;
 }

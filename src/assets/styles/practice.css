@@ -84,7 +84,7 @@
     calc(100% - 40px)
   );
   min-height: 42px;
-  margin: 18px auto 12px;
+  margin: 0 auto 12px;
   color: rgba(255, 255, 255, 0.58);
   font-size: 0.92rem;
   font-weight: 800;
@@ -109,6 +109,10 @@
 }
 
 .with-desktop-sidebar .desktop-page-breadcrumb + .desktop-practice-return {
+  margin-top: 0;
+}
+
+.with-desktop-sidebar .desktop-practice-return {
   margin-top: 0;
 }
 
@@ -174,7 +178,7 @@
   max-width: var(--active-practice-width);
   margin-right: 0;
   margin-left: 0;
-  padding: 26px 0 24px;
+  padding: 0 0 24px;
   align-items: stretch;
   text-align: left;
 }
@@ -215,11 +219,11 @@
 
 .with-desktop-sidebar .story-reading .story-side {
   position: sticky;
-  top: 112px;
+  top: var(--desktop-content-top, 102px);
   grid-column: 2;
   grid-row: 1;
   align-self: start;
-  max-height: calc(100vh - 136px);
+  max-height: calc(100vh - var(--desktop-content-top, 102px) - 24px);
   overflow-y: auto;
 }
 
@@ -284,7 +288,7 @@
   max-width: var(--active-practice-width);
   margin-right: 0;
   margin-left: 0;
-  padding: 26px 0 24px;
+  padding: 0 0 24px;
   align-items: stretch;
   text-align: left;
 }
@@ -414,7 +418,7 @@
   max-width: var(--active-practice-width);
   margin-right: 0;
   margin-left: 0;
-  padding: 26px 0 24px;
+  padding: 0 0 24px;
   align-items: stretch;
   text-align: left;
 }
@@ -539,7 +543,7 @@
 
 .with-desktop-sidebar .desktop-exercise-panel {
   position: sticky;
-  top: 26px;
+  top: var(--desktop-content-top, 102px);
   min-height: 360px;
   padding: 22px;
   border: 1px solid rgba(255, 255, 255, 0.1);
@@ -653,7 +657,7 @@
   max-width: var(--active-practice-width);
   margin-right: 0;
   margin-left: 0;
-  padding: 26px 0 24px;
+  padding: 0 0 24px;
   align-items: stretch;
   text-align: left;
 }
@@ -676,7 +680,7 @@
   max-width: var(--active-practice-width);
   margin-right: 0;
   margin-left: 0;
-  padding: 26px 0 24px;
+  padding: 0 0 24px;
   align-items: stretch;
   text-align: left;
 }
