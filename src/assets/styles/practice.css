@@ -165,6 +165,90 @@
   overflow-x: clip;
 }
 
+.with-desktop-sidebar .practice-screen:has(.story-reading) {
+  --active-practice-width: var(
+    --desktop-shell-width,
+    min(1240px, calc(100% - 34px))
+  );
+  width: var(--active-practice-width);
+  max-width: var(--active-practice-width);
+  margin-right: 0;
+  margin-left: 0;
+  padding: 26px 0 24px;
+  align-items: stretch;
+  text-align: left;
+}
+
+.with-desktop-sidebar
+  .practice-screen:has(.story-reading)
+  > .desktop-page-breadcrumb,
+.with-desktop-sidebar
+  .practice-screen:has(.story-reading)
+  > .desktop-practice-return {
+  display: none;
+}
+
+.with-desktop-sidebar .practice-screen:has(.story-reading) > .story-reading {
+  width: 100% !important;
+  max-width: none !important;
+  margin: 0 0 90px !important;
+  padding: 0 !important;
+}
+
+.with-desktop-sidebar .story-reading .story-page-hero,
+.with-desktop-sidebar .story-reading .story-picker,
+.with-desktop-sidebar .story-reading .story-shell {
+  width: 100% !important;
+  max-width: none !important;
+}
+
+.with-desktop-sidebar .story-reading .story-shell {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 300px;
+  gap: 24px;
+  align-items: start;
+}
+
+.with-desktop-sidebar .story-reading .story-main {
+  grid-column: 1;
+}
+
+.with-desktop-sidebar .story-reading .story-side {
+  position: sticky;
+  top: 112px;
+  grid-column: 2;
+  grid-row: 1;
+  align-self: start;
+  max-height: calc(100vh - 136px);
+  overflow-y: auto;
+}
+
+.with-desktop-sidebar .story-reading .story-quiz {
+  grid-column: 1;
+  grid-row: 2;
+}
+
+.with-desktop-sidebar .story-reading .story-main,
+.with-desktop-sidebar .story-reading .story-side,
+.with-desktop-sidebar .story-reading .story-quiz {
+  border-radius: 28px;
+}
+
+.with-desktop-sidebar .story-reading .story-main {
+  padding: 34px;
+}
+
+.with-desktop-sidebar .story-reading .story-side {
+  padding: 24px;
+}
+
+.with-desktop-sidebar .story-reading .story-text p,
+.with-desktop-sidebar .story-reading .story-subtitle,
+.with-desktop-sidebar .story-reading .story-picker-card p,
+.with-desktop-sidebar .story-reading .grammar-item p {
+  font-weight: 560 !important;
+}
+
 .practice-screen:has(.vocab-pack-library) {
   --active-practice-width: min(980px, calc(100% - 40px));
 }
@@ -189,6 +273,85 @@
 .practice-screen:has(.daily-challenge-practice) > .daily-challenge-practice {
   width: var(--active-practice-width) !important;
   max-width: var(--active-practice-width) !important;
+}
+
+.with-desktop-sidebar .practice-screen:has(.daily-challenge-practice) {
+  --active-practice-width: var(
+    --desktop-shell-width,
+    min(1240px, calc(100% - 34px))
+  );
+  width: var(--active-practice-width);
+  max-width: var(--active-practice-width);
+  margin-right: 0;
+  margin-left: 0;
+  padding: 26px 0 24px;
+  align-items: stretch;
+  text-align: left;
+}
+
+.with-desktop-sidebar
+  .practice-screen:has(.daily-challenge-practice)
+  > .desktop-page-breadcrumb,
+.with-desktop-sidebar
+  .practice-screen:has(.daily-challenge-practice)
+  > .desktop-practice-return {
+  display: none;
+}
+
+.with-desktop-sidebar
+  .practice-screen:has(.daily-challenge-practice)
+  > .daily-challenge-practice {
+  width: 100% !important;
+  max-width: none !important;
+  margin: 0 0 90px !important;
+  padding: 0 !important;
+}
+
+.with-desktop-sidebar .daily-challenge-practice .challenge-hero {
+  width: 100% !important;
+  margin: 0 0 24px !important;
+  padding: 30px 34px !important;
+  border-radius: 28px !important;
+  background:
+    radial-gradient(circle at 18% 8%, rgba(102, 126, 234, 0.14), transparent 34%),
+    rgba(255, 255, 255, 0.055) !important;
+  box-shadow: 0 18px 42px rgba(0, 0, 0, 0.28) !important;
+}
+
+.with-desktop-sidebar .daily-challenge-practice .challenge-hero h1 {
+  font-size: clamp(2.1rem, 4vw, 3.5rem) !important;
+}
+
+.with-desktop-sidebar .daily-challenge-practice .challenge-hero p {
+  color: rgba(255, 255, 255, 0.64) !important;
+  font-weight: 560 !important;
+  line-height: 1.55 !important;
+}
+
+.with-desktop-sidebar .daily-challenge-practice .practice-layout,
+.with-desktop-sidebar .daily-challenge-practice .practice-box {
+  width: 100% !important;
+  max-width: none !important;
+}
+
+.with-desktop-sidebar .daily-challenge-practice .practice-box {
+  margin: 0 !important;
+  padding: 34px !important;
+  align-items: stretch !important;
+}
+
+.with-desktop-sidebar .daily-challenge-practice .progress-container {
+  width: min(620px, 100%);
+  align-self: center;
+}
+
+.with-desktop-sidebar .daily-challenge-practice .challenge-step {
+  gap: 24px;
+}
+
+.with-desktop-sidebar .daily-challenge-practice .challenge-step-head p,
+.with-desktop-sidebar .daily-challenge-practice .challenge-reading p {
+  font-weight: 560 !important;
 }
 
 .practice-screen:has(.desktop-exercise-workspace) {

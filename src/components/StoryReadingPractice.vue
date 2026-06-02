@@ -1,6 +1,32 @@
 <template>
   <div class="story-reading practice-container">
-    <h1>Story-Lesen</h1>
+    <section v-if="!showStatistics" class="story-page-hero">
+      <div class="story-page-hero-copy">
+        <span>Story-Lesen</span>
+        <h1>Olvasás német szövegekkel</h1>
+        <p>
+          Cikkek, szókincs és rövid szövegértés egy helyen, hogy a nyelvtan
+          használat közben is rögzüljön.
+        </p>
+      </div>
+
+      <div class="story-page-hero-meta">
+        <div>
+          <small>Aktuális</small>
+          <strong>{{ lesson?.level || "B1/B2" }}</strong>
+        </div>
+
+        <div>
+          <small>Szókincs</small>
+          <strong>{{ activeVocabularyCount }} szó</strong>
+        </div>
+
+        <div>
+          <small>Kérdések</small>
+          <strong>{{ activeQuestionCount }} kérdés</strong>
+        </div>
+      </div>
+    </section>
 
     <section v-if="!lesson && !showStatistics" class="story-picker">
       <article
@@ -191,6 +217,24 @@ export default {
 
       return Math.round((this.currentQuestionIndex / this.totalQuestions) * 100);
     },
+
+    activeVocabularyCount() {
+      if (this.lesson) return this.lesson.vocabulary?.length || 0;
+
+      return this.lessons.reduce(
+        (total, item) => total + (item.vocabulary?.length || 0),
+        0,
+      );
+    },
+
+    activeQuestionCount() {
+      if (this.lesson) return this.lesson.questions?.length || 0;
+
+      return this.lessons.reduce(
+        (total, item) => total + (item.questions?.length || 0),
+        0,
+      );
+    },
   },
 
   mounted() {
@@ -216,12 +260,36 @@ export default {
       this.lesson = nextLesson;
       this.selectedVocab = nextLesson.vocabulary?.[0] || null;
       this.resetStoryProgress();
+      this.scrollStoryToTop();
     },
 
     backToStoryList() {
       this.lesson = null;
       this.selectedVocab = null;
       this.resetStoryProgress();
+      this.scrollStoryToTop();
+    },
+
+    scrollStoryToTop() {
+      const resetScroll = () => {
+        const scrollingElement =
+          document.scrollingElement || document.documentElement;
+
+        window.scrollTo({
+          top: 0,
+          left: 0,
+          behavior: "auto",
+        });
+
+        scrollingElement.scrollTop = 0;
+        document.documentElement.scrollTop = 0;
+        document.body.scrollTop = 0;
+      };
+
+      this.$nextTick(() => {
+        resetScroll();
+        window.requestAnimationFrame(resetScroll);
+      });
     },
 
     resetStoryProgress() {
@@ -312,6 +380,88 @@ export default {
   grid-template-columns: 1fr;
   gap: 26px;
   align-items: start;
+}
+
+.story-page-hero {
+  width: 100%;
+  margin: 0 0 24px;
+  padding: 28px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 30px;
+  background:
+    radial-gradient(circle at 18% 8%, rgba(102, 126, 234, 0.16), transparent 34%),
+    rgba(255, 255, 255, 0.055);
+  box-shadow: 0 18px 42px rgba(0, 0, 0, 0.28);
+  color: #ffffff;
+  text-align: left;
+
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(260px, 0.44fr);
+  gap: 24px;
+  align-items: center;
+}
+
+.story-page-hero-copy {
+  min-width: 0;
+}
+
+.story-page-hero-copy span {
+  display: inline-flex;
+  width: fit-content;
+  padding: 7px 12px;
+  border-radius: 999px;
+  background: rgba(255, 213, 106, 0.15);
+  color: #ffdc7a;
+  font-size: 0.78rem;
+  font-weight: 950;
+}
+
+.story-page-hero h1 {
+  margin: 12px 0 0;
+  color: #ffffff;
+  font-size: clamp(2.1rem, 4vw, 3.5rem);
+  font-weight: 950;
+  line-height: 1.04;
+}
+
+.story-page-hero p {
+  max-width: 760px;
+  margin: 12px 0 0;
+  color: rgba(255, 255, 255, 0.64);
+  font-size: 1.04rem;
+  font-weight: 560;
+  line-height: 1.55;
+}
+
+.story-page-hero-meta {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.story-page-hero-meta div {
+  min-width: 0;
+  padding: 14px;
+  border-radius: 18px;
+  background: rgba(0, 0, 0, 0.18);
+}
+
+.story-page-hero-meta small {
+  display: block;
+  margin-bottom: 6px;
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 0.78rem;
+  font-weight: 850;
+}
+
+.story-page-hero-meta strong {
+  display: block;
+  overflow: hidden;
+  color: #ffffff;
+  font-size: 1rem;
+  font-weight: 950;
+  line-height: 1.2;
+  text-overflow: ellipsis;
 }
 
 .story-picker {
@@ -658,9 +808,32 @@ export default {
     width: min(100%, calc(100% - 30px));
     max-width: min(100%, calc(100% - 30px));
   }
+
+  .story-page-hero {
+    grid-template-columns: 1fr;
+  }
 }
 
 @media (max-width: 700px) {
+  .story-page-hero {
+    padding: 22px;
+    border-radius: 26px;
+  }
+
+  .story-page-hero h1 {
+    font-size: clamp(2rem, 9vw, 2.75rem);
+    overflow-wrap: anywhere;
+  }
+
+  .story-page-hero p {
+    font-size: 1rem;
+    line-height: 1.45;
+  }
+
+  .story-page-hero-meta {
+    grid-template-columns: 1fr;
+  }
+
   .story-text {
     font-size: 0.98rem;
     line-height: 1.7;
