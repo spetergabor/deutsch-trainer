@@ -923,7 +923,8 @@ export default {
 
 @media (max-width: 700px) {
   .profile-page {
-    width: calc(100% - 20px);
+    width: var(--mobile-page-width, calc(100% - 30px));
+    max-width: var(--mobile-page-width, calc(100% - 30px));
     padding-bottom: 120px;
   }
 

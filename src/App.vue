@@ -1270,4 +1270,95 @@ export default {
 @import "./assets/styles/mobile-nav.css";
 @import "./assets/styles/profile.css";
 @import "./assets/styles/teacher-dashboard.css";
+
+@media (max-width: 700px) {
+  :root {
+    --mobile-page-gutter: 15px;
+    --mobile-page-width: calc(100% - 30px);
+  }
+
+  #app,
+  .content-wrapper {
+    overflow-x: hidden;
+  }
+
+  .content-wrapper {
+    align-items: center;
+    padding-top: 0;
+  }
+
+  .practice-screen {
+    width: 100% !important;
+    max-width: none !important;
+    padding-right: 0 !important;
+    padding-left: 0 !important;
+  }
+
+  .dashboard-layout,
+  .welcome-screen,
+  .student-materials-view,
+  .learning-library-view,
+  .profile-page,
+  .welcome-screen.teacher-dashboard-shell,
+  .grammar-guide-shell,
+  .story-reading.practice-container,
+  .daily-challenge-practice,
+  .vocab-pack-library,
+  .desktop-exercise-workspace {
+    width: var(--mobile-page-width) !important;
+    max-width: var(--mobile-page-width) !important;
+    margin-right: auto !important;
+    margin-left: auto !important;
+  }
+
+  .practice-screen:has(.student-materials-view) > .student-materials-view,
+  .practice-screen:has(.learning-library-view) > .learning-library-view,
+  .practice-screen:has(.daily-challenge-practice) > .daily-challenge-practice,
+  .practice-screen:has(.story-reading) > .story-reading,
+  .practice-screen:has(.vocab-pack-library) > .vocab-pack-library {
+    width: var(--mobile-page-width) !important;
+    max-width: var(--mobile-page-width) !important;
+    margin-right: auto !important;
+    margin-left: auto !important;
+  }
+
+  .desktop-exercise-main
+    > :is(
+      .practice-container,
+      .verb-practice,
+      .adjektiv-practice,
+      .praeposition-practice,
+      .konnektoren-practice,
+      .sich-verben-practice
+    ) {
+    width: 100% !important;
+    max-width: 100% !important;
+    padding-right: 0 !important;
+    padding-left: 0 !important;
+  }
+
+  .student-materials-header,
+  .student-homework-panel > h2 {
+    padding-right: 0 !important;
+    padding-left: 0 !important;
+  }
+
+  .student-home-person,
+  .student-home-stats,
+  .student-home-main > p,
+  .student-home-recommendation {
+    padding-right: 0 !important;
+    padding-left: 0 !important;
+  }
+
+  .profile-page > *,
+  .teacher-dashboard,
+  .teacher-portal,
+  .teacher-workspace,
+  .grammar-guide,
+  .story-reading :is(.story-page-hero, .story-picker, .story-shell),
+  .daily-challenge-practice :is(.challenge-hero, .practice-layout, .practice-box) {
+    max-width: 100% !important;
+  }
+}
 </style>
