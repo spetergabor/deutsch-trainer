@@ -1271,6 +1271,47 @@ export default {
 @import "./assets/styles/profile.css";
 @import "./assets/styles/teacher-dashboard.css";
 
+#app.with-desktop-sidebar .content-wrapper {
+  padding-bottom: 0 !important;
+}
+
+#app.with-desktop-sidebar
+  .content-wrapper
+  > :is(.dashboard-layout, .welcome-screen, .practice-screen) {
+  margin-bottom: 0 !important;
+  padding-bottom: var(--desktop-shell-edge, 18px) !important;
+}
+
+#app.with-desktop-sidebar .content-wrapper > .dashboard-layout {
+  min-height: calc(
+    100vh - var(--desktop-content-top, 102px) -
+      var(--desktop-shell-edge, 18px)
+  );
+  display: flex;
+  flex-direction: column;
+}
+
+#app.with-desktop-sidebar .dashboard-layout > .dashboard-daily-plan:last-child {
+  margin-top: auto !important;
+  margin-bottom: 0 !important;
+}
+
+#app.with-desktop-sidebar
+  .practice-screen
+  > :is(
+    .profile-page,
+    .student-materials-view,
+    .learning-library-view,
+    .grammar-guide-shell,
+    .story-reading.practice-container,
+    .daily-challenge-practice,
+    .vocab-pack-library,
+    .desktop-exercise-workspace
+  ) {
+  margin-bottom: 0 !important;
+  padding-bottom: 0 !important;
+}
+
 @media (max-width: 700px) {
   :root {
     --mobile-page-gutter: 15px;

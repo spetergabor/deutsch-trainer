@@ -3,9 +3,10 @@
 ========================================================= */
 
 .with-desktop-sidebar {
-  --desktop-sidebar-width: clamp(275px, 20vw, 460px);
+  --desktop-sidebar-width: clamp(300px, 21vw, 470px);
   --desktop-shell-gap: 24px;
   --desktop-shell-edge: 18px;
+  --desktop-shell-right: var(--desktop-shell-gap);
   --desktop-topbar-height: 60px;
   --desktop-content-top: calc(
     var(--desktop-shell-edge) + var(--desktop-topbar-height) +
@@ -15,9 +16,8 @@
     var(--desktop-shell-edge) + var(--desktop-sidebar-width) +
       var(--desktop-shell-gap)
   );
-  --desktop-shell-width: min(
-    1240px,
-    calc(100vw - var(--desktop-shell-left) - var(--desktop-shell-edge))
+  --desktop-shell-width: calc(
+    100vw - var(--desktop-shell-left) - var(--desktop-shell-right)
   );
 }
 
@@ -554,17 +554,18 @@
 .with-desktop-sidebar .content-wrapper {
   align-items: flex-start;
   padding-top: var(--desktop-content-top, 102px);
-  padding-right: var(--desktop-shell-edge, 18px);
+  padding-right: var(--desktop-shell-right, 24px);
   padding-left: var(--desktop-shell-left, 317px);
 }
 
 .with-desktop-sidebar .dashboard-layout,
 .with-desktop-sidebar .welcome-screen {
   width: var(--desktop-shell-width, min(1240px, calc(100% - 34px)));
-  max-width: var(--desktop-shell-width, 1240px);
+  max-width: none;
   margin-right: 0;
   margin-left: 0;
   padding-top: 0;
+  padding-bottom: var(--desktop-shell-edge, 18px);
 }
 
 .with-desktop-sidebar .practice-screen.profile-practice-screen {
