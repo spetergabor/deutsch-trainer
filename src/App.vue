@@ -1312,6 +1312,191 @@ export default {
   padding-bottom: 0 !important;
 }
 
+#app.with-desktop-sidebar .practice-screen:has(.osd-practice) {
+  width: var(--desktop-shell-width, 100%) !important;
+  max-width: none !important;
+  align-items: stretch !important;
+  padding-bottom: var(--desktop-shell-edge, 18px) !important;
+}
+
+#app.with-desktop-sidebar .practice-screen:has(.osd-practice) .desktop-exercise-workspace {
+  width: 100% !important;
+  max-width: none !important;
+  margin-top: 0 !important;
+  grid-template-columns: minmax(0, 1fr) !important;
+}
+
+#app.with-desktop-sidebar .practice-screen:has(.osd-practice) .desktop-exercise-panel {
+  display: none !important;
+}
+
+#app.with-desktop-sidebar .practice-screen:has(.osd-practice) .desktop-exercise-main {
+  width: 100% !important;
+  max-width: none !important;
+}
+
+#app.with-desktop-sidebar .practice-screen:has(.osd-practice) .osd-practice {
+  width: 100% !important;
+  max-width: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+#app.with-desktop-sidebar .practice-screen:has(.osd-practice) .osd-practice .case-selector {
+  margin-top: 0 !important;
+}
+
+#app.with-desktop-sidebar .practice-screen:has(.osd-practice) .osd-practice .btn-case {
+  min-height: 340px !important;
+}
+
+#app.with-desktop-sidebar .practice-screen:has(.osd-practice) .osd-practice .exam-header,
+#app.with-desktop-sidebar .practice-screen:has(.osd-practice) .osd-practice .back-to-sub {
+  display: none !important;
+}
+
+#app.with-desktop-sidebar .practice-screen:has(.osd-practice) .osd-practice .content-area {
+  width: 100% !important;
+  max-width: none !important;
+  align-items: stretch !important;
+}
+
+#app.with-desktop-sidebar
+  .practice-screen:has(.osd-practice)
+  .osd-practice
+  .content-area
+  > * {
+  width: 100% !important;
+  max-width: none !important;
+}
+
+#app.with-desktop-sidebar .adjektiv-practice .top-info-wrapper {
+  display: none !important;
+}
+
+#app.with-desktop-sidebar
+  .practice-screen:has(.vocabulary-practice)
+  .vocabulary-practice {
+  width: 100% !important;
+  max-width: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+#app.with-desktop-sidebar
+  .practice-screen:has(.vocabulary-practice)
+  .vocabulary-practice
+  .vocab-back-link {
+  display: none !important;
+}
+
+#app.with-desktop-sidebar
+  .practice-screen:has(.vocabulary-practice)
+  .vocabulary-practice
+  .vocab-mode-stage {
+  width: 100% !important;
+  max-width: none !important;
+  margin: 0 !important;
+  gap: 24px !important;
+}
+
+#app.with-desktop-sidebar
+  .practice-screen:has(.vocabulary-practice)
+  .vocabulary-practice
+  .vocab-selected-pack {
+  width: 100% !important;
+  min-height: 116px !important;
+  padding: 22px 24px !important;
+  border-radius: 28px !important;
+  background:
+    linear-gradient(135deg, rgba(255, 194, 69, 0.12), transparent 42%),
+    rgba(255, 255, 255, 0.06) !important;
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.2) !important;
+}
+
+#app.with-desktop-sidebar
+  .practice-screen:has(.vocabulary-practice)
+  .vocabulary-practice
+  .vocab-selected-pack
+  > span {
+  width: 72px !important;
+  height: 72px !important;
+  border-radius: 22px !important;
+  font-size: 2rem !important;
+}
+
+#app.with-desktop-sidebar
+  .practice-screen:has(.vocabulary-practice)
+  .vocabulary-practice
+  .vocab-selected-pack
+  strong {
+  font-size: clamp(1.35rem, 1.2vw, 1.75rem) !important;
+}
+
+#app.with-desktop-sidebar
+  .practice-screen:has(.vocabulary-practice)
+  .vocabulary-practice
+  .vocab-mode-picker {
+  width: 100% !important;
+  max-width: none !important;
+  margin: 0 !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 24px !important;
+}
+
+#app.with-desktop-sidebar
+  .practice-screen:has(.vocabulary-practice)
+  .vocabulary-practice
+  .vocab-mode-card {
+  min-height: 330px !important;
+  padding: 34px !important;
+  align-content: start !important;
+  gap: 18px !important;
+  border-radius: 30px !important;
+  background:
+    linear-gradient(135deg, rgba(115, 103, 240, 0.13), transparent 48%),
+    rgba(255, 255, 255, 0.06) !important;
+}
+
+#app.with-desktop-sidebar
+  .practice-screen:has(.vocabulary-practice)
+  .vocabulary-practice
+  .vocab-mode-card:nth-child(2) {
+  background:
+    linear-gradient(135deg, rgba(255, 194, 69, 0.14), transparent 46%),
+    rgba(255, 255, 255, 0.06) !important;
+}
+
+#app.with-desktop-sidebar
+  .practice-screen:has(.vocabulary-practice)
+  .vocabulary-practice
+  .vocab-mode-card
+  span {
+  width: 86px !important;
+  height: 86px !important;
+  border-radius: 24px !important;
+  font-size: 2rem !important;
+}
+
+#app.with-desktop-sidebar
+  .practice-screen:has(.vocabulary-practice)
+  .vocabulary-practice
+  .vocab-mode-card
+  strong {
+  margin-top: auto !important;
+  font-size: clamp(1.85rem, 1.8vw, 2.45rem) !important;
+}
+
+#app.with-desktop-sidebar
+  .practice-screen:has(.vocabulary-practice)
+  .vocabulary-practice
+  .vocab-mode-card
+  small {
+  max-width: 34ch !important;
+  font-size: clamp(1rem, 0.95vw, 1.15rem) !important;
+  line-height: 1.45 !important;
+}
+
 @media (max-width: 700px) {
   :root {
     --mobile-page-gutter: 15px;

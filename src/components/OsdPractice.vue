@@ -17,25 +17,27 @@
     </div>
 
     <div v-if="!selectedPart" class="case-selector">
-      <div class="case-grid ui-unit">
-        <button class="btn-case" @click="selectPart('lueckentext')">
-          <span class="part-icon">📝</span>
-          Lückentext
-        </button>
+      <div class="case-grid">
+        <button
+          v-for="part in examParts"
+          :key="part.id"
+          class="btn-case"
+          :class="{ recommended: part.recommended }"
+          @click="selectPart(part.id)"
+        >
+          <span class="part-icon">{{ part.icon }}</span>
 
-        <button class="btn-case" @click="selectPart('leseverstehen')">
-          <span class="part-icon">📖</span>
-          Leseverstehen
-        </button>
+          <span class="part-copy">
+            <strong>{{ part.title }}</strong>
+            <small>{{ part.description }}</small>
+          </span>
 
-        <button class="btn-case" @click="selectPart('hoereverstehen')">
-          <span class="part-icon">🎧</span>
-          Hörverstehen
-        </button>
+          <span class="part-meta">
+            <span>{{ part.duration }}</span>
+            <span>{{ part.skill }}</span>
+          </span>
 
-        <button class="btn-case" @click="selectPart('schreiben')">
-          <span class="part-icon">✍️</span>
-          Schreiben
+          <span class="part-action" aria-hidden="true">→</span>
         </button>
       </div>
     </div>
@@ -139,6 +141,45 @@ export default {
       selectedPart: null,
       showInfoPopup: false,
       examDetails: examInfo,
+      examParts: [
+        {
+          id: "lueckentext",
+          title: "Lückentext",
+          icon: "📝",
+          duration: "15 perc",
+          skill: "Nyelvhelyesség",
+          description:
+            "Hiányzó szavak, kötőelemek és szerkezetek gyakorlása vizsgatempóban.",
+        },
+        {
+          id: "leseverstehen",
+          title: "Leseverstehen",
+          icon: "📖",
+          duration: "25 perc",
+          skill: "Olvasás",
+          description:
+            "Szövegértés, cím-hozzárendelés és részletes kérdések ÖSD formátumban.",
+        },
+        {
+          id: "hoereverstehen",
+          title: "Hörverstehen",
+          icon: "🎧",
+          duration: "20 perc",
+          skill: "Hallásértés",
+          description:
+            "Audio alapú igaz-hamis, párosító és részletértési feladatok.",
+        },
+        {
+          id: "schreiben",
+          title: "Schreiben",
+          icon: "✍️",
+          duration: "30 perc",
+          skill: "Írás",
+          description:
+            "Panaszlevél, e-mail és érvelő szöveg gyakorlása javítható beküldéssel.",
+          recommended: true,
+        },
+      ],
     };
   },
 

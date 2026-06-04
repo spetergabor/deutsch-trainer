@@ -411,6 +411,10 @@ export default {
   },
 
   methods: {
+    openTable() {
+      this.showTable = true;
+    },
+
     async loadQuestions() {
       try {
         const databaseQuestions = await fetchActiveExerciseItems("adjektiv");

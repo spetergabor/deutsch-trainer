@@ -103,6 +103,7 @@
 
         <AdjektivPractice
           v-if="currentMode === 'adjektiv'"
+          ref="adjektivPractice"
           @exercise-finished="$emit('exercise-finished')"
           @go-dashboard="$emit('go-dashboard')"
         />
@@ -146,6 +147,7 @@
 
         <VocabularyPractice
           v-if="currentMode === 'vocabulary'"
+          ref="vocabularyPractice"
           @exercise-finished="$emit('exercise-finished')"
           @go-dashboard="$emit('go-dashboard')"
         />
@@ -177,6 +179,24 @@
           <span>{{ exerciseFocusLabel }}</span>
           <strong>{{ exerciseFocusValue }}</strong>
         </div>
+
+        <button
+          v-if="currentMode === 'adjektiv'"
+          type="button"
+          class="desktop-exercise-secondary"
+          @click="openAdjektivTable"
+        >
+          ℹ️ Táblázat megnyitása
+        </button>
+
+        <button
+          v-if="currentMode === 'vocabulary'"
+          type="button"
+          class="desktop-exercise-secondary"
+          @click="resetVocabularyTopic"
+        >
+          Másik szócsomag
+        </button>
 
         <button
           type="button"
@@ -605,6 +625,14 @@ export default {
   },
 
   methods: {
+    openAdjektivTable() {
+      this.$refs.adjektivPractice?.openTable?.();
+    },
+
+    resetVocabularyTopic() {
+      this.$refs.vocabularyPractice?.resetTopic?.();
+    },
+
     handleDesktopBreadcrumbBack() {
       const targetMode = this.desktopBreadcrumb?.targetMode;
 
