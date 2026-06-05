@@ -128,11 +128,36 @@
       </template>
 
       <div v-if="currentItem && !showStatistics" class="quiz-area">
+        <div v-if="selectedMode === 'learn'" class="vocab-learn-topic">
+          <span>Téma</span>
+          <strong>{{ selectedPackMeta.title }}</strong>
+          <small>{{ selectedPackMeta.count }} szó · {{ selectedPackMeta.levels }}</small>
+        </div>
+
         <section
           v-if="selectedMode === 'learn'"
           class="vocab-card"
-          :class="{ flipped: isRevealed }"
+          :class="[
+            { flipped: isRevealed, 'is-draggable': true, 'is-dragging': isDraggingCard },
+            swipeDecisionClass,
+          ]"
+          :style="learnCardStyle"
+          tabindex="0"
+          @pointerdown="startCardSwipe"
+          @pointermove="moveCardSwipe"
+          @pointerup="endCardSwipe"
+          @pointercancel="cancelCardSwipe"
+          @keydown.left.prevent="handleSwipeChoice(false)"
+          @keydown.right.prevent="handleSwipeChoice(true)"
         >
+          <div class="vocab-swipe-badge is-left">
+            Nem tudom
+          </div>
+
+          <div class="vocab-swipe-badge is-right">
+            Tudom
+          </div>
+
           <span class="vocab-topic">{{ currentItem.topic }} · {{ currentItem.level }}</span>
 
           <div class="vocab-word">
@@ -155,6 +180,10 @@
             <span>{{ currentItem.exampleHu }}</span>
           </div>
 
+          <p class="vocab-swipe-hint">
+            Húzd jobbra, ha tudod, balra, ha még nem.
+          </p>
+
           <button
             v-if="!isRevealed"
             class="pill-button btn-blue"
@@ -164,7 +193,32 @@
           </button>
         </section>
 
-        <section v-else class="vocab-card vocab-test-card">
+        <div
+          v-if="selectedMode === 'learn'"
+          class="vocab-swipe-actions"
+        >
+          <button
+            type="button"
+            class="vocab-swipe-action is-unknown"
+            aria-label="Nem tudom"
+            title="Nem tudom"
+            @click="handleSwipeChoice(false)"
+          >
+            ×
+          </button>
+
+          <button
+            type="button"
+            class="vocab-swipe-action is-known"
+            aria-label="Tudom"
+            title="Tudom"
+            @click="handleSwipeChoice(true)"
+          >
+            ♥
+          </button>
+        </div>
+
+        <section v-if="selectedMode !== 'learn'" class="vocab-card vocab-test-card">
           <span class="vocab-topic">{{ currentItem.topic }} · {{ currentItem.level }}</span>
           <p class="vocab-test-label">{{ testPromptLabel }}</p>
           <h2>{{ currentItem.hu }}</h2>
@@ -187,26 +241,7 @@
         </section>
 
         <div
-          v-if="selectedMode === 'learn'"
-          class="vocab-actions"
-        >
-          <button
-            class="pill-button vocab-unknown"
-            @click="markCard(false)"
-          >
-            Nem tudom
-          </button>
-
-          <button
-            class="pill-button vocab-known"
-            @click="markCard(true)"
-          >
-            Tudom
-          </button>
-        </div>
-
-        <div
-          v-else
+          v-if="selectedMode !== 'learn'"
           class="button-group ui-unit"
         >
           <button
@@ -296,6 +331,7 @@
 import PracticeLayout from "./PracticeLayout.vue";
 import { vocabularyItems } from "../data/vocabulary";
 import { saveExerciseResult } from "../services/exerciseResultService";
+import { recordMistake } from "../services/mistakeBankService";
 import { supabase } from "../supabase";
 
 export default {
@@ -321,6 +357,13 @@ export default {
       isAnswered: false,
       isCorrect: null,
       feedbackText: "",
+      isDraggingCard: false,
+      swipeStartX: 0,
+      swipeStartY: 0,
+      swipeDeltaX: 0,
+      swipeDeltaY: 0,
+      swipePointerId: null,
+      swipeThreshold: 110,
       showStatistics: false,
       currentIndex: 0,
       questionsPerRound: 10,
@@ -581,6 +624,30 @@ export default {
 
       return "pl. die Entscheidung";
     },
+
+    learnCardStyle() {
+      if (this.selectedMode !== "learn") return {};
+
+      const rotation = Math.max(Math.min(this.swipeDeltaX / 18, 10), -10);
+
+      return {
+        transform: `translate3d(${this.swipeDeltaX}px, ${this.swipeDeltaY}px, 0) rotate(${rotation}deg)`,
+      };
+    },
+
+    swipeDecisionClass() {
+      if (this.selectedMode !== "learn") return "";
+
+      if (this.swipeDeltaX > this.swipeThreshold * 0.55) {
+        return "swiping-known";
+      }
+
+      if (this.swipeDeltaX < -this.swipeThreshold * 0.55) {
+        return "swiping-unknown";
+      }
+
+      return "";
+    },
   },
 
   created() {
@@ -650,6 +717,7 @@ export default {
       this.isAnswered = false;
       this.isCorrect = null;
       this.feedbackText = "";
+      this.resetSwipeState();
 
       if (this.selectedMode === "test") {
         this.$nextTick(() => {
@@ -666,6 +734,58 @@ export default {
       }
 
       this.nextItem();
+    },
+
+    startCardSwipe(event) {
+      if (this.selectedMode !== "learn") return;
+      if (event.target.closest("button")) return;
+
+      this.isDraggingCard = true;
+      this.swipePointerId = event.pointerId;
+      this.swipeStartX = event.clientX;
+      this.swipeStartY = event.clientY;
+      this.swipeDeltaX = 0;
+      this.swipeDeltaY = 0;
+      event.currentTarget.setPointerCapture?.(event.pointerId);
+    },
+
+    moveCardSwipe(event) {
+      if (!this.isDraggingCard || event.pointerId !== this.swipePointerId) return;
+
+      this.swipeDeltaX = event.clientX - this.swipeStartX;
+      this.swipeDeltaY = event.clientY - this.swipeStartY;
+    },
+
+    endCardSwipe(event) {
+      if (!this.isDraggingCard || event.pointerId !== this.swipePointerId) return;
+
+      const decision = Math.abs(this.swipeDeltaX) >= this.swipeThreshold;
+
+      if (decision) {
+        this.handleSwipeChoice(this.swipeDeltaX > 0);
+        return;
+      }
+
+      this.cancelCardSwipe();
+    },
+
+    cancelCardSwipe() {
+      this.resetSwipeState();
+    },
+
+    resetSwipeState() {
+      this.isDraggingCard = false;
+      this.swipeStartX = 0;
+      this.swipeStartY = 0;
+      this.swipeDeltaX = 0;
+      this.swipeDeltaY = 0;
+      this.swipePointerId = null;
+    },
+
+    handleSwipeChoice(isKnown) {
+      if (this.selectedMode !== "learn") return;
+
+      this.markCard(isKnown);
     },
 
     normalizeAnswer(value) {
@@ -722,6 +842,7 @@ export default {
         this.feedbackText = "Falsch! ✗";
         this.incorrectAnswersInRound += 1;
         this.weakItems.push(this.currentItem);
+        this.recordVocabularyMistake();
         return;
       }
 
@@ -752,6 +873,28 @@ export default {
 
       this.incorrectAnswersInRound += 1;
       this.weakItems.push(this.currentItem);
+      this.recordVocabularyMistake();
+    },
+
+    recordVocabularyMistake() {
+      if (!this.currentItem || this.selectedMode !== "test") return;
+
+      recordMistake({
+        type: "vocabulary",
+        label: "Szókincs",
+        sourceId: this.currentItem.id,
+        prompt: this.currentItem.hu,
+        correctAnswer: this.fullAnswer,
+        userAnswer: this.userAnswer,
+        explanation: this.currentItem.exampleHu || this.currentItem.example || "",
+        level: this.currentItem.level,
+        meta: {
+          article: this.currentItem.article || "",
+          de: this.currentItem.de,
+          topic: this.currentItem.topic,
+          isPhrase: this.currentItem.type === "phrase",
+        },
+      });
     },
 
     handleTestEnter() {
@@ -785,7 +928,7 @@ export default {
         if (this.selectedMode === "learn") {
           await saveExerciseResult(
             "vocabulary-learn",
-            this.knownCount,
+            this.questionsPerRound,
             this.questionsPerRound,
           );
         } else {
@@ -1134,7 +1277,15 @@ export default {
 
 .vocabulary-practice :deep(.practice-box),
 .vocabulary-practice :deep(.quiz-area) {
-  gap: 22px;
+  gap: 16px;
+}
+
+.vocabulary-practice :deep(.practice-box) {
+  padding-top: 20px;
+}
+
+.vocabulary-practice :deep(.progress-container) {
+  margin-bottom: 2px;
 }
 
 .vocab-card {
@@ -1153,6 +1304,146 @@ export default {
     rgba(0, 0, 0, 0.18);
   text-align: center;
   box-shadow: 0 18px 42px rgba(0, 0, 0, 0.24);
+}
+
+.vocab-card.is-draggable {
+  position: relative;
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+  will-change: transform;
+  transition:
+    transform 0.18s ease,
+    border-color 0.18s ease,
+    box-shadow 0.18s ease,
+    background 0.18s ease;
+}
+
+.vocab-card.is-dragging {
+  cursor: grabbing;
+  transition:
+    border-color 0.12s ease,
+    box-shadow 0.12s ease,
+    background 0.12s ease;
+}
+
+.vocab-card.swiping-known {
+  border-color: rgba(67, 233, 123, 0.48);
+  background:
+    linear-gradient(135deg, rgba(67, 233, 123, 0.16), transparent 48%),
+    rgba(0, 0, 0, 0.18);
+  box-shadow: 0 22px 48px rgba(67, 233, 123, 0.13);
+}
+
+.vocab-card.swiping-unknown {
+  border-color: rgba(255, 71, 87, 0.48);
+  background:
+    linear-gradient(135deg, rgba(255, 71, 87, 0.16), transparent 48%),
+    rgba(0, 0, 0, 0.18);
+  box-shadow: 0 22px 48px rgba(255, 71, 87, 0.13);
+}
+
+.vocab-swipe-badge {
+  position: absolute;
+  top: 22px;
+  z-index: 2;
+  padding: 8px 12px;
+  border: 2px solid currentColor;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  font-weight: 950;
+  letter-spacing: 0;
+  opacity: 0;
+  transform: rotate(-8deg) scale(0.92);
+  transition:
+    opacity 0.16s ease,
+    transform 0.16s ease;
+  pointer-events: none;
+}
+
+.vocab-swipe-badge.is-left {
+  left: 22px;
+  color: #ff8b97;
+  transform: rotate(-8deg) scale(0.92);
+}
+
+.vocab-swipe-badge.is-right {
+  right: 22px;
+  color: #8cffb6;
+  transform: rotate(8deg) scale(0.92);
+}
+
+.vocab-card.swiping-unknown .vocab-swipe-badge.is-left,
+.vocab-card.swiping-known .vocab-swipe-badge.is-right {
+  opacity: 1;
+  transform: rotate(0deg) scale(1);
+}
+
+.vocab-swipe-hint {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.48);
+  font-size: 0.88rem;
+  font-weight: 850;
+}
+
+.vocab-swipe-actions {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 42px;
+  width: 100%;
+  max-width: 640px;
+  margin-top: -2px;
+}
+
+.vocab-swipe-action {
+  width: 68px;
+  height: 68px;
+  border: 0;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: rgba(255, 255, 255, 0.92);
+  color: #ffffff;
+  font: inherit;
+  font-size: 2.15rem;
+  font-weight: 950;
+  line-height: 1;
+  cursor: pointer;
+  box-shadow:
+    0 18px 38px rgba(0, 0, 0, 0.24),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  transition:
+    transform 0.16s ease,
+    box-shadow 0.16s ease,
+    background 0.16s ease;
+}
+
+.vocab-swipe-action:hover {
+  transform: translateY(-3px) scale(1.04);
+  box-shadow:
+    0 22px 44px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.92);
+}
+
+.vocab-swipe-action:active {
+  transform: translateY(0) scale(0.94);
+}
+
+.vocab-swipe-action.is-unknown {
+  color: #ff6f7f;
+  background:
+    radial-gradient(circle at 35% 28%, rgba(255, 255, 255, 0.95), rgba(255, 226, 230, 0.9));
+}
+
+.vocab-swipe-action.is-known {
+  color: #2ecc71;
+  background:
+    radial-gradient(circle at 35% 28%, rgba(255, 255, 255, 0.98), rgba(213, 255, 235, 0.92));
+}
+
+.vocab-learn-topic {
+  display: none;
 }
 
 .vocab-topic {
@@ -1214,25 +1505,6 @@ export default {
   color: rgba(255, 255, 255, 0.62);
 }
 
-.vocab-actions {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 14px;
-  width: 100%;
-  max-width: 640px;
-}
-
-.vocab-known {
-  background: linear-gradient(135deg, #43e97b, #38f9d7);
-  color: #102015;
-}
-
-.vocab-unknown {
-  background: rgba(255, 71, 87, 0.16);
-  color: #ffffff;
-  border: 1px solid rgba(255, 71, 87, 0.32);
-}
-
 .vocab-answer-wrap,
 .vocabulary-practice :deep(.button-group),
 .vocabulary-practice :deep(.feedback-box) {
@@ -1252,8 +1524,95 @@ export default {
 }
 
 @media (max-width: 700px) {
+  .vocabulary-practice {
+    width: 100%;
+    min-height: 0;
+    justify-content: flex-start;
+    overflow: visible;
+  }
+
+  .vocabulary-practice:has(.practice-layout) {
+    height: calc(100dvh - 190px);
+    overflow: hidden;
+  }
+
+  .vocabulary-practice:has(.practice-layout) :deep(.practice-layout) {
+    height: 100%;
+    justify-content: flex-start;
+  }
+
+  .vocabulary-practice:has(.practice-layout) :deep(.practice-box) {
+    height: 100%;
+    min-height: 0;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    justify-content: flex-start;
+    gap: 14px;
+  }
+
+  .vocabulary-practice:has(.practice-layout) :deep(.progress-container) {
+    width: 100%;
+    padding: 0 4px;
+  }
+
+  .vocabulary-practice:has(.practice-layout) :deep(.quiz-area) {
+    flex: 1;
+    min-height: 0;
+    justify-content: stretch;
+    gap: 12px;
+  }
+
+  .vocab-learn-topic {
+    width: 100%;
+    padding: 12px 16px;
+    border: 1px solid rgba(255, 255, 255, 0.09);
+    border-radius: 22px;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 4px 12px;
+    background: rgba(255, 255, 255, 0.055);
+    text-align: left;
+  }
+
+  .vocab-learn-topic span {
+    grid-column: 1 / -1;
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 0.72rem;
+    font-weight: 900;
+  }
+
+  .vocab-learn-topic strong {
+    min-width: 0;
+    color: #ffffff;
+    font-size: 1.08rem;
+    font-weight: 950;
+    line-height: 1.1;
+  }
+
+  .vocab-learn-topic small {
+    color: #8fe6ff;
+    font-size: 0.78rem;
+    font-weight: 900;
+    white-space: nowrap;
+  }
+
+  .vocabulary-practice:has(.vocab-pack-library),
+  .vocabulary-practice:has(.vocab-mode-stage) {
+    height: auto;
+    min-height: 0;
+    overflow: visible;
+    display: block;
+  }
+
   .vocab-pack-library {
-    gap: 34px;
+    gap: 26px;
   }
 
   .vocab-pack-picker,
@@ -1262,12 +1621,12 @@ export default {
   }
 
   .vocab-pack-group {
-    gap: 18px;
+    gap: 14px;
   }
 
   .vocab-pack-group-head {
     display: grid;
-    gap: 10px;
+    gap: 8px;
     padding: 0 2px;
     justify-items: start;
     text-align: left;
@@ -1283,22 +1642,22 @@ export default {
   }
 
   .vocab-pack-card {
-    grid-template-columns: 96px minmax(0, 1fr);
-    gap: 18px 22px;
-    min-height: 250px;
-    padding: 26px 24px;
-    align-items: start;
+    grid-template-columns: 76px minmax(0, 1fr);
+    gap: 12px 16px;
+    min-height: 168px;
+    padding: 18px;
+    align-items: center;
   }
 
   .vocab-pack-card > span {
-    width: 76px;
-    height: 76px;
-    border-radius: 24px;
-    font-size: 2rem;
+    width: 64px;
+    height: 64px;
+    border-radius: 20px;
+    font-size: 1.65rem;
   }
 
   .vocab-pack-copy {
-    gap: 12px;
+    gap: 7px;
     align-self: center;
   }
 
@@ -1307,24 +1666,24 @@ export default {
   }
 
   .vocab-pack-copy strong {
-    font-size: 1.45rem;
+    font-size: 1.2rem;
     line-height: 1.08;
   }
 
   .vocab-pack-copy small {
-    font-size: 1rem;
-    line-height: 1.35;
+    font-size: 0.9rem;
+    line-height: 1.32;
   }
 
   .vocab-pack-meta {
     grid-column: 1 / -1;
-    margin-top: 8px;
-    gap: 12px;
+    margin-top: 2px;
+    gap: 8px;
   }
 
   .vocab-pack-meta em {
-    padding: 9px 14px;
-    font-size: 0.9rem;
+    padding: 7px 10px;
+    font-size: 0.8rem;
   }
 
   .vocab-mode-card {
@@ -1332,14 +1691,23 @@ export default {
     padding: 24px;
   }
 
-  .vocab-card {
-    min-height: 280px;
-    padding: 22px;
-    border-radius: 24px;
+  .vocab-swipe-actions {
+    gap: 34px;
+    margin-top: -4px;
   }
 
-  .vocab-actions {
-    grid-template-columns: 1fr;
+  .vocab-swipe-action {
+    width: 58px;
+    height: 58px;
+    font-size: 1.85rem;
+  }
+
+  .vocab-card {
+    flex: 1;
+    min-height: 0;
+    max-height: none;
+    padding: 28px 22px;
+    border-radius: 24px;
   }
 }
 </style>

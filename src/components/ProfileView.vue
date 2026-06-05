@@ -925,7 +925,7 @@ export default {
   .profile-page {
     width: var(--mobile-page-width, calc(100% - 30px));
     max-width: var(--mobile-page-width, calc(100% - 30px));
-    padding-bottom: 120px;
+    padding-bottom: 0;
   }
 
   .profile-dashboard-grid {

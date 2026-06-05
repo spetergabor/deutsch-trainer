@@ -26,6 +26,7 @@ export function getTaskName(type) {
     vocabulary: "Szókincs edző",
     "vocabulary-learn": "Szókártyák",
     "vocabulary-test": "Szókincs teszt",
+    "mistake-review": "Hibatár gyakorló",
     "daily-challenge": "Napi challenge",
     "daily-challenge-adjektiv": "Napi challenge: Adjektiv",
     "daily-challenge-konjunktiv-ii": "Napi challenge: Konjunktiv II",

@@ -20,7 +20,7 @@
   }
 
   .content-wrapper {
-    padding-bottom: var(--mobile-bottom-nav-height);
+    padding-bottom: calc(var(--mobile-bottom-nav-height) + 12px);
   }
 
   .mobile-drawer-shell {

@@ -151,6 +151,12 @@
           @exercise-finished="$emit('exercise-finished')"
           @go-dashboard="$emit('go-dashboard')"
         />
+
+        <MistakeReviewPractice
+          v-if="currentMode === 'mistake-review'"
+          @exercise-finished="$emit('exercise-finished')"
+          @go-dashboard="$emit('go-dashboard')"
+        />
       </div>
 
       <aside class="desktop-exercise-panel" aria-label="Gyakorló infó">
@@ -292,6 +298,7 @@ import SichVerbenPractice from "./SichVerbenPractice.vue";
 import PassivPractice from "./PassivPractice.vue";
 import PronominaladverbPractice from "./PronominaladverbPractice.vue";
 import VocabularyPractice from "./VocabularyPractice.vue";
+import MistakeReviewPractice from "./MistakeReviewPractice.vue";
 import DailyChallengePractice from "./DailyChallengePractice.vue";
 import StoryReadingPractice from "./StoryReadingPractice.vue";
 import GrammarGuideView from "./GrammarGuideView.vue";
@@ -314,6 +321,7 @@ export default {
     PassivPractice,
     PronominaladverbPractice,
     VocabularyPractice,
+    MistakeReviewPractice,
     DailyChallengePractice,
     StoryReadingPractice,
     GrammarGuideView,
@@ -504,6 +512,7 @@ export default {
         "passiv",
         "pronominaladverb",
         "vocabulary",
+        "mistake-review",
       ].includes(this.currentMode);
     },
 
@@ -599,6 +608,7 @@ export default {
         passiv: "Passiv szerkezetek felismerése és átalakítása.",
         pronominaladverb: "Worauf, darauf és hasonló alakok használata.",
         vocabulary: "Szókártyák és névelős szókincs teszt.",
+        "mistake-review": "10 vegyes kérdés a korábbi hibáidból.",
       };
 
       return copyByMode[this.currentMode] || "Célzott gyakorló kör.";
@@ -607,6 +617,7 @@ export default {
     exerciseFocusLabel() {
       if (this.activeHomeworkAssignment) return "Házi állapot";
       if (this.currentMode === "vocabulary") return "Teszt XP";
+      if (this.currentMode === "mistake-review") return "Forrás";
       if (this.currentMode === "osd") return "Feladattípus";
       return "Kör";
     },
@@ -619,6 +630,7 @@ export default {
       }
 
       if (this.currentMode === "vocabulary") return "+5 XP tesztben";
+      if (this.currentMode === "mistake-review") return "Vegyes";
       if (this.currentMode === "osd") return "ÖSD Schreiben";
       return "10 kérdés";
     },

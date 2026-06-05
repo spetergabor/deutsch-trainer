@@ -1385,6 +1385,25 @@ export default {
 
 #app.with-desktop-sidebar
   .practice-screen:has(.vocabulary-practice)
+  > .desktop-exercise-hero {
+  margin-bottom: 14px !important;
+}
+
+#app.with-desktop-sidebar
+  .practice-screen:has(.vocabulary-practice)
+  > .desktop-exercise-workspace {
+  margin-top: 0 !important;
+}
+
+#app.with-desktop-sidebar
+  .practice-screen:has(.vocabulary-practice)
+  .vocabulary-practice
+  .practice-box {
+  margin-top: 0 !important;
+}
+
+#app.with-desktop-sidebar
+  .practice-screen:has(.vocabulary-practice)
   .vocabulary-practice
   .vocab-back-link {
   display: none !important;
@@ -1520,6 +1539,39 @@ export default {
     padding-left: 0 !important;
   }
 
+  .practice-screen:has(.vocabulary-practice):not(:has(.vocab-pack-library)):not(:has(.vocab-mode-stage)) {
+    height: 100dvh !important;
+    min-height: 100dvh !important;
+    overflow: hidden !important;
+    justify-content: flex-start !important;
+    padding-top: 86px !important;
+    padding-bottom: 0 !important;
+  }
+
+  .practice-screen:has(.vocabulary-practice) .vocabulary-practice {
+    width: var(--mobile-page-width) !important;
+    max-width: var(--mobile-page-width) !important;
+    margin-right: auto !important;
+    margin-left: auto !important;
+  }
+
+  .practice-screen:has(.vocab-pack-library),
+  .practice-screen:has(.vocab-mode-stage) {
+    height: auto !important;
+    min-height: 100dvh !important;
+    overflow: visible !important;
+    justify-content: flex-start !important;
+    padding-top: 112px !important;
+    padding-bottom: 0 !important;
+  }
+
+  .practice-screen:has(.vocab-pack-library) .vocabulary-practice,
+  .practice-screen:has(.vocab-mode-stage) .vocabulary-practice {
+    height: auto !important;
+    min-height: 0 !important;
+    overflow: visible !important;
+  }
+
   .dashboard-layout,
   .welcome-screen,
   .student-materials-view,
@@ -1529,7 +1581,6 @@ export default {
   .grammar-guide-shell,
   .story-reading.practice-container,
   .daily-challenge-practice,
-  .vocab-pack-library,
   .desktop-exercise-workspace {
     width: var(--mobile-page-width) !important;
     max-width: var(--mobile-page-width) !important;
@@ -1540,12 +1591,23 @@ export default {
   .practice-screen:has(.student-materials-view) > .student-materials-view,
   .practice-screen:has(.learning-library-view) > .learning-library-view,
   .practice-screen:has(.daily-challenge-practice) > .daily-challenge-practice,
-  .practice-screen:has(.story-reading) > .story-reading,
-  .practice-screen:has(.vocab-pack-library) > .vocab-pack-library {
+  .practice-screen:has(.story-reading) > .story-reading {
     width: var(--mobile-page-width) !important;
     max-width: var(--mobile-page-width) !important;
     margin-right: auto !important;
     margin-left: auto !important;
+  }
+
+  .practice-screen:has(.vocab-pack-library)
+    .vocabulary-practice
+    .vocab-pack-library,
+  .practice-screen:has(.vocab-mode-stage)
+    .vocabulary-practice
+    .vocab-mode-stage {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin-right: 0 !important;
+    margin-left: 0 !important;
   }
 
   .desktop-exercise-main

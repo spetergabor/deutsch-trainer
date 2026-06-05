@@ -86,6 +86,11 @@
         <span>Szókincs</span>
       </div>
 
+      <div class="ios-app" @click="$emit('set-mode', 'mistake-review')">
+        <div class="ios-icon mistake-review">🎯</div>
+        <span>Hibatár</span>
+      </div>
+
       <div class="ios-app" @click="$emit('set-mode', 'story-reading')">
         <div class="ios-icon story">📰</div>
         <span>Story-Lesen</span>

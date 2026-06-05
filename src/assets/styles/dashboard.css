@@ -1760,6 +1760,10 @@ button.student-status-card:hover {
   background: linear-gradient(135deg, #f7971e, #ffd200);
 }
 
+.ios-icon.mistake-review {
+  background: linear-gradient(135deg, #ff4757, #ffd166);
+}
+
 .ios-icon.daily-challenge {
   background: linear-gradient(135deg, #667eea, #43e97b);
 }
@@ -2291,7 +2295,7 @@ button.grammar-practice-chip:hover {
 
   .student-materials-view {
     width: calc(100% - 20px);
-    padding-bottom: 120px;
+    padding-bottom: 0;
   }
 
   .student-materials-header {
@@ -2387,7 +2391,7 @@ button.grammar-practice-chip:hover {
     width: calc(100% - 30px);
 
     padding-top: 64px;
-    padding-bottom: 120px;
+    padding-bottom: 0;
   }
 
   .student-home-main {

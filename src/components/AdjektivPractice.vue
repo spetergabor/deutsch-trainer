@@ -343,6 +343,7 @@
 <script>
 import adjektivData from "../data/adjektiv.json";
 import { fetchActiveExerciseItems } from "../services/exerciseItemService";
+import { recordMistake } from "../services/mistakeBankService";
 import { supabase } from "../supabase";
 import PracticeLayout from "./PracticeLayout.vue";
 
@@ -580,10 +581,33 @@ export default {
       } else {
         this.incorrectAnswersInRound += 1;
         this.wrongQuestions.push(this.currentQuestion);
+        this.recordAdjektivMistake();
       }
 
       this.roundHistory.push({
         isCorrect: this.isCorrect,
+      });
+    },
+
+    recordAdjektivMistake() {
+      if (!this.currentQuestion) return;
+
+      recordMistake({
+        type: "adjektiv",
+        label: "Adjektivdekl.",
+        sourceId: this.currentQuestion.id || this.currentQuestion.correct,
+        prompt: `${this.currentQuestion.context} ...`,
+        correctAnswer: this.currentQuestion.correct,
+        userAnswer: this.userAnswer,
+        explanation: this.currentQuestion.rule,
+        level: "B1",
+        meta: {
+          article: this.currentQuestion.elements.article,
+          adjective: this.currentQuestion.elements.adj,
+          noun: this.currentQuestion.elements.noun,
+          case: this.currentQuestion.case,
+          rule: this.currentQuestion.rule,
+        },
       });
     },
 
