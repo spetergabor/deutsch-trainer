@@ -1,4 +1,5 @@
 import { supabase } from "../supabase";
+import { HOMEWORK_STATUS } from "../utils/homeworkLifecycle";
 
 export async function createHomeworkAssignment({
   teacherId,
@@ -30,6 +31,7 @@ export async function createHomeworkAssignment({
         expected_word_count: expectedWordCount ? Number(expectedWordCount) : null,
         target_count: targetCount ? Number(targetCount) : null,
         due_at: dueAt || null,
+        status: HOMEWORK_STATUS.ASSIGNED,
       },
     ])
     .select()
@@ -91,7 +93,7 @@ export async function fetchStudentHomeworkAssignments(studentId) {
   return data || [];
 }
 
-export async function updateHomeworkStatus(assignmentId, status) {
+export async function updateHomeworkStatus(assignmentId, status, notification = null) {
   if (!assignmentId || !status) {
     return null;
   }
@@ -105,6 +107,19 @@ export async function updateHomeworkStatus(assignmentId, status) {
 
   if (error) {
     throw error;
+  }
+
+  const notificationUserId = notification?.userId || notification?.studentId;
+
+  if (notificationUserId && notification?.title) {
+    await supabase.from("notifications").insert([
+      {
+        user_id: notificationUserId,
+        title: notification.title,
+        message: notification.message || "",
+        type: "homework",
+      },
+    ]);
   }
 
   return data || null;

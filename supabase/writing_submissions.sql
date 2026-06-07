@@ -14,9 +14,32 @@ create table if not exists public.writing_submissions (
   teacher_feedback text,
   reviewed_at timestamptz,
   status text not null default 'submitted'
-    check (status in ('submitted', 'reviewing', 'reviewed')),
+    check (
+      status in (
+        'submitted',
+        'reviewing',
+        'reviewed',
+        'revision_requested',
+        'closed'
+      )
+    ),
   created_at timestamptz not null default now()
 );
+
+alter table public.writing_submissions
+  drop constraint if exists writing_submissions_status_check;
+
+alter table public.writing_submissions
+  add constraint writing_submissions_status_check
+  check (
+    status in (
+      'submitted',
+      'reviewing',
+      'reviewed',
+      'revision_requested',
+      'closed'
+    )
+  );
 
 alter table public.writing_submissions
   add column if not exists grade text;

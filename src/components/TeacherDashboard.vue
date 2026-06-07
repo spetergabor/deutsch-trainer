@@ -725,6 +725,99 @@
                         <h3>Instrukció</h3>
                         <p>{{ selectedTeacherMaterial.raw.instructions }}</p>
                       </section>
+
+                      <section
+                        v-if="selectedTeacherMaterial.latestSubmission"
+                        class="writing-submission-content"
+                      >
+                        <h3>Legutóbbi beküldés</h3>
+                        <p>{{ selectedTeacherMaterial.latestSubmission.content }}</p>
+                      </section>
+
+                      <section
+                        v-if="
+                          selectedTeacherMaterial.latestSubmission &&
+                          selectedTeacherMaterial.raw.status !== 'closed'
+                        "
+                        class="writing-review-panel"
+                      >
+                        <h3>Tanári értékelés</h3>
+
+                        <label>
+                          Osztályzat / értékelés
+                          <input
+                            v-model.trim="writingReviewGrade"
+                            type="text"
+                            placeholder="pl. 4, B2: gut, 82%"
+                          />
+                        </label>
+
+                        <label>
+                          Vélemény a diáknak
+                          <textarea
+                            v-model.trim="writingReviewFeedback"
+                            placeholder="Írd le röviden, mi sikerült jól, min kell javítani, mire figyeljen legközelebb..."
+                          ></textarea>
+                        </label>
+
+                        <div class="writing-review-actions">
+                          <button
+                            @click="saveWritingReview('reviewed')"
+                            :disabled="isSavingWritingReview || !selectedWritingSubmission"
+                          >
+                            {{ isSavingWritingReview ? "Mentés..." : "Javítva" }}
+                          </button>
+
+                          <button
+                            v-if="selectedWritingSubmission?.assignment_id"
+                            class="secondary"
+                            @click="saveWritingReview('revision_requested')"
+                            :disabled="isSavingWritingReview || !selectedWritingSubmission"
+                          >
+                            Újraküldést kérek
+                          </button>
+                        </div>
+                      </section>
+
+                      <section
+                        v-else-if="
+                          selectedTeacherMaterial.raw.type === 'practice' &&
+                          selectedTeacherMaterial.raw.status === 'submitted'
+                        "
+                        class="writing-review-panel"
+                      >
+                        <h3>Gyakorló házi befejezve</h3>
+                        <p>A diák teljesítette a kiadott gyakorló mennyiséget.</p>
+
+                        <div class="writing-review-actions">
+                          <button @click="updateSelectedHomeworkStatus('reviewed')">
+                            Javítva
+                          </button>
+
+                          <button
+                            class="secondary"
+                            @click="updateSelectedHomeworkStatus('revision_requested')"
+                          >
+                            Újraküldést kérek
+                          </button>
+                        </div>
+                      </section>
+
+                      <div
+                        v-if="selectedTeacherMaterial.raw.status === 'reviewed'"
+                        class="homework-lifecycle-actions"
+                      >
+                        <button @click="updateSelectedHomeworkStatus('closed')">
+                          Házi lezárása
+                        </button>
+                      </div>
+
+                      <div
+                        v-if="selectedTeacherMaterial.raw.status === 'closed'"
+                        class="homework-closed-note"
+                      >
+                        Ez a házi le van zárva.
+                      </div>
                     </template>
 
                     <template v-else>
@@ -773,12 +866,23 @@
                           ></textarea>
                         </label>
 
-                        <button
-                          @click="saveWritingReview"
-                          :disabled="isSavingWritingReview || !selectedWritingSubmission"
-                        >
-                          {{ isSavingWritingReview ? "Mentés..." : "Értékelés mentése" }}
-                        </button>
+                        <div class="writing-review-actions">
+                          <button
+                            @click="saveWritingReview('reviewed')"
+                            :disabled="isSavingWritingReview || !selectedWritingSubmission"
+                          >
+                            {{ isSavingWritingReview ? "Mentés..." : "Javítva" }}
+                          </button>
+
+                          <button
+                            v-if="selectedWritingSubmission?.assignment_id"
+                            class="secondary"
+                            @click="saveWritingReview('revision_requested')"
+                            :disabled="isSavingWritingReview || !selectedWritingSubmission"
+                          >
+                            Újraküldést kérek
+                          </button>
+                        </div>
                       </section>
                     </template>
                   </article>
@@ -974,7 +1078,13 @@ import {
 import {
   createHomeworkAssignment,
   fetchTeacherHomeworkAssignments,
+  updateHomeworkStatus,
 } from "../services/homeworkService";
+import {
+  HOMEWORK_STATUS,
+  getHomeworkStatusLabel,
+  getSubmissionStatusLabel,
+} from "../utils/homeworkLifecycle";
 import {
   createLessonSession,
   fetchTeacherLessonSessions,
@@ -1391,6 +1501,19 @@ export default {
       });
     },
 
+    submissionsByAssignmentId() {
+      return this.writingSubmissions.reduce((groups, submission) => {
+        if (!submission.assignment_id) return groups;
+
+        if (!groups[submission.assignment_id]) {
+          groups[submission.assignment_id] = [];
+        }
+
+        groups[submission.assignment_id].push(submission);
+        return groups;
+      }, {});
+    },
+
     selectedTeacherMaterialStudent() {
       return this.teacherMaterialStudents.find((student) => {
         return student.id === this.selectedTeacherMaterialStudentId;
@@ -1410,6 +1533,7 @@ export default {
           key: `homework-${assignment.id}`,
           kind: "homework",
           raw: assignment,
+          latestSubmission: this.getLatestSubmissionForAssignment(assignment.id),
           title: assignment.title,
           statusKey: assignment.status,
           statusLabel: this.getHomeworkStatusLabel(assignment.status),
@@ -1421,7 +1545,9 @@ export default {
         }));
 
       const submissionItems = this.writingSubmissions
-        .filter((submission) => submission.student_id === studentId)
+        .filter((submission) => {
+          return submission.student_id === studentId && !submission.assignment_id;
+        })
         .map((submission) => ({
           key: `submission-${submission.id}`,
           kind: "submission",
@@ -1555,8 +1681,7 @@ export default {
     },
 
     selectedTeacherMaterial(material) {
-      this.selectedWritingSubmission =
-        material?.kind === "submission" ? material.raw : null;
+      this.selectedWritingSubmission = this.getReviewSubmissionForMaterial(material);
     },
 
     selectedLesson(lesson) {
@@ -1748,7 +1873,7 @@ export default {
       }
     },
 
-    async saveWritingReview() {
+    async saveWritingReview(status = HOMEWORK_STATUS.REVIEWED) {
       if (!this.selectedWritingSubmission || this.isSavingWritingReview) {
         return;
       }
@@ -1759,6 +1884,7 @@ export default {
         const updated = await reviewWritingSubmission(this.selectedWritingSubmission.id, {
           grade: this.writingReviewGrade,
           teacherFeedback: this.writingReviewFeedback,
+          status,
         });
 
         this.writingSubmissions = this.writingSubmissions.map((item) =>
@@ -1768,6 +1894,14 @@ export default {
           ...this.selectedWritingSubmission,
           ...updated,
         };
+
+        if (updated.assignment_id) {
+          await this.updateHomeworkLifecycleStatus(
+            updated.assignment_id,
+            status,
+            this.getHomeworkNotificationForStatus(status, updated.task_title),
+          );
+        }
       } catch (error) {
         console.error("Írás értékelési hiba:", error.message);
         alert("Nem sikerült menteni az értékelést.");
@@ -1777,24 +1911,93 @@ export default {
     },
 
     getSubmissionStatusLabel(status) {
-      const labels = {
-        submitted: "Új beküldés",
-        reviewing: "Javítás alatt",
-        reviewed: "Javítva",
-      };
-
-      return labels[status] || "Beküldve";
+      return getSubmissionStatusLabel(status);
     },
 
     getHomeworkStatusLabel(status) {
-      const labels = {
-        assigned: "Kiadva",
-        opened: "Megnyitva",
-        submitted: "Beküldve",
-        reviewed: "Javítva",
+      return getHomeworkStatusLabel(status);
+    },
+
+    getLatestSubmissionForAssignment(assignmentId) {
+      const submissions = this.submissionsByAssignmentId[assignmentId] || [];
+
+      return submissions
+        .slice()
+        .sort((a, b) => new Date(b.created_at || 0) - new Date(a.created_at || 0))[0] || null;
+    },
+
+    getReviewSubmissionForMaterial(material) {
+      if (!material) return null;
+
+      if (material.kind === "submission") {
+        return material.raw;
+      }
+
+      if (material.kind === "homework") {
+        return material.latestSubmission || null;
+      }
+
+      return null;
+    },
+
+    getHomeworkNotificationForStatus(status, title) {
+      const messages = {
+        [HOMEWORK_STATUS.REVIEWED]: {
+          title: "Házi javítva",
+          message: title || "A tanár javította a házidat.",
+        },
+        [HOMEWORK_STATUS.REVISION_REQUESTED]: {
+          title: "Újraküldés kérve",
+          message: title || "A tanár új verziót kér a háziból.",
+        },
+        [HOMEWORK_STATUS.CLOSED]: {
+          title: "Házi lezárva",
+          message: title || "A tanár lezárta a házit.",
+        },
       };
 
-      return labels[status] || "Kiadva";
+      return messages[status] || null;
+    },
+
+    async updateHomeworkLifecycleStatus(assignmentId, status, notification = null) {
+      const assignment = this.homeworkAssignments.find((item) => item.id === assignmentId);
+
+      if (!assignment) return null;
+
+      const updated = await updateHomeworkStatus(
+        assignmentId,
+        status,
+        notification
+          ? {
+              studentId: assignment.student_id,
+              ...notification,
+            }
+          : null,
+      );
+
+      this.homeworkAssignments = this.homeworkAssignments.map((item) =>
+        item.id === updated.id ? { ...item, ...updated } : item,
+      );
+
+      return updated;
+    },
+
+    async updateSelectedHomeworkStatus(status) {
+      if (!this.selectedTeacherMaterial?.raw?.id) return;
+
+      try {
+        await this.updateHomeworkLifecycleStatus(
+          this.selectedTeacherMaterial.raw.id,
+          status,
+          this.getHomeworkNotificationForStatus(
+            status,
+            this.selectedTeacherMaterial.title,
+          ),
+        );
+      } catch (error) {
+        console.error("Házi státusz módosítási hiba:", error.message);
+        alert("Nem sikerült módosítani a házi státuszát.");
+      }
     },
 
     getHomeworkTypeLabel(assignment) {
@@ -1818,7 +2021,7 @@ export default {
     selectTeacherMaterial(item) {
       this.selectedTeacherMaterialKey = item.key;
       this.selectedTeacherHomeworkKey = "";
-      this.selectedWritingSubmission = item.kind === "submission" ? item.raw : null;
+      this.selectedWritingSubmission = this.getReviewSubmissionForMaterial(item);
     },
 
     openNewHomeworkForSelectedStudent() {

@@ -68,7 +68,14 @@
             >
               {{ selectedMaterialItem.statusLabel }}
             </span>
-            <span v-else class="student-submission-status homework">
+            <span
+              v-else
+              :class="[
+                'student-submission-status',
+                'homework',
+                selectedMaterialItem.raw.status,
+              ]"
+            >
               {{ selectedMaterialItem.statusLabel }}
             </span>
 
@@ -106,6 +113,38 @@
           </div>
 
           <template v-if="selectedMaterialItem.kind === 'homework'">
+            <section
+              v-if="
+                selectedMaterialItem.latestSubmission?.grade ||
+                selectedMaterialItem.latestSubmission?.teacher_feedback
+              "
+              class="student-materials-review"
+            >
+              <h3>
+                {{
+                  selectedMaterialItem.raw.status === 'revision_requested'
+                    ? 'Újraküldés kérése'
+                    : 'Tanári értékelés'
+                }}
+              </h3>
+
+              <div
+                v-if="selectedMaterialItem.latestSubmission.grade"
+                class="student-materials-grade"
+              >
+                <span>Osztályzat / értékelés</span>
+                <strong>{{ selectedMaterialItem.latestSubmission.grade }}</strong>
+              </div>
+
+              <p v-if="selectedMaterialItem.latestSubmission.teacher_feedback">
+                {{ selectedMaterialItem.latestSubmission.teacher_feedback }}
+              </p>
+
+              <small v-if="selectedMaterialItem.latestSubmission.reviewed_at">
+                Javítva: {{ formatDate(selectedMaterialItem.latestSubmission.reviewed_at) }}
+              </small>
+            </section>
+
             <section>
               <h3>Feladat</h3>
               <p>{{ selectedMaterialItem.description }}</p>
@@ -119,12 +158,17 @@
             <section
               v-if="
                 selectedMaterialItem.raw.type === 'writing' &&
-                selectedMaterialItem.raw.status !== 'submitted' &&
-                selectedMaterialItem.raw.status !== 'reviewed'
+                canStudentWorkOnHomework(selectedMaterialItem.raw.status)
               "
               class="student-homework-workspace"
             >
-              <h3>Megoldás</h3>
+              <h3>
+                {{
+                  selectedMaterialItem.raw.status === 'revision_requested'
+                    ? 'Újraküldés'
+                    : 'Megoldás'
+                }}
+              </h3>
               <textarea
                 v-model="homeworkDrafts[selectedMaterialItem.raw.id]"
                 class="student-homework-textarea"
@@ -146,8 +190,7 @@
             <button
               v-else-if="
                 selectedMaterialItem.raw.type === 'practice' &&
-                selectedMaterialItem.raw.status !== 'submitted' &&
-                selectedMaterialItem.raw.status !== 'reviewed'
+                canStudentWorkOnHomework(selectedMaterialItem.raw.status)
               "
               class="student-homework-submit"
               @click="
@@ -157,8 +200,22 @@
               Gyakorlás indítása
             </button>
 
-            <div v-else class="student-homework-done">
-              Ez az anyag már be van küldve.
+            <section v-if="selectedMaterialItem.latestSubmission">
+              <h3>Legutóbbi beküldés</h3>
+              <p class="student-materials-content">
+                {{ selectedMaterialItem.latestSubmission.content }}
+              </p>
+            </section>
+
+            <div
+              v-if="!canStudentWorkOnHomework(selectedMaterialItem.raw.status)"
+              class="student-homework-done"
+            >
+              {{
+                selectedMaterialItem.raw.status === 'closed'
+                  ? 'Ez a házi le van zárva.'
+                  : 'Ez az anyag már be van küldve.'
+              }}
             </div>
           </template>
 
@@ -232,6 +289,14 @@ import {
   fetchStudentHomeworkAssignments,
   updateHomeworkStatus,
 } from "../../services/homeworkService";
+import {
+  HOMEWORK_STATUS,
+  canStudentWorkOnHomework,
+  getHomeworkFilterStatus,
+  getHomeworkStatusLabel,
+  getSubmissionStatusLabel,
+  shouldMarkHomeworkStarted,
+} from "../../utils/homeworkLifecycle";
 import { formatDate } from "../../utils/formatters";
 
 export default {
@@ -273,56 +338,60 @@ export default {
         { key: "todo", label: "Teendők" },
         { key: "submitted", label: "Leadva" },
         { key: "reviewed", label: "Javítva" },
+        { key: "closed", label: "Lezárva" },
         { key: "all", label: "Összes" },
       ];
     },
 
-    materialItems() {
-      const submittedWritingAssignmentIds = new Set(
-        this.submissions
-          .map((submission) => submission.assignment_id)
-          .filter(Boolean),
-      );
+    submissionsByAssignmentId() {
+      return this.submissions.reduce((groups, submission) => {
+        if (!submission.assignment_id) return groups;
 
+        if (!groups[submission.assignment_id]) {
+          groups[submission.assignment_id] = [];
+        }
+
+        groups[submission.assignment_id].push(submission);
+        return groups;
+      }, {});
+    },
+
+    materialItems() {
       const homeworkItems = this.homeworkAssignments
-        .filter((assignment) => {
-          return !(
-            assignment.type === "writing" &&
-            submittedWritingAssignmentIds.has(assignment.id)
-          );
-        })
         .map((assignment) => ({
           id: assignment.id,
           kind: "homework",
           raw: assignment,
+          latestSubmission: this.getLatestSubmissionForAssignment(assignment.id),
           title: assignment.title,
           status: assignment.status,
-          filterStatus: ["assigned", "opened"].includes(assignment.status)
-            ? "todo"
-            : assignment.status,
+          filterStatus: getHomeworkFilterStatus(assignment.status),
           statusLabel: this.getHomeworkStatusLabel(assignment.status),
           typeLabel: this.getHomeworkTypeLabel(assignment),
           description: assignment.instructions,
           dueAt: assignment.due_at,
           expectedWordCount: assignment.expected_word_count,
           targetCount: assignment.target_count,
+          wordCount: this.getLatestSubmissionForAssignment(assignment.id)?.word_count,
           createdAt: assignment.created_at,
         }));
 
-      const submissionItems = this.submissions.map((submission) => ({
-        id: submission.id,
-        kind: "submission",
-        raw: submission,
-        title: submission.task_title,
-        status: submission.status,
-        filterStatus: submission.status,
-        statusLabel: this.getSubmissionStatusLabel(submission.status),
-        typeLabel: "Beküldött írás",
-        description: submission.task_situation || submission.task_instructions,
-        expectedWordCount: submission.expected_word_count,
-        wordCount: submission.word_count,
-        createdAt: submission.created_at,
-      }));
+      const submissionItems = this.submissions
+        .filter((submission) => !submission.assignment_id)
+        .map((submission) => ({
+          id: submission.id,
+          kind: "submission",
+          raw: submission,
+          title: submission.task_title,
+          status: submission.status,
+          filterStatus: getHomeworkFilterStatus(submission.status),
+          statusLabel: this.getSubmissionStatusLabel(submission.status),
+          typeLabel: "Beküldött írás",
+          description: submission.task_situation || submission.task_instructions,
+          expectedWordCount: submission.expected_word_count,
+          wordCount: submission.word_count,
+          createdAt: submission.created_at,
+        }));
 
       return [...homeworkItems, ...submissionItems].sort((a, b) => {
         return new Date(b.createdAt || 0) - new Date(a.createdAt || 0);
@@ -364,6 +433,7 @@ export default {
         todo: "Nincs aktív teendőd.",
         submitted: "Nincs leadott, javításra váró anyagod.",
         reviewed: "Nincs javított anyagod.",
+        closed: "Nincs lezárt anyagod.",
         all: "Még nincs kiadott vagy beküldött anyagod.",
       };
 
@@ -429,9 +499,10 @@ export default {
           wordCount,
           content,
           assignmentId: assignment.id,
+          teacherId: assignment.teacher_id,
         });
 
-        await updateHomeworkStatus(assignment.id, "submitted");
+        await updateHomeworkStatus(assignment.id, HOMEWORK_STATUS.SUBMITTED);
         this.homeworkDrafts[assignment.id] = "";
         await Promise.all([
           this.loadHomeworkAssignments(),
@@ -447,13 +518,7 @@ export default {
     },
 
     getSubmissionStatusLabel(status) {
-      const labels = {
-        submitted: "Új beküldés",
-        reviewing: "Javítás alatt",
-        reviewed: "Javítva",
-      };
-
-      return labels[status] || "Beküldve";
+      return getSubmissionStatusLabel(status);
     },
 
     getHomeworkFilterCount(filterKey) {
@@ -471,14 +536,7 @@ export default {
     },
 
     getHomeworkStatusLabel(status) {
-      const labels = {
-        assigned: "Kiadva",
-        opened: "Megnyitva",
-        submitted: "Beküldve",
-        reviewed: "Javítva",
-      };
-
-      return labels[status] || "Kiadva";
+      return getHomeworkStatusLabel(status);
     },
 
     getHomeworkTypeLabel(assignment) {
@@ -506,7 +564,36 @@ export default {
       );
     },
 
-    selectMaterialItem(item) {
+    getLatestSubmissionForAssignment(assignmentId) {
+      const submissions = this.submissionsByAssignmentId[assignmentId] || [];
+
+      return submissions
+        .slice()
+        .sort((a, b) => new Date(b.created_at || 0) - new Date(a.created_at || 0))[0] || null;
+    },
+
+    canStudentWorkOnHomework,
+
+    async markHomeworkStartedIfNeeded(assignment) {
+      if (!assignment?.id || !shouldMarkHomeworkStarted(assignment.status)) {
+        return;
+      }
+
+      try {
+        const updated = await updateHomeworkStatus(
+          assignment.id,
+          HOMEWORK_STATUS.STARTED,
+        );
+
+        this.homeworkAssignments = this.homeworkAssignments.map((item) =>
+          item.id === updated.id ? { ...item, ...updated } : item,
+        );
+      } catch (error) {
+        console.error("Házi elkezdés státusz hiba:", error.message);
+      }
+    },
+
+    async selectMaterialItem(item) {
       const itemKey = this.getMaterialItemKey(item);
       const currentKey = this.getMaterialItemKey(this.selectedMaterialItem);
 
@@ -518,6 +605,10 @@ export default {
 
       this.selectedMaterialKey = itemKey;
       this.isMaterialDetailOpen = true;
+
+      if (item.kind === "homework") {
+        await this.markHomeworkStartedIfNeeded(item.raw);
+      }
     },
 
     formatDate,

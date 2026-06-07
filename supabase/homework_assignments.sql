@@ -12,9 +12,38 @@ create table if not exists public.homework_assignments (
   target_count integer,
   due_at timestamptz,
   status text not null default 'assigned'
-    check (status in ('assigned', 'opened', 'submitted', 'reviewed')),
+    check (
+      status in (
+        'assigned',
+        'opened',
+        'started',
+        'submitted',
+        'reviewing',
+        'reviewed',
+        'revision_requested',
+        'closed'
+      )
+    ),
   created_at timestamptz not null default now()
 );
+
+alter table public.homework_assignments
+  drop constraint if exists homework_assignments_status_check;
+
+alter table public.homework_assignments
+  add constraint homework_assignments_status_check
+  check (
+    status in (
+      'assigned',
+      'opened',
+      'started',
+      'submitted',
+      'reviewing',
+      'reviewed',
+      'revision_requested',
+      'closed'
+    )
+  );
 
 alter table public.homework_assignments enable row level security;
 

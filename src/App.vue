@@ -275,6 +275,10 @@ import {
   countHomeworkPracticeResults,
   updateHomeworkStatus,
 } from "./services/homeworkService";
+import {
+  HOMEWORK_STATUS,
+  shouldMarkHomeworkStarted,
+} from "./utils/homeworkLifecycle";
 
 export default {
   name: "App",
@@ -708,18 +712,31 @@ export default {
       this.scrollToPageTop();
     },
 
-    startHomeworkPractice(assignment) {
+    async startHomeworkPractice(assignment) {
       if (!assignment?.practice_type) return;
+
+      let activeAssignment = assignment;
+
+      if (shouldMarkHomeworkStarted(assignment.status)) {
+        try {
+          activeAssignment = await updateHomeworkStatus(
+            assignment.id,
+            HOMEWORK_STATUS.STARTED,
+          );
+        } catch (error) {
+          console.error("Házi elkezdés státusz hiba:", error.message);
+        }
+      }
 
       this.prepareNavigation({
         currentMode: assignment.practice_type,
         selectedStoryId: null,
         teacherInitialSection: null,
         teacherActiveSection: null,
-        activeHomeworkAssignment: assignment,
+        activeHomeworkAssignment: activeAssignment,
       });
 
-      this.activeHomeworkAssignment = assignment;
+      this.activeHomeworkAssignment = activeAssignment;
       this.currentMode = assignment.practice_type;
       this.selectedStoryId = null;
       this.teacherInitialSection = null;
@@ -801,8 +818,9 @@ export default {
       if (
         !assignment ||
         assignment.type !== "practice" ||
-        assignment.status === "submitted" ||
-        assignment.status === "reviewed"
+        assignment.status === HOMEWORK_STATUS.SUBMITTED ||
+        assignment.status === HOMEWORK_STATUS.REVIEWED ||
+        assignment.status === HOMEWORK_STATUS.CLOSED
       ) {
         return;
       }
@@ -812,7 +830,15 @@ export default {
         const targetCount = Number(assignment.target_count) || 0;
 
         if (targetCount && completedCount >= targetCount) {
-          const updated = await updateHomeworkStatus(assignment.id, "submitted");
+          const updated = await updateHomeworkStatus(
+            assignment.id,
+            HOMEWORK_STATUS.SUBMITTED,
+            {
+              userId: assignment.teacher_id,
+              title: "Gyakorló házi elkészült",
+              message: assignment.title || "A diák teljesítette a kiadott gyakorlást.",
+            },
+          );
           this.activeHomeworkAssignment = updated;
           alert("A gyakorló házi elkészült.");
         }
@@ -1532,6 +1558,10 @@ export default {
     padding-top: 0;
   }
 
+  .content-wrapper:has(.vocabulary-practice.is-test-mode) {
+    padding-bottom: 0 !important;
+  }
+
   .practice-screen {
     width: 100% !important;
     max-width: none !important;
@@ -1546,6 +1576,14 @@ export default {
     justify-content: flex-start !important;
     padding-top: 86px !important;
     padding-bottom: 0 !important;
+  }
+
+  .practice-screen:has(.vocabulary-practice.is-test-mode):not(:has(.vocab-pack-library)):not(:has(.vocab-mode-stage)) {
+    height: 100dvh !important;
+    min-height: 100dvh !important;
+    overflow: hidden !important;
+    padding-top: 78px !important;
+    padding-bottom: calc(var(--mobile-bottom-nav-height) + 16px) !important;
   }
 
   .practice-screen:has(.vocabulary-practice) .vocabulary-practice {

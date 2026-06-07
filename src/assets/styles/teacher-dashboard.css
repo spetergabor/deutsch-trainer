@@ -1698,7 +1698,8 @@
 }
 
 .teacher-status-dot.assigned,
-.teacher-status-dot.opened {
+.teacher-status-dot.opened,
+.teacher-status-dot.started {
   background: #ffdc7a;
   box-shadow: 0 0 0 4px rgba(255, 220, 122, 0.14);
 }
@@ -1716,6 +1717,16 @@
 .teacher-status-dot.reviewed {
   background: #79f2a8;
   box-shadow: 0 0 0 4px rgba(121, 242, 168, 0.14);
+}
+
+.teacher-status-dot.revision_requested {
+  background: #ff8b97;
+  box-shadow: 0 0 0 4px rgba(255, 139, 151, 0.14);
+}
+
+.teacher-status-dot.closed {
+  background: rgba(255, 255, 255, 0.48);
+  box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.08);
 }
 
 .teacher-student-material-item strong,
@@ -1874,7 +1885,8 @@
   resize: vertical;
 }
 
-.writing-review-panel button {
+.writing-review-panel button,
+.homework-lifecycle-actions button {
   width: 100%;
   margin-top: 16px;
   padding: 13px 18px;
@@ -1887,7 +1899,44 @@
   cursor: pointer;
 }
 
-.writing-review-panel button:disabled {
+.writing-review-actions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.writing-review-actions button {
+  margin-top: 0;
+}
+
+.writing-review-actions button:only-child {
+  grid-column: 1 / -1;
+}
+
+.writing-review-actions button.secondary {
+  border: 1px solid rgba(255, 139, 151, 0.34);
+  background: rgba(255, 118, 118, 0.13);
+  color: #ffb0b0;
+}
+
+.homework-lifecycle-actions {
+  margin-top: 14px;
+}
+
+.homework-closed-note {
+  margin-top: 14px;
+  padding: 13px 16px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.06);
+  color: rgba(255, 255, 255, 0.72);
+  font-weight: 850;
+  text-align: center;
+}
+
+.writing-review-panel button:disabled,
+.homework-lifecycle-actions button:disabled {
   opacity: 0.5;
   cursor: not-allowed;
 }

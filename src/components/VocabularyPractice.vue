@@ -1,5 +1,11 @@
 <template>
-  <div class="practice-container vocabulary-practice">
+  <div
+    class="practice-container vocabulary-practice"
+    :class="{
+      'is-learn-mode': selectedMode === 'learn',
+      'is-test-mode': selectedMode === 'test',
+    }"
+  >
     <h1>Szókincs edző</h1>
 
     <section
@@ -658,6 +664,7 @@ export default {
     selectTopic(topic) {
       this.selectedTopic = topic;
       this.selectedMode = null;
+      this.resetPageScroll();
     },
 
     resetTopic() {
@@ -665,11 +672,19 @@ export default {
       this.selectedMode = null;
       this.currentItem = null;
       this.showStatistics = false;
+      this.resetPageScroll();
     },
 
     selectMode(mode) {
       this.selectedMode = mode;
       this.pickNewSet(this.selectedTopicItems);
+      this.resetPageScroll();
+    },
+
+    resetPageScroll() {
+      this.$nextTick(() => {
+        window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+      });
     },
 
     shuffle(array) {
@@ -1566,6 +1581,164 @@ export default {
     min-height: 0;
     justify-content: stretch;
     gap: 12px;
+  }
+
+  .vocabulary-practice.is-test-mode:has(.practice-layout) {
+    height: 100%;
+  }
+
+  .vocabulary-practice.is-test-mode:has(.practice-layout)
+    :deep(.practice-layout) {
+    gap: 12px;
+  }
+
+  .vocabulary-practice.is-test-mode:has(.practice-layout) :deep(.xp-card) {
+    width: 100%;
+    margin: 0;
+    padding: 10px;
+    border-radius: 26px;
+    gap: 10px;
+  }
+
+  .vocabulary-practice.is-test-mode:has(.practice-layout) :deep(.xp-top) {
+    gap: 10px;
+  }
+
+  .vocabulary-practice.is-test-mode:has(.practice-layout)
+    :deep(.xp-mini-card) {
+    min-height: 54px;
+    padding: 7px 10px;
+    border-radius: 19px;
+  }
+
+  .vocabulary-practice.is-test-mode:has(.practice-layout)
+    :deep(.xp-mini-card span) {
+    font-size: 1.25rem;
+  }
+
+  .vocabulary-practice.is-test-mode:has(.practice-layout)
+    :deep(.xp-mini-card strong) {
+    font-size: 1rem;
+  }
+
+  .vocabulary-practice.is-test-mode:has(.practice-layout)
+    :deep(.xp-mini-card small) {
+    font-size: 0.68rem;
+  }
+
+  .vocabulary-practice.is-test-mode:has(.practice-layout)
+    :deep(.level-badge) {
+    padding: 7px 18px;
+    font-size: 0.86rem;
+  }
+
+  .vocabulary-practice.is-test-mode:has(.practice-layout)
+    :deep(.xp-progress-info) {
+    margin: 8px 0 6px;
+    font-size: 0.76rem;
+  }
+
+  .vocabulary-practice.is-test-mode:has(.practice-layout)
+    :deep(.xp-hint) {
+    margin-top: 7px;
+    font-size: 0.76rem;
+    line-height: 1.25;
+  }
+
+  .vocabulary-practice.is-test-mode:has(.practice-layout)
+    :deep(.practice-box) {
+    flex: 1;
+    height: auto;
+    min-height: 0;
+    gap: 11px;
+  }
+
+  .vocabulary-practice.is-test-mode:has(.practice-layout)
+    :deep(.progress-container) {
+    display: grid;
+    gap: 9px;
+    padding: 0;
+  }
+
+  .vocabulary-practice.is-test-mode:has(.practice-layout)
+    :deep(.progress-bar) {
+    height: 8px;
+    margin: 0;
+  }
+
+  .vocabulary-practice.is-test-mode:has(.practice-layout)
+    :deep(.progress-text) {
+    margin: 0;
+    font-size: 1.08rem;
+    line-height: 1.15;
+  }
+
+  .vocabulary-practice.is-test-mode:has(.practice-layout)
+    :deep(.quiz-area) {
+    flex: 0 1 auto;
+    justify-content: flex-start;
+    gap: 12px;
+  }
+
+  .vocabulary-practice.is-test-mode .vocab-test-card {
+    position: relative;
+    width: 100%;
+    min-height: clamp(285px, 38dvh, 360px);
+    padding: 58px 20px 22px;
+    border-radius: 28px;
+    gap: 14px;
+    align-content: center;
+  }
+
+  .vocabulary-practice.is-test-mode .vocab-test-card .vocab-topic {
+    position: absolute;
+    top: 18px;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  .vocabulary-practice.is-test-mode .vocab-test-label {
+    max-width: 24ch;
+    font-size: 1.08rem;
+    line-height: 1.25;
+  }
+
+  .vocabulary-practice.is-test-mode .vocab-test-card h2 {
+    max-width: 14ch;
+    font-size: clamp(2.2rem, 10vw, 3.15rem);
+    line-height: 1.04;
+    overflow-wrap: break-word;
+    text-wrap: balance;
+    word-break: normal;
+  }
+
+  .vocabulary-practice.is-test-mode .vocab-answer-wrap,
+  .vocabulary-practice.is-test-mode :deep(.button-group),
+  .vocabulary-practice.is-test-mode :deep(.feedback-box) {
+    width: calc(100% - 34px);
+    max-width: 560px;
+  }
+
+  .vocabulary-practice.is-test-mode .vocab-answer-wrap {
+    margin-top: 4px;
+  }
+
+  .vocabulary-practice.is-test-mode .vocab-answer-wrap .pill-input {
+    min-height: 60px;
+    margin: 0;
+    padding: 0 22px;
+    font-size: 1.05rem;
+  }
+
+  .vocabulary-practice.is-test-mode :deep(.button-group) {
+    margin-top: 2px;
+  }
+
+  .vocabulary-practice.is-test-mode :deep(.pill-button) {
+    min-height: 60px;
+    margin: 0;
+    border-radius: 30px;
+    font-size: 1rem;
   }
 
   .vocab-learn-topic {

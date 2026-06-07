@@ -303,6 +303,7 @@ import DailyChallengePractice from "./DailyChallengePractice.vue";
 import StoryReadingPractice from "./StoryReadingPractice.vue";
 import GrammarGuideView from "./GrammarGuideView.vue";
 import { grammarGuides } from "../data/grammarGuides";
+import { getHomeworkStatusLabel } from "../utils/homeworkLifecycle";
 
 export default {
   name: "PracticeScreen",
@@ -624,9 +625,7 @@ export default {
 
     exerciseFocusValue() {
       if (this.activeHomeworkAssignment) {
-        return this.activeHomeworkAssignment.status === "submitted"
-          ? "Beküldve"
-          : "Folyamatban";
+        return getHomeworkStatusLabel(this.activeHomeworkAssignment.status);
       }
 
       if (this.currentMode === "vocabulary") return "+5 XP tesztben";
