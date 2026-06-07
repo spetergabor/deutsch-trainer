@@ -224,8 +224,44 @@
           </button>
         </div>
 
-        <section v-if="selectedMode !== 'learn'" class="vocab-card vocab-test-card">
+        <section
+          v-if="selectedMode !== 'learn'"
+          class="vocab-card vocab-test-card"
+          :class="{
+            'is-correct': isAnswered && isCorrect,
+            'is-wrong': isAnswered && isCorrect === false,
+          }"
+        >
           <span class="vocab-topic">{{ currentItem.topic }} · {{ currentItem.level }}</span>
+
+          <transition name="fade">
+            <div
+              v-if="isAnswered"
+              :class="[
+                'feedback-box',
+                'vocab-test-feedback',
+                isCorrect ? 'fb-correct' : 'fb-wrong',
+              ]"
+            >
+              <p
+                v-if="!isCorrect"
+                class="wrong-highlight"
+              >
+                Helyes válasz:
+                <span>{{ fullAnswer }}</span>
+              </p>
+
+              <p class="feedback-text">
+                {{ feedbackText }}
+              </p>
+
+              <div class="example-box">
+                <p>{{ currentItem.example }}</p>
+                <p>{{ currentItem.exampleHu }}</p>
+              </div>
+            </div>
+          </transition>
+
           <p class="vocab-test-label">{{ testPromptLabel }}</p>
           <h2>{{ currentItem.hu }}</h2>
 
@@ -244,53 +280,26 @@
               @keyup.enter="handleTestEnter"
             />
           </div>
-        </section>
 
-        <div
-          v-if="selectedMode !== 'learn'"
-          class="button-group ui-unit"
-        >
-          <button
-            v-if="!isAnswered"
-            class="pill-button btn-green"
-            :disabled="!userAnswer.trim()"
-            @click="checkTestAnswer"
-          >
-            Ellenőrzés
-          </button>
-
-          <button
-            v-else
-            class="pill-button btn-blue"
-            @click="nextItem"
-          >
-            Következő
-          </button>
-        </div>
-
-        <transition name="fade">
-          <div
-            v-if="isAnswered"
-            :class="['feedback-box', isCorrect ? 'fb-correct' : 'fb-wrong']"
-          >
-            <p
-              v-if="!isCorrect"
-              class="wrong-highlight"
+          <div class="button-group ui-unit vocab-test-actions">
+            <button
+              v-if="!isAnswered"
+              class="pill-button btn-green"
+              :disabled="!userAnswer.trim()"
+              @click="checkTestAnswer"
             >
-              Helyes válasz:
-              <span>{{ fullAnswer }}</span>
-            </p>
+              Ellenőrzés
+            </button>
 
-            <p class="feedback-text">
-              {{ feedbackText }}
-            </p>
-
-            <div class="example-box">
-              <p>{{ currentItem.example }}</p>
-              <p>{{ currentItem.exampleHu }}</p>
-            </div>
+            <button
+              v-else
+              class="pill-button btn-blue"
+              @click="nextItem"
+            >
+              Következő
+            </button>
           </div>
-        </transition>
+        </section>
       </div>
     </PracticeLayout>
 
@@ -1358,6 +1367,26 @@ export default {
   box-shadow: 0 22px 48px rgba(255, 71, 87, 0.13);
 }
 
+.vocab-test-card.is-wrong {
+  border-color: rgba(255, 82, 82, 0.76);
+  background:
+    linear-gradient(135deg, rgba(255, 82, 82, 0.16), transparent 45%),
+    rgba(0, 0, 0, 0.2);
+  box-shadow:
+    0 20px 48px rgba(255, 82, 82, 0.14),
+    inset 0 0 0 1px rgba(255, 82, 82, 0.18);
+}
+
+.vocab-test-card.is-correct {
+  border-color: rgba(67, 233, 123, 0.68);
+  background:
+    linear-gradient(135deg, rgba(67, 233, 123, 0.13), transparent 46%),
+    rgba(0, 0, 0, 0.2);
+  box-shadow:
+    0 20px 48px rgba(67, 233, 123, 0.12),
+    inset 0 0 0 1px rgba(67, 233, 123, 0.12);
+}
+
 .vocab-swipe-badge {
   position: absolute;
   top: 22px;
@@ -1538,6 +1567,63 @@ export default {
   margin: 0;
 }
 
+.vocab-test-feedback {
+  width: 100%;
+  max-width: 560px;
+  margin: 0;
+  padding: 13px 16px;
+  border-radius: 18px;
+  box-shadow: none;
+  text-align: left;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+.vocab-test-feedback.fb-wrong {
+  border: 1px solid rgba(255, 82, 82, 0.46);
+  background: rgba(255, 82, 82, 0.11);
+}
+
+.vocab-test-feedback.fb-correct {
+  border: 1px solid rgba(67, 233, 123, 0.38);
+  background: rgba(67, 233, 123, 0.1);
+}
+
+.vocab-test-feedback .wrong-highlight {
+  margin: 0 0 8px;
+  padding: 0;
+  border-radius: 0;
+  background: transparent;
+  color: rgba(255, 255, 255, 0.62);
+  font-size: 0.82rem;
+  font-weight: 900;
+}
+
+.vocab-test-feedback .wrong-highlight span {
+  display: block;
+  margin-top: 4px;
+  color: #ffffff;
+  font-size: 1rem;
+  text-decoration: none;
+}
+
+.vocab-test-feedback .feedback-text {
+  margin: 0;
+  color: #ffffff;
+  font-weight: 900;
+}
+
+.vocab-test-feedback .example-box {
+  margin-top: 8px;
+  gap: 4px;
+}
+
+.vocab-test-feedback .example-box p {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.82rem;
+  line-height: 1.25;
+}
+
 @media (max-width: 700px) {
   .vocabulary-practice {
     width: 100%;
@@ -1683,10 +1769,10 @@ export default {
   .vocabulary-practice.is-test-mode .vocab-test-card {
     position: relative;
     width: 100%;
-    min-height: clamp(285px, 38dvh, 360px);
-    padding: 58px 20px 22px;
+    min-height: clamp(430px, 52dvh, 460px);
+    padding: 62px 20px 24px;
     border-radius: 28px;
-    gap: 14px;
+    gap: 11px;
     align-content: center;
   }
 
@@ -1713,14 +1799,15 @@ export default {
   }
 
   .vocabulary-practice.is-test-mode .vocab-answer-wrap,
-  .vocabulary-practice.is-test-mode :deep(.button-group),
+  .vocabulary-practice.is-test-mode .vocab-test-actions,
+  .vocabulary-practice.is-test-mode .vocab-test-feedback,
   .vocabulary-practice.is-test-mode :deep(.feedback-box) {
-    width: calc(100% - 34px);
+    width: min(calc(100% - 34px), 560px);
     max-width: 560px;
   }
 
   .vocabulary-practice.is-test-mode .vocab-answer-wrap {
-    margin-top: 4px;
+    margin-top: 6px;
   }
 
   .vocabulary-practice.is-test-mode .vocab-answer-wrap .pill-input {
@@ -1730,15 +1817,32 @@ export default {
     font-size: 1.05rem;
   }
 
-  .vocabulary-practice.is-test-mode :deep(.button-group) {
-    margin-top: 2px;
+  .vocabulary-practice.is-test-mode .vocab-test-actions {
+    margin-top: 0;
   }
 
-  .vocabulary-practice.is-test-mode :deep(.pill-button) {
+  .vocabulary-practice.is-test-mode .vocab-test-actions .pill-button {
     min-height: 60px;
     margin: 0;
     border-radius: 30px;
     font-size: 1rem;
+  }
+
+  .vocabulary-practice.is-test-mode
+    .vocab-test-actions
+    .pill-button:disabled {
+    background: rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.5);
+    opacity: 1;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  }
+
+  .vocabulary-practice.is-test-mode .vocab-test-feedback {
+    padding: 12px 14px;
+  }
+
+  .vocabulary-practice.is-test-mode .vocab-test-feedback .example-box {
+    display: none;
   }
 
   .vocab-learn-topic {
