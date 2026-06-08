@@ -84,6 +84,15 @@
           <span>{{ exerciseFocusLabel }}</span>
           <strong>{{ exerciseFocusValue }}</strong>
         </div>
+
+        <button
+          v-if="currentMode === 'vocabulary'"
+          type="button"
+          class="desktop-exercise-hero-action"
+          @click="resetVocabularyTopic"
+        >
+          Másik szócsomag
+        </button>
       </div>
     </section>
 
@@ -150,6 +159,7 @@
           ref="vocabularyPractice"
           @exercise-finished="$emit('exercise-finished')"
           @go-dashboard="$emit('go-dashboard')"
+          @round-state-change="updateVocabularyRoundPanel"
         />
 
         <MistakeReviewPractice
@@ -159,58 +169,122 @@
         />
       </div>
 
-      <aside class="desktop-exercise-panel" aria-label="Gyakorló infó">
-        <span class="desktop-exercise-kicker">Gyakorló</span>
-        <h2>{{ headerTitle }}</h2>
-        <p>{{ exercisePanelCopy }}</p>
-
-        <div class="desktop-exercise-stat-grid">
-          <div>
-            <span>Streak</span>
-            <strong>🔥 {{ displayStreak }} nap</strong>
+      <aside
+        class="desktop-exercise-panel"
+        :class="{ 'is-vocabulary-round-panel': currentMode === 'vocabulary' }"
+        aria-label="Gyakorló infó"
+      >
+        <template v-if="currentMode === 'vocabulary'">
+          <div class="vocabulary-round-panel-head">
+            <span class="desktop-exercise-kicker">
+              {{ vocabularyRoundPanel.modeLabel || "Kör" }}
+            </span>
+            <h2>Megválaszolt szavak</h2>
+            <p v-if="vocabularyRoundPanel.topicTitle">
+              {{ vocabularyRoundPanel.topicIcon }}
+              {{ vocabularyRoundPanel.topicTitle }}
+            </p>
+            <p v-else>
+              Válassz szócsomagot, és itt látod majd az aktuális kör szavait.
+            </p>
           </div>
 
-          <div>
-            <span>XP</span>
-            <strong>⭐ {{ xpProfile.xp || 0 }}</strong>
+          <div class="vocabulary-round-summary">
+            <div>
+              <span>Jó</span>
+              <strong>{{ vocabularyRoundPanel.correct }}</strong>
+            </div>
+
+            <div>
+              <span>Hiba</span>
+              <strong>{{ vocabularyRoundPanel.wrong }}</strong>
+            </div>
+
+            <div>
+              <span>Állás</span>
+              <strong>
+                {{ vocabularyRoundPanel.current }}/{{ vocabularyRoundPanel.total }}
+              </strong>
+            </div>
           </div>
 
-          <div>
-            <span>Szint</span>
-            <strong>Level {{ xpProfile.level || 1 }}</strong>
+          <ol
+            v-if="vocabularyRoundPanel.items.length"
+            class="vocabulary-round-list"
+          >
+            <li
+              v-for="(item, index) in vocabularyRoundPanel.items"
+              :key="item.id"
+              :class="`is-${item.status}`"
+            >
+              <span class="vocabulary-round-index">
+                {{ String(index + 1).padStart(2, "0") }}
+              </span>
+
+              <div>
+                <strong>{{ item.hu }}</strong>
+                <small>{{ item.answer }}</small>
+              </div>
+            </li>
+          </ol>
+
+          <div v-else class="vocabulary-round-empty">
+            Itt csak azok a szavak jelennek meg, amelyeket már megválaszoltál.
           </div>
-        </div>
 
-        <div class="desktop-exercise-focus">
-          <span>{{ exerciseFocusLabel }}</span>
-          <strong>{{ exerciseFocusValue }}</strong>
-        </div>
+          <button
+            type="button"
+            class="desktop-exercise-secondary"
+            @click="handleDesktopBreadcrumbBack"
+          >
+            {{ desktopBreadcrumb?.parentLabel || "Tanulási könyvtár" }}
+          </button>
+        </template>
 
-        <button
-          v-if="currentMode === 'adjektiv'"
-          type="button"
-          class="desktop-exercise-secondary"
-          @click="openAdjektivTable"
-        >
-          ℹ️ Táblázat megnyitása
-        </button>
+        <template v-else>
+          <span class="desktop-exercise-kicker">Gyakorló</span>
+          <h2>{{ headerTitle }}</h2>
+          <p>{{ exercisePanelCopy }}</p>
 
-        <button
-          v-if="currentMode === 'vocabulary'"
-          type="button"
-          class="desktop-exercise-secondary"
-          @click="resetVocabularyTopic"
-        >
-          Másik szócsomag
-        </button>
+          <div class="desktop-exercise-stat-grid">
+            <div>
+              <span>Streak</span>
+              <strong>🔥 {{ displayStreak }} nap</strong>
+            </div>
 
-        <button
-          type="button"
-          class="desktop-exercise-secondary"
-          @click="handleDesktopBreadcrumbBack"
-        >
-          {{ desktopBreadcrumb?.parentLabel || "Tanulási könyvtár" }}
-        </button>
+            <div>
+              <span>XP</span>
+              <strong>⭐ {{ xpProfile.xp || 0 }}</strong>
+            </div>
+
+            <div>
+              <span>Szint</span>
+              <strong>Level {{ xpProfile.level || 1 }}</strong>
+            </div>
+          </div>
+
+          <div class="desktop-exercise-focus">
+            <span>{{ exerciseFocusLabel }}</span>
+            <strong>{{ exerciseFocusValue }}</strong>
+          </div>
+
+          <button
+            v-if="currentMode === 'adjektiv'"
+            type="button"
+            class="desktop-exercise-secondary"
+            @click="openAdjektivTable"
+          >
+            ℹ️ Táblázat megnyitása
+          </button>
+
+          <button
+            type="button"
+            class="desktop-exercise-secondary"
+            @click="handleDesktopBreadcrumbBack"
+          >
+            {{ desktopBreadcrumb?.parentLabel || "Tanulási könyvtár" }}
+          </button>
+        </template>
       </aside>
     </div>
 
@@ -478,6 +552,23 @@ export default {
     "select-note",
   ],
 
+  data() {
+    return {
+      vocabularyRoundPanel: {
+        selectedTopic: null,
+        topicTitle: "",
+        topicIcon: "",
+        mode: null,
+        modeLabel: "Szócsomag",
+        current: 0,
+        total: 0,
+        correct: 0,
+        wrong: 0,
+        items: [],
+      },
+    };
+  },
+
   computed: {
     isGrammarGuide() {
       return this.currentMode?.startsWith("grammar-guide");
@@ -642,6 +733,28 @@ export default {
 
     resetVocabularyTopic() {
       this.$refs.vocabularyPractice?.resetTopic?.();
+    },
+
+    createEmptyVocabularyRoundPanel() {
+      return {
+        selectedTopic: null,
+        topicTitle: "",
+        topicIcon: "",
+        mode: null,
+        modeLabel: "Szócsomag",
+        current: 0,
+        total: 0,
+        correct: 0,
+        wrong: 0,
+        items: [],
+      };
+    },
+
+    updateVocabularyRoundPanel(payload) {
+      this.vocabularyRoundPanel = {
+        ...this.createEmptyVocabularyRoundPanel(),
+        ...(payload || {}),
+      };
     },
 
     handleDesktopBreadcrumbBack() {

@@ -1425,7 +1425,7 @@ export default {
   .practice-screen:has(.vocabulary-practice)
   .vocabulary-practice
   .practice-box {
-  margin-top: 0 !important;
+  margin-top: 18px !important;
 }
 
 #app.with-desktop-sidebar

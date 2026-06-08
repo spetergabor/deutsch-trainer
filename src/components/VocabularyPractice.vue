@@ -356,7 +356,7 @@ export default {
     PracticeLayout,
   },
 
-  emits: ["exercise-finished", "go-dashboard"],
+  emits: ["exercise-finished", "go-dashboard", "round-state-change"],
 
   data() {
     return {
@@ -366,6 +366,8 @@ export default {
       currentRoundItems: [],
       unansweredItems: [],
       weakItems: [],
+      roundAnswerStates: {},
+      roundAnsweredItemIds: [],
       currentItem: null,
       userAnswer: "",
       isRevealed: false,
@@ -617,11 +619,7 @@ export default {
     fullAnswer() {
       if (!this.currentItem) return "";
 
-      if (this.currentItem.type === "phrase") {
-        return this.currentItem.de;
-      }
-
-      return `${this.currentItem.article} ${this.currentItem.de}`;
+      return this.formatItemAnswer(this.currentItem);
     },
 
     testPromptLabel() {
@@ -673,6 +671,10 @@ export default {
     selectTopic(topic) {
       this.selectedTopic = topic;
       this.selectedMode = null;
+      this.currentRoundItems = [];
+      this.roundAnswerStates = {};
+      this.roundAnsweredItemIds = [];
+      this.emitRoundState();
       this.resetPageScroll();
     },
 
@@ -680,7 +682,11 @@ export default {
       this.selectedTopic = null;
       this.selectedMode = null;
       this.currentItem = null;
+      this.currentRoundItems = [];
+      this.roundAnswerStates = {};
+      this.roundAnsweredItemIds = [];
       this.showStatistics = false;
+      this.emitRoundState();
       this.resetPageScroll();
     },
 
@@ -717,6 +723,8 @@ export default {
     startRound() {
       this.unansweredItems = this.shuffle(this.currentRoundItems);
       this.weakItems = [];
+      this.roundAnswerStates = {};
+      this.roundAnsweredItemIds = [];
       this.knownCount = 0;
       this.correctAnswersInRound = 0;
       this.incorrectAnswersInRound = 0;
@@ -730,6 +738,7 @@ export default {
       if (!this.unansweredItems.length) {
         this.currentItem = null;
         this.showStatistics = true;
+        this.emitRoundState();
         this.saveResults();
         return;
       }
@@ -742,6 +751,7 @@ export default {
       this.isCorrect = null;
       this.feedbackText = "";
       this.resetSwipeState();
+      this.emitRoundState();
 
       if (this.selectedMode === "test") {
         this.$nextTick(() => {
@@ -757,6 +767,7 @@ export default {
         this.weakItems.push(this.currentItem);
       }
 
+      this.setRoundAnswerState(this.currentItem, isKnown ? "correct" : "wrong");
       this.nextItem();
     },
 
@@ -859,6 +870,7 @@ export default {
         if (this.isCorrect) {
           this.feedbackText = "Richtig! ✓";
           this.correctAnswersInRound += 1;
+          this.setRoundAnswerState(this.currentItem, "correct");
           this.addXp(5);
           return;
         }
@@ -866,6 +878,7 @@ export default {
         this.feedbackText = "Falsch! ✗";
         this.incorrectAnswersInRound += 1;
         this.weakItems.push(this.currentItem);
+        this.setRoundAnswerState(this.currentItem, "wrong");
         this.recordVocabularyMistake();
         return;
       }
@@ -883,6 +896,7 @@ export default {
       if (this.isCorrect) {
         this.feedbackText = "Richtig! ✓";
         this.correctAnswersInRound += 1;
+        this.setRoundAnswerState(this.currentItem, "correct");
         this.addXp(5);
         return;
       }
@@ -897,7 +911,86 @@ export default {
 
       this.incorrectAnswersInRound += 1;
       this.weakItems.push(this.currentItem);
+      this.setRoundAnswerState(this.currentItem, "wrong");
       this.recordVocabularyMistake();
+    },
+
+    formatItemAnswer(item) {
+      if (!item) return "";
+
+      if (item.type === "phrase") {
+        return item.de;
+      }
+
+      return `${item.article} ${item.de}`;
+    },
+
+    setRoundAnswerState(item, status) {
+      if (!item?.id) return;
+
+      this.roundAnswerStates = {
+        ...this.roundAnswerStates,
+        [item.id]: status,
+      };
+
+      if (!this.roundAnsweredItemIds.includes(item.id)) {
+        this.roundAnsweredItemIds = [...this.roundAnsweredItemIds, item.id];
+      }
+
+      this.emitRoundState();
+    },
+
+    getRoundItemStatus(item) {
+      const savedStatus = this.roundAnswerStates[item.id];
+
+      if (savedStatus) return savedStatus;
+
+      if (this.currentItem?.id === item.id && !this.showStatistics) {
+        return "current";
+      }
+
+      return "pending";
+    },
+
+    emitRoundState() {
+      const hasActiveRound = Boolean(this.selectedMode);
+      const roundItemsById = new Map(
+        this.currentRoundItems.map((item) => [item.id, item]),
+      );
+      const items = this.roundAnsweredItemIds
+        .map((itemId) => roundItemsById.get(itemId))
+        .filter(Boolean)
+        .map((item) => ({
+          id: item.id,
+          hu: item.hu,
+          de: item.de,
+          answer: this.formatItemAnswer(item),
+          topic: item.topic,
+          level: item.level,
+          status: this.getRoundItemStatus(item),
+        }));
+
+      this.$emit("round-state-change", {
+        selectedTopic: this.selectedTopic,
+        topicTitle: this.selectedTopic ? this.selectedPackMeta.title : "",
+        topicIcon: this.selectedTopic ? this.selectedPackMeta.icon : "",
+        mode: this.selectedMode,
+        modeLabel:
+          this.selectedMode === "test"
+            ? "Teszt kör"
+            : this.selectedMode === "learn"
+              ? "Szókártya kör"
+              : "Szócsomag",
+        current: hasActiveRound
+          ? this.showStatistics
+            ? this.questionsPerRound
+            : this.currentIndex
+          : 0,
+        total: hasActiveRound ? this.questionsPerRound : 0,
+        correct: items.filter((item) => item.status === "correct").length,
+        wrong: items.filter((item) => item.status === "wrong").length,
+        items,
+      });
     },
 
     recordVocabularyMistake() {
@@ -1524,6 +1617,15 @@ export default {
   overflow-wrap: anywhere;
 }
 
+.vocabulary-practice.is-test-mode .vocab-test-card h2 {
+  max-width: 17ch;
+  font-size: clamp(1.65rem, 2vw, 2.55rem);
+  line-height: 1.08;
+  overflow-wrap: break-word;
+  text-wrap: balance;
+  word-break: normal;
+}
+
 .vocab-plural,
 .vocab-test-label {
   margin: 0;
@@ -1554,6 +1656,19 @@ export default {
 .vocabulary-practice :deep(.feedback-box) {
   width: 100%;
   max-width: 640px;
+}
+
+.vocabulary-practice.is-test-mode .vocab-answer-wrap,
+.vocabulary-practice.is-test-mode .vocab-test-actions {
+  width: min(100%, 520px);
+  max-width: 520px;
+}
+
+.vocabulary-practice.is-test-mode .vocab-answer-wrap .pill-input,
+.vocabulary-practice.is-test-mode .vocab-test-actions .pill-button {
+  width: 100%;
+  max-width: none;
+  min-height: 58px;
 }
 
 .example-box {

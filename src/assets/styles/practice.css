@@ -517,6 +517,29 @@
   text-overflow: ellipsis;
 }
 
+.desktop-exercise-hero-action {
+  grid-column: 1 / -1;
+  min-height: 46px;
+  padding: 0 16px;
+  border: 1px solid rgba(255, 213, 106, 0.22);
+  border-radius: 999px;
+  background: rgba(255, 213, 106, 0.12);
+  color: #ffffff;
+  font: inherit;
+  font-weight: 950;
+  cursor: pointer;
+  transition:
+    transform 0.18s ease,
+    border-color 0.18s ease,
+    background 0.18s ease;
+}
+
+.desktop-exercise-hero-action:hover {
+  transform: translateY(-1px);
+  border-color: rgba(255, 213, 106, 0.42);
+  background: rgba(255, 213, 106, 0.18);
+}
+
 .with-desktop-sidebar .desktop-exercise-workspace {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(280px, 320px);
@@ -637,6 +660,158 @@
 .desktop-exercise-secondary:hover {
   border-color: rgba(255, 213, 106, 0.28);
   background: rgba(255, 213, 106, 0.12);
+}
+
+.desktop-exercise-panel.is-vocabulary-round-panel {
+  min-height: 0;
+  max-height: calc(100vh - var(--desktop-content-top, 102px) - 18px);
+  overflow: hidden;
+  gap: 16px;
+}
+
+.vocabulary-round-panel-head {
+  display: grid;
+  gap: 10px;
+}
+
+.desktop-exercise-panel .vocabulary-round-panel-head p {
+  margin: 0;
+}
+
+.vocabulary-round-summary {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.vocabulary-round-summary div {
+  min-width: 0;
+  padding: 12px 10px;
+  border-radius: 16px;
+  background: rgba(0, 0, 0, 0.2);
+  text-align: center;
+}
+
+.vocabulary-round-summary span,
+.vocabulary-round-summary strong {
+  display: block;
+}
+
+.vocabulary-round-summary span {
+  color: rgba(255, 255, 255, 0.48);
+  font-size: 0.72rem;
+  font-weight: 900;
+}
+
+.vocabulary-round-summary strong {
+  margin-top: 4px;
+  color: #ffffff;
+  font-size: 1.04rem;
+  font-weight: 950;
+}
+
+.vocabulary-round-list {
+  min-height: 0;
+  margin: 0;
+  padding: 0 4px 0 0;
+  display: grid;
+  gap: 8px;
+  overflow-y: auto;
+  list-style: none;
+}
+
+.vocabulary-round-list li {
+  min-width: 0;
+  padding: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  display: grid;
+  grid-template-columns: 34px minmax(0, 1fr);
+  gap: 10px;
+  align-items: center;
+  background: rgba(0, 0, 0, 0.18);
+}
+
+.vocabulary-round-index {
+  width: 34px;
+  height: 34px;
+  border-radius: 12px;
+  display: grid;
+  place-items: center;
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.62);
+  font-size: 0.72rem;
+  font-weight: 950;
+}
+
+.vocabulary-round-list div {
+  min-width: 0;
+  display: grid;
+  gap: 3px;
+}
+
+.vocabulary-round-list strong,
+.vocabulary-round-list small {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.vocabulary-round-list strong {
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 0.92rem;
+  font-weight: 950;
+}
+
+.vocabulary-round-list small {
+  color: rgba(255, 255, 255, 0.48);
+  font-size: 0.76rem;
+  font-weight: 800;
+}
+
+.vocabulary-round-list li.is-current {
+  border-color: rgba(79, 172, 254, 0.42);
+  background: rgba(79, 172, 254, 0.1);
+}
+
+.vocabulary-round-list li.is-current .vocabulary-round-index {
+  background: rgba(79, 172, 254, 0.22);
+  color: #8fe6ff;
+}
+
+.vocabulary-round-list li.is-correct {
+  border-color: rgba(67, 233, 123, 0.42);
+  background: rgba(67, 233, 123, 0.1);
+}
+
+.vocabulary-round-list li.is-correct .vocabulary-round-index {
+  background: rgba(67, 233, 123, 0.2);
+  color: #8cffb6;
+}
+
+.vocabulary-round-list li.is-wrong {
+  border-color: rgba(255, 82, 82, 0.48);
+  background: rgba(255, 82, 82, 0.11);
+}
+
+.vocabulary-round-list li.is-wrong .vocabulary-round-index {
+  background: rgba(255, 82, 82, 0.18);
+  color: #ff9aa2;
+}
+
+.vocabulary-round-empty {
+  padding: 16px;
+  border: 1px dashed rgba(255, 255, 255, 0.14);
+  border-radius: 18px;
+  background: rgba(0, 0, 0, 0.14);
+  color: rgba(255, 255, 255, 0.56);
+  font-size: 0.9rem;
+  font-weight: 800;
+  line-height: 1.45;
+}
+
+.desktop-exercise-panel.is-vocabulary-round-panel .desktop-exercise-secondary {
+  margin-top: auto;
 }
 
 .practice-screen:has(.learning-library-view) {
