@@ -33,6 +33,7 @@ export function getTaskName(type) {
     "story-reading": "Story-Lesen",
     "learning-library": "Tanulási könyvtár",
     "student-materials": "Beküldött anyagaim",
+    messages: "Üzenetek",
     "grammar-guide-passiv": "Passiv",
     "grammar-guide-indirekte-rede": "Indirekte Rede",
     "grammar-guide-adjektivdeklination": "Adjektivdeklination",

@@ -234,6 +234,10 @@ export default {
         return this.currentMode === "profile";
       }
 
+      if (item.action === "messages") {
+        return this.currentMode === "messages";
+      }
+
       if (item.teacherSection) {
         return this.teacherActiveSection === item.teacherSection;
       }

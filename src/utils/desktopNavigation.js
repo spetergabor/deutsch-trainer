@@ -1,4 +1,5 @@
 export const studentSearchItems = [
+  { key: "messages", label: "Üzenetek", icon: "💬", group: "Kapcsolat", mode: "messages" },
   { key: "learning-library", label: "Tanulási könyvtár", icon: "🧭", group: "Könyvtár", mode: "learning-library" },
   { key: "perfekt", label: "Perfekt", icon: "🚀", group: "Gyakorló", mode: "perfekt" },
   { key: "nomen-verb", label: "Nomen-Verb", icon: "📚", group: "Gyakorló", mode: "nomen-verb" },
@@ -17,6 +18,7 @@ export const studentSearchItems = [
 ];
 
 export const teacherSearchItems = [
+  { key: "messages", label: "Üzenetek", icon: "💬", group: "Kapcsolat", mode: "messages" },
   { key: "teacher-students", label: "Diákkezelő", icon: "🎓", group: "Tanári", teacherSection: "students" },
   { key: "teacher-writings", label: "Anyagok és beküldések", icon: "＋", group: "Tanári", teacherSection: "writings" },
   { key: "teacher-exercises", label: "Feladatkezelő", icon: "🧩", group: "Tanári", teacherSection: "exercises" },

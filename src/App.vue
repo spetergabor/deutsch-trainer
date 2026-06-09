@@ -1,5 +1,11 @@
 <template>
-  <div id="app" :class="{ 'with-desktop-sidebar': showDesktopSidebar }">
+  <div
+    id="app"
+    :class="{
+      'with-desktop-sidebar': showDesktopSidebar,
+      'mobile-chat-active': isMessagesMobileConversationOpen,
+    }"
+  >
     <AppHeader
       v-if="showAppHeader"
       :header-title="headerTitle"
@@ -101,6 +107,14 @@
         @set-login-mode="isLoginMode = $event"
         @reset-auth-form="resetAuthForm"
         @continue-as-guest="continueAsGuest"
+      />
+
+      <MessagesPanel
+        v-else-if="currentMode === 'messages' && !isGuestMode"
+        :user-session="userSession"
+        :user-role="userRole"
+        @messages-read="fetchUnreadMessages"
+        @mobile-conversation-open-change="isMessagesMobileConversationOpen = $event"
       />
 
       <!-- DIÁK DASHBOARD -->
@@ -212,13 +226,6 @@
       @mark-all-read="markAllNotificationsRead"
     />
 
-    <MessagesPanel
-      v-if="userSession && !isGuestMode && showMessagesPanel"
-      :user-session="userSession"
-      :user-role="userRole"
-      @close="showMessagesPanel = false"
-      @messages-read="fetchUnreadMessages"
-    />
   </div>
 </template>
 
@@ -357,7 +364,7 @@ export default {
       unreadNotifications: 0,
       showNotificationsMenu: false,
       unreadMessages: 0,
-      showMessagesPanel: false,
+      isMessagesMobileConversationOpen: false,
 
       activityCalendar: [],
       navigationBackStack: [],
@@ -403,7 +410,8 @@ export default {
       return Boolean(
         this.userSession &&
           this.userRole === "student" &&
-          this.windowWidth <= 700,
+          this.windowWidth <= 700 &&
+          !this.isMessagesMobileConversationOpen,
       );
     },
 
@@ -609,7 +617,6 @@ export default {
       this.teacherActiveSection = snapshot.teacherActiveSection || null;
       this.activeHomeworkAssignment = snapshot.activeHomeworkAssignment || null;
       this.showNotificationsMenu = false;
-      this.showMessagesPanel = false;
       this.scrollToPageTop();
 
       if (
@@ -666,7 +673,6 @@ export default {
       this.teacherActiveSection = null;
       this.activeHomeworkAssignment = null;
       this.showNotificationsMenu = false;
-      this.showMessagesPanel = false;
       this.scrollToPageTop();
     },
 
@@ -689,7 +695,6 @@ export default {
       this.teacherActiveSection = section;
       this.activeHomeworkAssignment = null;
       this.showNotificationsMenu = false;
-      this.showMessagesPanel = false;
       this.scrollToPageTop();
     },
 
@@ -708,7 +713,6 @@ export default {
       this.teacherActiveSection = null;
       this.activeHomeworkAssignment = null;
       this.showNotificationsMenu = false;
-      this.showMessagesPanel = false;
       this.scrollToPageTop();
     },
 
@@ -742,7 +746,6 @@ export default {
       this.teacherInitialSection = null;
       this.teacherActiveSection = null;
       this.showNotificationsMenu = false;
-      this.showMessagesPanel = false;
       this.scrollToPageTop();
     },
 
@@ -761,7 +764,6 @@ export default {
       this.teacherActiveSection = null;
       this.activeHomeworkAssignment = null;
       this.showNotificationsMenu = false;
-      this.showMessagesPanel = false;
       this.scrollToPageTop();
     },
 
@@ -782,7 +784,6 @@ export default {
       this.teacherActiveSection = null;
       this.activeHomeworkAssignment = null;
       this.showNotificationsMenu = false;
-      this.showMessagesPanel = false;
       this.scrollToPageTop();
 
       if (this.userRole === "teacher") {
@@ -1034,7 +1035,6 @@ export default {
       this.unreadNotifications = 0;
       this.showNotificationsMenu = false;
       this.unreadMessages = 0;
-      this.showMessagesPanel = false;
 
       this.stats = {
         accuracy: 0,
@@ -1084,15 +1084,26 @@ export default {
 
     toggleNotificationsMenu() {
       this.showNotificationsMenu = !this.showNotificationsMenu;
-
-      if (this.showNotificationsMenu) {
-        this.showMessagesPanel = false;
-      }
     },
 
     openMessagesPanel() {
-      this.showMessagesPanel = true;
+      if (this.isGuestMode) return;
+
+      this.prepareNavigation({
+        currentMode: "messages",
+        selectedStoryId: null,
+        teacherInitialSection: null,
+        teacherActiveSection: null,
+        activeHomeworkAssignment: null,
+      });
+
+      this.currentMode = "messages";
+      this.selectedStoryId = null;
+      this.teacherInitialSection = null;
+      this.teacherActiveSection = null;
+      this.activeHomeworkAssignment = null;
       this.showNotificationsMenu = false;
+      this.scrollToPageTop();
     },
 
     async fetchUnreadMessages() {
@@ -1556,6 +1567,18 @@ export default {
   .content-wrapper {
     align-items: center;
     padding-top: 0;
+  }
+
+  #app.mobile-chat-active .content-wrapper {
+    padding-bottom: 0 !important;
+  }
+
+  #app.mobile-chat-active .messages-page,
+  #app.mobile-chat-active .messages-layout,
+  #app.mobile-chat-active .messages-conversation {
+    height: calc(100dvh - var(--mobile-bottom-nav-height) + 18px) !important;
+    min-height: calc(100dvh - var(--mobile-bottom-nav-height) + 18px) !important;
+    max-height: calc(100dvh - var(--mobile-bottom-nav-height) + 18px) !important;
   }
 
   .content-wrapper:has(.vocabulary-practice.is-test-mode) {

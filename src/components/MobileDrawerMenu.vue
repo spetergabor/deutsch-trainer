@@ -272,6 +272,7 @@ export default {
     isActive(item) {
       if (item.action === "dashboard") return !this.currentMode;
       if (item.action === "profile") return this.currentMode === "profile";
+      if (item.action === "messages") return this.currentMode === "messages";
       if (item.mode) return this.currentMode === item.mode;
       return false;
     },
