@@ -1684,4 +1684,621 @@ export const grammarGuides = [
       "Modalverb múltban: Ich hätte mehr lernen sollen.",
     ],
   },
+  {
+    id: "modalpartikel",
+    mode: "grammar-guide-modalpartikel",
+    title: "Modalpartikel",
+    subtitle: "halt, doch, mal, ja, denn, wohl, bloß, nur és aber beszélt nyelvben",
+    level: "B1/B2",
+    icon: "🗣️",
+    practice: {
+      available: false,
+      label: "Beszédárnyalat gyakorló hamarosan",
+      type: "planned",
+    },
+    sections: [
+      {
+        title: "Mik azok a Modalpartikeln?",
+        body:
+          "A Modalpartikeln olyan kis módosító szavak, amelyek nélkül a mondat nyelvtanilag és tartalmilag teljes lenne, mégis sokat változtatnak a hangulaton. Nem új információt adnak hozzá, hanem azt mutatják meg, hogyan viszonyul a beszélő ahhoz, amit mond: beletörődik, csodálkozik, sürget, finomít, vagy közvetlenebbé teszi a mondatot.",
+        examples: [
+          {
+            de: "Er ist so.",
+            hu: "Ő ilyen.",
+          },
+          {
+            de: "Er ist halt so.",
+            hu: "Ő már csak ilyen.",
+          },
+          {
+            de: "Warte!",
+            hu: "Várj!",
+          },
+          {
+            de: "Warte doch mal!",
+            hu: "Várj már egy kicsit!",
+          },
+        ],
+      },
+      {
+        title: "Általános jellemzők",
+        body:
+          "A Modalpartikeln főleg beszédben fordulnak elő, írásban inkább csak informális üzenetekben, chatben vagy párbeszédes stílusban. Többnyire nem hangsúlyosak, és általában az ige után állnak a mondat középső részében. Ha van személyes névmás, akkor gyakran a névmás után kerülnek.",
+        formula: "Subjekt + Verb + Pronomen + Modalpartikel + ...",
+        examples: [
+          {
+            de: "Du weißt ja, wie es geht.",
+            hu: "Hiszen tudod, hogy megy ez.",
+          },
+          {
+            de: "Ich kann das halt nicht ändern.",
+            hu: "Ezen egyszerűen nem tudok változtatni.",
+          },
+          {
+            de: "Kannst du mir mal helfen?",
+            hu: "Tudnál segíteni egy kicsit?",
+          },
+        ],
+      },
+      {
+        title: "Gyors áttekintés",
+        body:
+          "Ugyanaz a német mondat nagyon más hangulatot kaphat attól függően, melyik Modalpartikel kerül bele. A magyar fordítás sokszor nem egy konkrét szóval történik, hanem a mondat hangulatával: hát, csak, már, hiszen, ugyan, talán, egyszerűen.",
+        table: [
+          {
+            tense: "halt / eben",
+            form: "beletörődés, általános tény",
+            example: "Er ist halt so.",
+          },
+          {
+            tense: "doch",
+            form: "megerősítés, emlékeztetés, enyhébb felszólítás",
+            example: "Er war doch da.",
+          },
+          {
+            tense: "mal",
+            form: "barátságosabb kérés vagy felszólítás",
+            example: "Guck mal!",
+          },
+          {
+            tense: "ja",
+            form: "nyilvánvaló vagy várható dolog",
+            example: "Du weißt ja, wie es geht.",
+          },
+          {
+            tense: "denn",
+            form: "közvetlenebb kérdés, meglepetés",
+            example: "Was machst du denn?",
+          },
+          {
+            tense: "wohl",
+            form: "bizonytalanság, feltételezés",
+            example: "Er wird wohl gewinnen.",
+          },
+          {
+            tense: "bloß / nur",
+            form: "erős figyelmeztetés vagy sürgetés",
+            example: "Hör bloß damit auf!",
+          },
+          {
+            tense: "aber",
+            form: "meglepetés, erős benyomás",
+            example: "Du bist aber groß geworden!",
+          },
+        ],
+      },
+      {
+        title: "halt és eben",
+        body:
+          "A halt és az eben azt fejezi ki, hogy valamit tényként elfogadunk. Gyakran van benne beletörődés: ez van, nem nagyon lehet rajta változtatni. Magyarul sokszor így adható vissza: már csak, egyszerűen, hát.",
+        examples: [
+          {
+            de: "Das kann man halt nicht ändern.",
+            hu: "Ezt már nem lehet megváltoztatni.",
+          },
+          {
+            de: "Er ist halt so.",
+            hu: "Ő már csak ilyen.",
+          },
+          {
+            de: "Dann müssen wir eben warten.",
+            hu: "Akkor egyszerűen várnunk kell.",
+          },
+        ],
+      },
+      {
+        title: "doch",
+        body:
+          "A doch gyakran megerősít egy kijelentést, főleg akkor, ha a beszélő úgy érzi, a másik fél elfelejtett vagy vitat valamit. Felszólításban enyhíthet, bátoríthat vagy nyomatékosíthat.",
+        examples: [
+          {
+            de: "Er war doch da.",
+            hu: "De hát itt volt.",
+          },
+          {
+            de: "Das weißt du doch.",
+            hu: "Ezt hiszen tudod.",
+          },
+          {
+            de: "Warte doch ein bisschen!",
+            hu: "Várj csak egy kicsit!",
+          },
+          {
+            de: "Komm doch rein!",
+            hu: "Gyere csak be!",
+          },
+        ],
+      },
+      {
+        title: "mal",
+        body:
+          "A mal a felszólítást vagy kérést barátságosabbá, hétköznapibbá teszi. Gyakran nem azt jelenti, hogy egyszer, hanem inkább azt: csak, már, egy kicsit, légyszi jelleggel.",
+        examples: [
+          {
+            de: "Warte mal!",
+            hu: "Várj már!",
+          },
+          {
+            de: "Guck mal!",
+            hu: "Nézd csak!",
+          },
+          {
+            de: "Erzähl mal!",
+            hu: "Na mesélj!",
+          },
+          {
+            de: "Kannst du mir mal kurz helfen?",
+            hu: "Tudnál nekem gyorsan segíteni?",
+          },
+        ],
+      },
+      {
+        title: "ja",
+        body:
+          "A ja azt jelzi, hogy a beszélő szerint az információ ismert, nyilvánvaló vagy várható. Csodálkozásnál is erősítheti az érzést: hiszen, tényleg, hát ez aztán.",
+        examples: [
+          {
+            de: "Du weißt ja, wie es geht.",
+            hu: "Hiszen tudod, hogy megy ez.",
+          },
+          {
+            de: "Das ist ja nicht zu glauben!",
+            hu: "Hiszen ez hihetetlen!",
+          },
+          {
+            de: "Hab ich ja gesagt.",
+            hu: "Nem megmondtam.",
+          },
+          {
+            de: "Das war ja klar.",
+            hu: "Ez várható volt.",
+          },
+        ],
+      },
+      {
+        title: "denn",
+        body:
+          "A denn kérdésekben nagyon gyakori. Közvetlenebbé, természetesebbé vagy érdeklődőbbé teszi a kérdést. Ha a kérdés negatív érzelmű, akkor meglepetést, rosszallást vagy értetlenséget is kifejezhet.",
+        examples: [
+          {
+            de: "Wie spät ist es denn?",
+            hu: "Mennyi az idő?",
+          },
+          {
+            de: "Was machst du denn?",
+            hu: "Mit csinálsz?",
+          },
+          {
+            de: "Warum hast du denn das gemacht?",
+            hu: "Ezt meg mégis miért csináltad?",
+          },
+          {
+            de: "Wo bist du denn?",
+            hu: "Hát te hol vagy?",
+          },
+        ],
+      },
+      {
+        title: "wohl",
+        body:
+          "A wohl bizonytalanságot vagy feltételezést fejez ki. A beszélő nem teljesen biztos abban, amit mond, inkább valószínűnek tartja. Magyarul gyakran: valószínűleg, talán, lehet, hogy.",
+        examples: [
+          {
+            de: "Es stimmt wohl nicht.",
+            hu: "Ez valószínűleg nem stimmel.",
+          },
+          {
+            de: "Er wird wohl gewinnen.",
+            hu: "Lehet, hogy nyerni fog.",
+          },
+          {
+            de: "Sie ist wohl schon zu Hause.",
+            hu: "Valószínűleg már otthon van.",
+          },
+        ],
+      },
+      {
+        title: "bloß és nur",
+        body:
+          "A bloß és a nur felszólításban vagy felkiáltásban erős figyelmeztetést, sürgetést vagy félelmet fejezhet ki. Ilyenkor a mondat sokkal erősebb lesz, mint a Modalpartikel nélkül.",
+        examples: [
+          {
+            de: "Hör bloß damit auf!",
+            hu: "Hagyd már abba!",
+          },
+          {
+            de: "Komm bloß nie wieder!",
+            hu: "Soha ne gyere többé!",
+          },
+          {
+            de: "Mach nur keinen Fehler!",
+            hu: "Csak nehogy hibázz!",
+          },
+          {
+            de: "Was soll ich bloß machen?",
+            hu: "Most mégis mit csináljak?",
+          },
+        ],
+      },
+      {
+        title: "aber",
+        body:
+          "Az aber Modalpartikelként meglepetést vagy erős benyomást fejez ki. Nem ellentétet jelent, mint a kötőszóként használt aber, hanem azt, hogy a beszélő valamire rácsodálkozik.",
+        examples: [
+          {
+            de: "Du bist aber groß geworden!",
+            hu: "Te aztán jól megnőttél!",
+          },
+          {
+            de: "Das ist aber teuer!",
+            hu: "Ez aztán drága!",
+          },
+          {
+            de: "Hier ist es aber kalt.",
+            hu: "Itt aztán hideg van.",
+          },
+        ],
+      },
+      {
+        title: "Szórend és kombinációk",
+        body:
+          "A Modalpartikeln általában a ragozott ige után, a mondat középső részében állnak. Több Modalpartikel is állhat egymás mellett, de ez már nagyon beszélt nyelvi árnyalat. Gyakori kombinációk: doch mal, ja wohl, denn bloß, doch einfach.",
+        examples: [
+          {
+            de: "Komm doch mal vorbei!",
+            hu: "Ugorj már be egyszer!",
+          },
+          {
+            de: "Das kann ja wohl nicht wahr sein!",
+            hu: "Ez egyszerűen nem lehet igaz!",
+          },
+          {
+            de: "Was hast du denn bloß gemacht?",
+            hu: "Mit műveltél te mégis?",
+          },
+        ],
+      },
+    ],
+    quickRules: [
+      "A mondat Modalpartikel nélkül is teljes.",
+      "Nem új információt ad, hanem hangulatot és hozzáállást.",
+      "Főleg beszédben és informális írásban használjuk.",
+      "Általában az ige után, gyakran a névmás után áll.",
+      "halt / eben: beletörődés, ez van.",
+      "doch: megerősítés, emlékeztetés, enyhébb felszólítás.",
+      "mal: barátságosabb kérés vagy felszólítás.",
+      "ja: ismert vagy nyilvánvaló dolog.",
+      "denn: természetesebb kérdés vagy meglepett rosszallás.",
+      "wohl: bizonytalanság, feltételezés.",
+      "bloß / nur: erős figyelmeztetés.",
+      "aber: meglepetés, erős benyomás.",
+    ],
+  },
+  {
+    id: "vonatkozo-nevmas",
+    mode: "grammar-guide-vonatkozo-nevmas",
+    title: "Vonatkozó névmás",
+    subtitle: "Relativpronomen, prepozíciós szerkezetek, wer/was és derjenige",
+    level: "B1/B2",
+    icon: "🔗",
+    practice: {
+      available: false,
+      label: "Vonatkozó névmás gyakorló hamarosan",
+      type: "planned",
+    },
+    sections: [
+      {
+        title: "Mi a vonatkozó névmás?",
+        body:
+          "A vonatkozó névmás egy főnévről ad újabb információt. Magyarul gyakran aki, ami, amit, akinek, aminek alakokkal fordítjuk. A németben a vonatkozó névmást számban és nemben ahhoz a főnévhez igazítjuk, amelyre visszautal, az esetét pedig a mellékmondatban betöltött szerepe dönti el.",
+        examples: [
+          {
+            de: "Sie hat einen Bruder, der in München wohnt.",
+            hu: "Van egy fiútestvére, aki Münchenben lakik.",
+          },
+          {
+            de: "Sie hat eine Katze, die den ganzen Tag schläft.",
+            hu: "Van egy macskája, amely egész nap alszik.",
+          },
+          {
+            de: "Sie hat drei Kinder, die jetzt bei der Oma Urlaub machen.",
+            hu: "Van három gyereke, akik most a nagyinál nyaralnak.",
+          },
+          {
+            de: "Dort kommt Adam, dem meine Schwester gefällt.",
+            hu: "Ott jön Adam, akinek tetszik a lánytestvérem.",
+          },
+        ],
+      },
+      {
+        title: "Szórend: vessző és mellékmondat",
+        body:
+          "A vonatkozó mellékmondat legtöbbször közvetlenül a főnév után áll, vesszővel elválasztva. A szórend a KATI-szórendhez hasonlít: először a vonatkozó névmás áll, utána az alany, ha van, majd a többi mondatrész, végül a ragozott ige.",
+        formula: "Főnév, Relativpronomen + alany + ... + ragozott ige",
+        examples: [
+          {
+            de: "Das ist der Mann, der neben uns wohnt.",
+            hu: "Ő az a férfi, aki mellettünk lakik.",
+          },
+          {
+            de: "Ich kenne die Frau, die du gestern gesehen hast.",
+            hu: "Ismerem azt a nőt, akit tegnap láttál.",
+          },
+          {
+            de: "Das ist das Buch, das auf dem Tisch liegt.",
+            hu: "Ez az a könyv, amely az asztalon fekszik.",
+          },
+        ],
+      },
+      {
+        title: "Ragozás: der, die, das, die",
+        body:
+          "A vonatkozó névmás ragozása nagyon hasonlít a határozott névelő ragozásához. Két fontos eltérés van: részes eset többes számban denen áll, birtokos esetben pedig dessen vagy deren.",
+        table: [
+          {
+            tense: "Nominativ",
+            form: "der / die / das / die",
+            example: "Der Mann, der dort steht, ist mein Lehrer.",
+          },
+          {
+            tense: "Akkusativ",
+            form: "den / die / das / die",
+            example: "Der Mann, den ich kenne, ist Arzt.",
+          },
+          {
+            tense: "Dativ",
+            form: "dem / der / dem / denen",
+            example: "Die Kinder, denen ich helfe, lernen Deutsch.",
+          },
+          {
+            tense: "Genitiv",
+            form: "dessen / deren / dessen / deren",
+            example: "Der Mann, dessen Auto kaputt ist, wartet.",
+          },
+        ],
+      },
+      {
+        title: "Hogyan választjuk ki az esetet?",
+        body:
+          "A névmás neme és száma attól a főnévtől függ, amelyre visszautal. Az esetet viszont nem ez a főnév, hanem a vonatkozó mellékmondatban betöltött szerep dönti el: alany, tárgy, részes esetű kiegészítő vagy birtokos szerkezet.",
+        examples: [
+          {
+            de: "Das ist der Mann, der mir hilft.",
+            hu: "Ő az a férfi, aki segít nekem. A der alany, ezért Nominativ.",
+          },
+          {
+            de: "Das ist der Mann, den ich sehe.",
+            hu: "Ő az a férfi, akit látok. A den tárgy, ezért Akkusativ.",
+          },
+          {
+            de: "Das ist der Mann, dem ich helfe.",
+            hu: "Ő az a férfi, akinek segítek. A dem Dativ.",
+          },
+        ],
+      },
+      {
+        title: "Dativ többes szám: denen",
+        body:
+          "Többes szám részes esetben nem den, hanem denen áll. Ez az egyik legfontosabb eltérés a határozott névelőhöz képest, ezért külön érdemes megjegyezni.",
+        examples: [
+          {
+            de: "Dort spielen die Kinder, denen ich immer Schokolade gebe.",
+            hu: "Ott játszanak a gyerekek, akiknek mindig csokit adok.",
+          },
+          {
+            de: "Das sind die Schüler, denen der Lehrer geholfen hat.",
+            hu: "Ők azok a diákok, akiknek a tanár segített.",
+          },
+          {
+            de: "Ich kenne die Leute, denen dieses Haus gehört.",
+            hu: "Ismerem az embereket, akiké ez a ház.",
+          },
+        ],
+      },
+      {
+        title: "Birtokos eset: dessen és deren",
+        body:
+          "A vonatkozó névmás birtokos esete azt fejezi ki: akinek/amelynek a valamije. Hímnemnél és semleges nemnél dessen, nőnemnél és többes számban deren áll. A birtok utánuk közvetlenül következik, névelő nélkül.",
+        formula: "dessen/deren + birtok",
+        examples: [
+          {
+            de: "Er ist mein Freund, dessen Frau schwanger ist.",
+            hu: "Ő a barátom, akinek a felesége várandós.",
+          },
+          {
+            de: "Karl hat eine Wohnung, deren Miete sehr hoch ist.",
+            hu: "Karlnak van egy lakása, amelynek a bérleti díja nagyon magas.",
+          },
+          {
+            de: "Sie hat ein neues Auto gekauft, dessen Farbe mir gar nicht gefällt.",
+            hu: "Vett egy új autót, amelynek a színe nekem egyáltalán nem tetszik.",
+          },
+          {
+            de: "Ich habe die Bücher noch nicht gelesen, deren Autor jetzt gestorben ist.",
+            hu: "Még nem olvastam a könyveket, amelyeknek a szerzője most halt meg.",
+          },
+        ],
+      },
+      {
+        title: "Vonatkozó névmás prepozícióval",
+        body:
+          "A vonatkozó névmás előtt elöljárószó is állhat. Ilyenkor a névmást az elöljárószó által megkövetelt esetbe tesszük. Így fejezhetjük ki például: akivel, amiről, amihez, akire, amelyben.",
+        formula: "Prepozíció + Relativpronomen + ... + ige",
+        examples: [
+          {
+            de: "Ich rufe meinen Freund an, mit dem ich mich heute Nachmittag treffen will.",
+            hu: "Felhívom a barátomat, akivel ma délután találkozni akarok.",
+          },
+          {
+            de: "Da kommt meine Schwester, auf die wir seit 30 Minuten warten.",
+            hu: "Ott jön a lánytestvérem, akire harminc perce várunk.",
+          },
+          {
+            de: "Er hat sein Auto verkauft, in dem er zwei Wochen lang gewohnt hat.",
+            hu: "Eladta az autóját, amelyben két hétig lakott.",
+          },
+          {
+            de: "Siehst du die Kinder, bei denen wir gestern gespielt haben?",
+            hu: "Látod a gyerekeket, akiknél tegnap játszottunk?",
+          },
+        ],
+      },
+      {
+        title: "Kivétel: prepozíció + birtokos vonatkozó névmás",
+        body:
+          "Ha a vonatkozó névmás birtokos esetű, tehát dessen vagy deren, akkor ezt nem egyeztetjük az elöljárószóval. A prepozíció ilyenkor a birtokhoz kapcsolódik, a dessen/deren alak változatlan marad.",
+        examples: [
+          {
+            de: "Kennst du schon meinen Chef, mit dessen Frau du gerade gesprochen hast?",
+            hu: "Ismered már a főnökömet, akinek a feleségével épp beszéltél?",
+          },
+          {
+            de: "Hier ist die Wissenschaftlerin, über deren Erfindung alle sprechen.",
+            hu: "Itt van a tudósnő, akinek a találmányáról mindenki beszél.",
+          },
+          {
+            de: "Das ist der Autor, von dessen Büchern ich dir erzählt habe.",
+            hu: "Ő az az író, akinek a könyveiről meséltem neked.",
+          },
+        ],
+      },
+      {
+        title: "Közbeékelt vonatkozó mellékmondat",
+        body:
+          "A vonatkozó mellékmondat gyakran rögtön a főnév után áll, és megszakítja a főmondatot. Ilyenkor mindkét oldalán vessző áll. A főmondat a mellékmondat után folytatódik.",
+        examples: [
+          {
+            de: "Die Dame, die hinter dem Tisch steht, ist meine Frau.",
+            hu: "A hölgy, aki az asztal mögött áll, a feleségem.",
+          },
+          {
+            de: "Ich habe den Tisch, den du hier siehst, nur für 10 Euro gekauft.",
+            hu: "Az asztalt, amelyet itt látsz, csak 10 euróért vettem.",
+          },
+          {
+            de: "Das Kind, von dem ich dir erzählt habe, hat den Wettbewerb gewonnen.",
+            hu: "A gyerek, akiről meséltem neked, megnyerte a versenyt.",
+          },
+        ],
+      },
+      {
+        title: "derer: előreutaló többes szám birtokos alak",
+        body:
+          "Többes szám birtokos esetben előfordulhat, hogy a névmás nem visszautal, hanem előreutal: valamije azoknak, akik. Ilyenkor személyekre utalunk, és a deren helyett derer áll. Utána vessző és újabb névmás következik.",
+        examples: [
+          {
+            de: "Hier sitzen die Eltern derer, die an dem Ausflug teilnehmen.",
+            hu: "Itt ülnek azoknak a szülei, akik részt vesznek a kiránduláson.",
+          },
+          {
+            de: "Wir gedenken derer, die uns geholfen haben.",
+            hu: "Megemlékezünk azokról, akik segítettek nekünk.",
+          },
+        ],
+      },
+      {
+        title: "wer, wen, wem, wessen és was",
+        body:
+          "Ha nem egy konkrét főnévre utalunk vissza, hanem meghatározatlan személyre vagy dologra, akkor használhatjuk a wer ragozott alakjait és a was névmást. A was akkor is gyakori, ha az egész előző mondatra vagy állításra utalunk vissza.",
+        examples: [
+          {
+            de: "Wer zu spät kommt, bekommt keine Schokolade.",
+            hu: "Aki túl későn jön, nem kap csokit.",
+          },
+          {
+            de: "Wen ich einmal gesehen habe, vergesse ich nie mehr.",
+            hu: "Akit egyszer láttam, azt soha többé nem felejtem el.",
+          },
+          {
+            de: "Siehst du, was ich sehe?",
+            hu: "Látod, amit én látok?",
+          },
+          {
+            de: "Er wusste schon alles, was ich ihm erzählen wollte.",
+            hu: "Már mindent tudott, amit el akartam mesélni neki.",
+          },
+        ],
+      },
+      {
+        title: "derjenige, der: az, aki",
+        body:
+          "A wer, wen, wem, wessen jelentését sokszor kifejezhetjük a derjenige szerkezettel is. Az első rész a határozott névelő szerint ragozódik, a -jenige rész pedig gyenge melléknévragozást kap.",
+        examples: [
+          {
+            de: "Ich bin derjenige, der klopft.",
+            hu: "Én vagyok az, aki kopog.",
+          },
+          {
+            de: "Ich versuche denjenigen zu finden, dem diese Gitarre gehört.",
+            hu: "Megpróbálom megtalálni azt, akié ez a gitár.",
+          },
+          {
+            de: "Sie sind diejenigen, die gehen wollen.",
+            hu: "Ők azok, akik menni akarnak.",
+          },
+        ],
+      },
+      {
+        title: "derjenige ragozása",
+        body:
+          "A derjenige összetett névmásnál az első rész der/den/dem/des mintára változik, a második rész pedig -jenige, -jenigen, -jenigen stb. alakot kap. Többes számban gyakori alak: diejenigen.",
+        table: [
+          {
+            tense: "Nominativ",
+            form: "derjenige / diejenige / dasjenige / diejenigen",
+            example: "Derjenige, der zuerst kommt, gewinnt.",
+          },
+          {
+            tense: "Akkusativ",
+            form: "denjenigen / diejenige / dasjenige / diejenigen",
+            example: "Ich suche denjenigen, der angerufen hat.",
+          },
+          {
+            tense: "Dativ",
+            form: "demjenigen / derjenigen / demjenigen / denjenigen",
+            example: "Ich helfe demjenigen, der fragt.",
+          },
+          {
+            tense: "Genitiv",
+            form: "desjenigen / derjenigen / desjenigen / derjenigen",
+            example: "Die Meinung desjenigen, der fehlt, kennen wir nicht.",
+          },
+        ],
+      },
+    ],
+    quickRules: [
+      "A vonatkozó névmás egy főnévről ad plusz információt.",
+      "Neme és száma attól a főnévtől függ, amelyre visszautal.",
+      "Esetét a mellékmondatban betöltött szerepe dönti el.",
+      "A vonatkozó mellékmondat vesszővel kezdődik.",
+      "A ragozott ige a vonatkozó mellékmondat végére kerül.",
+      "Dativ többes szám: denen.",
+      "Genitiv: dessen hímnem/semleges nem, deren nőnem/többes szám.",
+      "Prepozíció után az elöljárószó esete dönt: mit dem, auf die, in dem.",
+      "dessen/deren prepozícióval is változatlan marad.",
+      "Közbeékelt mondatnál két vessző kell.",
+      "wer/was meghatározatlan személyre, dologra vagy egész állításra utal.",
+      "derjenige, der jelentése: az, aki.",
+    ],
+  },
 ];

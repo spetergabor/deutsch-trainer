@@ -207,23 +207,11 @@
           </p>
 
           <label>
-            Közös jegyzet
-            <textarea v-model="lessonWorkbookDraft.sharedNotes"></textarea>
-          </label>
-
-          <label>
-            Új szavak
-            <textarea v-model="lessonWorkbookDraft.vocabularyNotes"></textarea>
-          </label>
-
-          <label>
-            Hibák és javítások
-            <textarea v-model="lessonWorkbookDraft.correctionsNotes"></textarea>
-          </label>
-
-          <label>
-            Házi / következő lépés
-            <textarea v-model="lessonWorkbookDraft.nextSteps"></textarea>
+            Közös órai jegyzet
+            <textarea
+              v-model="lessonWorkbookDraft.sharedNotes"
+              placeholder="Ide írhat a tanár és a diák is..."
+            ></textarea>
           </label>
 
           <button
@@ -231,12 +219,12 @@
             @click="saveSelectedLessonWorkbook"
             :disabled="isSavingLessonWorkbook"
           >
-            {{ isSavingLessonWorkbook ? "Mentés..." : "Munkafüzet mentése" }}
+            {{ isSavingLessonWorkbook ? "Mentés..." : "Jegyzet mentése" }}
           </button>
         </article>
 
         <article v-else class="student-lesson-workbook student-lesson-workbook-empty">
-          <strong>Válassz órát a munkafüzet megnyitásához.</strong>
+          <strong>Válassz órát a közös jegyzet megnyitásához.</strong>
           <p>Az óra kártyájára kattintva megnyílik a közös jegyzet, ugyanarra kattintva pedig bezárható.</p>
         </article>
       </div>
@@ -426,9 +414,6 @@ export default {
       isLoadingHomeworkSummary: false,
       lessonWorkbookDraft: {
         sharedNotes: "",
-        vocabularyNotes: "",
-        correctionsNotes: "",
-        nextSteps: "",
       },
     };
   },
@@ -795,9 +780,6 @@ export default {
     syncLessonWorkbookDraft(lesson) {
       this.lessonWorkbookDraft = {
         sharedNotes: lesson?.shared_notes || "",
-        vocabularyNotes: lesson?.vocabulary_notes || "",
-        correctionsNotes: lesson?.corrections_notes || "",
-        nextSteps: lesson?.next_steps || "",
       };
     },
 

@@ -110,6 +110,26 @@
   gap: 8px;
 }
 
+.teacher-overview-card.clickable {
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.teacher-overview-card.clickable:hover,
+.teacher-overview-card.clickable:focus-visible {
+  border-color: rgba(128, 202, 255, 0.5);
+  background:
+    linear-gradient(135deg, rgba(102, 126, 234, 0.24), rgba(79, 172, 254, 0.1)),
+    rgba(255, 255, 255, 0.07);
+}
+
+.teacher-overview-card.clickable:focus-visible {
+  outline: 3px solid rgba(128, 202, 255, 0.32);
+  outline-offset: 3px;
+}
+
 .teacher-overview-card.highlight {
   border-color: rgba(102, 126, 234, 0.28);
   background: linear-gradient(135deg, rgba(102, 126, 234, 0.18), rgba(255, 255, 255, 0.055));
@@ -398,30 +418,234 @@
   font-weight: 850;
 }
 
+.teacher-upcoming-empty-compact {
+  margin-bottom: 14px;
+  padding: 14px 16px;
+}
+
+.teacher-day-timeline {
+  margin-bottom: 16px;
+  padding: 16px;
+  border: 1px solid rgba(79, 172, 254, 0.16);
+  border-radius: 22px;
+  background:
+    linear-gradient(135deg, rgba(79, 172, 254, 0.08), transparent 48%),
+    rgba(0, 0, 0, 0.16);
+}
+
+.teacher-day-timeline-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.teacher-day-timeline-head > div:first-child {
+  min-width: 0;
+}
+
+.teacher-day-timeline-head strong {
+  display: block;
+  color: #ffffff;
+  font-size: 1rem;
+  font-weight: 950;
+}
+
+.teacher-day-timeline-head span {
+  display: block;
+  margin-top: 3px;
+  color: rgba(255, 255, 255, 0.52);
+  font-size: 0.82rem;
+  font-weight: 850;
+}
+
+.teacher-timeline-controls {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.07);
+}
+
+.teacher-timeline-controls button {
+  min-width: 34px;
+  height: 34px;
+  padding: 0 10px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: #ffffff;
+  font: inherit;
+  font-size: 0.86rem;
+  font-weight: 950;
+  cursor: pointer;
+}
+
+.teacher-timeline-controls button:not(:disabled):hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.teacher-timeline-controls button:disabled {
+  color: rgba(255, 255, 255, 0.38);
+  cursor: default;
+}
+
+.teacher-timeline-scroll {
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding-bottom: 8px;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-color: rgba(128, 202, 255, 0.36) rgba(255, 255, 255, 0.06);
+  scrollbar-width: thin;
+}
+
+.teacher-timeline-scroll::-webkit-scrollbar {
+  height: 8px;
+}
+
+.teacher-timeline-scroll::-webkit-scrollbar-track {
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.teacher-timeline-scroll::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+  background: rgba(128, 202, 255, 0.36);
+}
+
+.teacher-timeline-canvas {
+  min-width: 171.43%;
+}
+
+.teacher-timeline-scale,
+.teacher-timeline-track {
+  position: relative;
+}
+
+.teacher-timeline-scale {
+  height: 20px;
+  margin: 0 10px;
+}
+
+.teacher-timeline-scale span {
+  position: absolute;
+  top: 0;
+  color: rgba(255, 255, 255, 0.45);
+  font-size: 0.72rem;
+  font-weight: 850;
+  transform: translateX(-50%);
+}
+
+.teacher-timeline-track {
+  height: 86px;
+  margin: 0 10px;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.055);
+  overflow: hidden;
+}
+
+.teacher-timeline-hour {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.teacher-timeline-event {
+  position: absolute;
+  top: 18px;
+  bottom: 18px;
+  min-width: 58px;
+  padding: 8px 9px;
+  border: 1px solid rgba(79, 172, 254, 0.28);
+  border-radius: 14px;
+  background:
+    linear-gradient(135deg, rgba(79, 172, 254, 0.36), rgba(67, 233, 123, 0.2)),
+    rgba(8, 12, 20, 0.72);
+  color: #ffffff;
+  text-align: left;
+  cursor: pointer;
+  overflow: hidden;
+}
+
+.teacher-timeline-event.is-completed {
+  border-color: rgba(255, 255, 255, 0.16);
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.16), rgba(128, 202, 255, 0.12)),
+    rgba(8, 12, 20, 0.66);
+  opacity: 0.72;
+}
+
+.teacher-timeline-event strong,
+.teacher-timeline-event span {
+  display: block;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.teacher-timeline-event strong {
+  font-size: 0.75rem;
+  font-weight: 950;
+}
+
+.teacher-timeline-event span {
+  margin-top: 2px;
+  color: rgba(255, 255, 255, 0.74);
+  font-size: 0.68rem;
+  font-weight: 850;
+}
+
+.teacher-timeline-now {
+  position: absolute;
+  top: 6px;
+  bottom: 6px;
+  z-index: 3;
+  width: 2px;
+  border-radius: 999px;
+  background: #ff5f73;
+  box-shadow: 0 0 18px rgba(255, 95, 115, 0.65);
+  transform: translateX(-50%);
+}
+
+.teacher-timeline-now::before {
+  content: "";
+  position: absolute;
+  top: -1px;
+  left: 50%;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #ff5f73;
+  transform: translate(-50%, -50%);
+}
+
 .teacher-upcoming-grid {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 14px;
+  grid-template-columns: repeat(auto-fill, minmax(112px, 132px));
+  gap: 12px;
 }
 
 .teacher-upcoming-lesson {
   min-width: 0;
-  padding: 16px;
-  border: 1px solid rgba(79, 172, 254, 0.18);
-  border-radius: 20px;
-  background: rgba(0, 0, 0, 0.16);
-
-  display: grid;
-  grid-template-columns: auto minmax(0, 1fr);
-  gap: 14px;
-  align-items: start;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  font: inherit;
+  cursor: pointer;
 }
 
 .teacher-upcoming-date {
-  width: 76px;
-  min-height: 74px;
-  padding: 10px;
-  border-radius: 18px;
+  width: 100%;
+  min-height: 112px;
+  padding: 14px 12px;
+  border: 1px solid rgba(128, 202, 255, 0.16);
+  border-radius: 22px;
   background: rgba(79, 172, 254, 0.14);
 
   display: flex;
@@ -431,16 +655,36 @@
   text-align: center;
 }
 
+.teacher-upcoming-lesson:hover .teacher-upcoming-date {
+  border-color: rgba(128, 202, 255, 0.4);
+  background: rgba(79, 172, 254, 0.2);
+}
+
+.teacher-upcoming-lesson.is-completed .teacher-upcoming-date {
+  background: rgba(255, 255, 255, 0.08);
+  opacity: 0.75;
+}
+
 .teacher-upcoming-date strong {
   color: #ffffff;
-  font-size: 0.95rem;
+  font-size: 1rem;
   font-weight: 950;
 }
 
 .teacher-upcoming-date span {
   color: #80caff;
-  font-size: 0.85rem;
-  font-weight: 900;
+  font-size: 1.08rem;
+  font-weight: 950;
+}
+
+.teacher-upcoming-date small {
+  max-width: 100%;
+  color: rgba(255, 255, 255, 0.68);
+  font-size: 0.76rem;
+  font-weight: 850;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .teacher-upcoming-body {
@@ -881,7 +1125,7 @@
   }
 
   .teacher-upcoming-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .teacher-upcoming-lessons-head {
@@ -891,6 +1135,45 @@
 
   .teacher-upcoming-lessons-head button {
     width: 100%;
+  }
+
+  .teacher-day-timeline {
+    padding: 14px 12px;
+    border-radius: 20px;
+  }
+
+  .teacher-day-timeline-head {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .teacher-timeline-controls {
+    justify-content: space-between;
+    width: 100%;
+  }
+
+  .teacher-timeline-controls button {
+    flex: 1;
+  }
+
+  .teacher-timeline-scale {
+    margin: 0 4px;
+  }
+
+  .teacher-timeline-scale span {
+    font-size: 0.64rem;
+  }
+
+  .teacher-timeline-track {
+    height: 78px;
+    margin: 0 4px;
+  }
+
+  .teacher-timeline-event {
+    top: 16px;
+    bottom: 16px;
+    min-width: 50px;
+    padding: 7px;
   }
 
   .teacher-focus-panel {

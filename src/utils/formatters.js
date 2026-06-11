@@ -43,6 +43,8 @@ export function getTaskName(type) {
     "grammar-guide-infinitivsaetze-vs-nebensaetze":
       "Infinitivsätze vs. Nebensätze",
     "grammar-guide-konjunktiv-ii": "Konjunktiv II",
+    "grammar-guide-modalpartikel": "Modalpartikel",
+    "grammar-guide-vonatkozo-nevmas": "Vonatkozó névmás",
     profile: "Profil",
   };
 

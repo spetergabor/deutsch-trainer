@@ -28,52 +28,126 @@
           Órák betöltése...
         </div>
 
-        <div v-else-if="!upcomingTeacherLessons.length" class="teacher-upcoming-empty">
-          Nincs közelgő online óra.
-        </div>
+        <template v-else>
+          <section class="teacher-day-timeline">
+            <div class="teacher-day-timeline-head">
+              <div>
+                <strong>{{ selectedTimelineDateTitle }}</strong>
+                <span>00:00-24:00</span>
+              </div>
 
-        <div v-else class="teacher-upcoming-grid">
-          <article
-            v-for="lesson in upcomingTeacherLessons.slice(0, 4)"
-            :key="lesson.id"
-            class="teacher-upcoming-lesson"
-          >
-            <div class="teacher-upcoming-date">
-              <strong>{{ getLessonDayLabel(lesson.scheduled_at) }}</strong>
-              <span>{{ getLessonTimeLabel(lesson.scheduled_at) }}</span>
+              <div class="teacher-timeline-controls" aria-label="Nap választása">
+                <button
+                  type="button"
+                  aria-label="Előző nap"
+                  @click="shiftTimelineDate(-1)"
+                >
+                  ←
+                </button>
+
+                <button
+                  type="button"
+                  :disabled="isSelectedTimelineDateToday"
+                  @click="goToTodayTimeline"
+                >
+                  Ma
+                </button>
+
+                <button
+                  type="button"
+                  aria-label="Következő nap"
+                  @click="shiftTimelineDate(1)"
+                >
+                  →
+                </button>
+              </div>
             </div>
 
-            <div class="teacher-upcoming-body">
-              <small>{{ lesson.student?.full_name || lesson.student?.email || "Diák" }}</small>
-              <h3>{{ lesson.topic || "Online óra" }}</h3>
-              <p>{{ lesson.goal || "Közös munkafüzet előkészítve." }}</p>
-            </div>
+            <div ref="timelineScroll" class="teacher-timeline-scroll">
+              <div class="teacher-timeline-canvas">
+                <div class="teacher-timeline-scale" aria-hidden="true">
+                  <span
+                    v-for="hour in timelineHours"
+                    :key="hour"
+                    :style="{ left: getTimelineHourPosition(hour) + '%' }"
+                  >
+                    {{ formatTimelineHour(hour) }}
+                  </span>
+                </div>
 
-            <div class="teacher-upcoming-actions">
-              <a
-                v-if="lesson.meet_url"
-                :href="lesson.meet_url"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                Meet
-              </a>
+                <div class="teacher-timeline-track">
+                  <span
+                    v-for="hour in timelineHours"
+                    :key="`line-${hour}`"
+                    class="teacher-timeline-hour"
+                    :style="{ left: getTimelineHourPosition(hour) + '%' }"
+                  ></span>
 
-              <button @click="openLessonFromPortal(lesson)">
-                Munkafüzet
-              </button>
+                  <button
+                    v-for="lesson in selectedTimelineLessons"
+                    :key="`timeline-${lesson.id}`"
+                    class="teacher-timeline-event"
+                    :class="{
+                      'is-completed': isPastTimelineLesson(lesson),
+                      'is-cancelled': lesson.status === 'cancelled',
+                    }"
+                    type="button"
+                    :aria-label="getTimelineLessonLabel(lesson)"
+                    :style="getTimelineLessonStyle(lesson)"
+                    @click="openLessonFromPortal(lesson)"
+                  >
+                    <strong>{{ getLessonTimeLabel(lesson.scheduled_at) }}</strong>
+                    <span>{{ lesson.student?.full_name || lesson.student?.email || "Diák" }}</span>
+                  </button>
+
+                  <span
+                    v-if="isSelectedTimelineDateToday"
+                    class="teacher-timeline-now"
+                    :style="{ left: timelineNowPosition + '%' }"
+                    aria-hidden="true"
+                  ></span>
+                </div>
+              </div>
             </div>
-          </article>
-        </div>
+          </section>
+
+          <div v-if="!displayedTeacherLessons.length" class="teacher-upcoming-empty">
+            Ezen a napon nincs online óra.
+          </div>
+
+          <div v-else class="teacher-upcoming-grid">
+            <button
+              v-for="lesson in displayedTeacherLessons"
+              :key="lesson.id"
+              class="teacher-upcoming-lesson"
+              :class="{
+                'is-completed': isPastTimelineLesson(lesson),
+                'is-cancelled': lesson.status === 'cancelled',
+              }"
+              type="button"
+              @click="openLessonFromPortal(lesson)"
+            >
+              <div class="teacher-upcoming-date">
+                <strong>{{ getLessonDayLabel(lesson.scheduled_at) }}</strong>
+                <span>{{ getLessonTimeLabel(lesson.scheduled_at) }}</span>
+                <small>{{ lesson.student?.full_name || lesson.student?.email || "Diák" }}</small>
+              </div>
+            </button>
+          </div>
+        </template>
       </section>
 
       <div class="teacher-overview-grid">
-        <article class="teacher-overview-card highlight">
+        <button
+          type="button"
+          class="teacher-overview-card highlight clickable"
+          @click="openTeacherSection('students')"
+        >
           <span class="teacher-overview-icon">🎓</span>
           <small>Diákok</small>
           <strong>{{ students.length }}</strong>
           <p>{{ isLoading ? "Betöltés..." : "regisztrált diák" }}</p>
-        </article>
+        </button>
 
         <article class="teacher-overview-card">
           <span class="teacher-overview-icon green">✅</span>
@@ -397,7 +471,7 @@
                   <div class="lesson-workbook-title">
                     <div>
                       <strong>{{ selectedLesson.topic || "Online óra" }}</strong>
-                      <span>{{ selectedLesson.goal || "Közös munkafüzet" }}</span>
+                      <span>{{ selectedLesson.goal || "Közös jegyzet" }}</span>
                     </div>
 
                     <div class="lesson-workbook-title-actions">
@@ -421,23 +495,11 @@
                   </div>
 
                   <label>
-                    Közös jegyzet
-                    <textarea v-model="lessonWorkbookDraft.sharedNotes"></textarea>
-                  </label>
-
-                  <label>
-                    Új szavak
-                    <textarea v-model="lessonWorkbookDraft.vocabularyNotes"></textarea>
-                  </label>
-
-                  <label>
-                    Hibák és javítások
-                    <textarea v-model="lessonWorkbookDraft.correctionsNotes"></textarea>
-                  </label>
-
-                  <label>
-                    Házi / következő lépés
-                    <textarea v-model="lessonWorkbookDraft.nextSteps"></textarea>
+                    Közös órai jegyzet
+                    <textarea
+                      v-model="lessonWorkbookDraft.sharedNotes"
+                      placeholder="Ide írhat a tanár és a diák is..."
+                    ></textarea>
                   </label>
 
                   <div class="lesson-workbook-actions">
@@ -445,7 +507,7 @@
                       @click="saveSelectedLessonWorkbook"
                       :disabled="isSavingLessonWorkbook"
                     >
-                      {{ isSavingLessonWorkbook ? "Mentés..." : "Munkafüzet mentése" }}
+                      {{ isSavingLessonWorkbook ? "Mentés..." : "Jegyzet mentése" }}
                     </button>
 
                     <button
@@ -1149,6 +1211,9 @@ export default {
       isSavingLesson: false,
       isSavingLessonWorkbook: false,
       lessonSessionSetupError: false,
+      timelineNow: new Date(),
+      selectedTimelineDate: new Date(),
+      timelineTimerId: null,
       newLesson: {
         scheduledAt: "",
         meetUrl: "",
@@ -1157,9 +1222,6 @@ export default {
       },
       lessonWorkbookDraft: {
         sharedNotes: "",
-        vocabularyNotes: "",
-        correctionsNotes: "",
-        nextSteps: "",
       },
 
       isLoading: false,
@@ -1607,14 +1669,49 @@ export default {
       }) || null;
     },
 
-    upcomingTeacherLessons() {
-      const now = new Date();
+    selectedTimelineDateKey() {
+      return this.getDateKey(this.selectedTimelineDate);
+    },
 
+    isSelectedTimelineDateToday() {
+      return this.selectedTimelineDateKey === this.getDateKey(this.timelineNow);
+    },
+
+    selectedTimelineDateTitle() {
+      const formattedDate = new Intl.DateTimeFormat("hu-HU", {
+        month: "short",
+        day: "numeric",
+        weekday: "short",
+      }).format(this.selectedTimelineDate);
+
+      if (this.isSelectedTimelineDateToday) {
+        return `Mai idővonal · ${formattedDate}`;
+      }
+
+      return `Napi idővonal · ${formattedDate}`;
+    },
+
+    selectedTimelineLessons() {
       return this.lessonSessions
         .filter((lesson) => {
-          return lesson.status === "scheduled" && new Date(lesson.scheduled_at) >= now;
+          return this.getDateKey(lesson.scheduled_at) === this.selectedTimelineDateKey;
         })
         .sort((a, b) => new Date(a.scheduled_at) - new Date(b.scheduled_at));
+    },
+
+    displayedTeacherLessons() {
+      return this.selectedTimelineLessons;
+    },
+
+    timelineHours() {
+      return Array.from({ length: 25 }, (_, index) => index);
+    },
+
+    timelineNowPosition() {
+      const currentMinutes =
+        this.timelineNow.getHours() * 60 + this.timelineNow.getMinutes();
+
+      return this.getTimelineMinutesPosition(currentMinutes);
     },
 
     teacherFocusTitle() {
@@ -1655,10 +1752,18 @@ export default {
   },
 
   async mounted() {
+    this.startTimelineClock();
     await this.fetchStudents();
+    this.$nextTick(this.scrollTimelineToFocus);
 
     if (this.initialSection) {
       await this.openTeacherSection(this.initialSection);
+    }
+  },
+
+  beforeUnmount() {
+    if (this.timelineTimerId) {
+      window.clearInterval(this.timelineTimerId);
     }
   },
 
@@ -1687,9 +1792,99 @@ export default {
     selectedLesson(lesson) {
       this.syncLessonWorkbookDraft(lesson);
     },
+
+    selectedTimelineDate() {
+      this.$nextTick(this.scrollTimelineToFocus);
+    },
+
+    selectedTimelineLessons() {
+      this.$nextTick(this.scrollTimelineToFocus);
+    },
   },
 
   methods: {
+    startTimelineClock() {
+      this.timelineNow = new Date();
+      this.timelineTimerId = window.setInterval(() => {
+        this.timelineNow = new Date();
+      }, 60 * 1000);
+    },
+
+    getDateKey(dateValue) {
+      const date = new Date(dateValue);
+      return date.toLocaleDateString("sv-SE");
+    },
+
+    clamp(value, min, max) {
+      return Math.min(Math.max(value, min), max);
+    },
+
+    formatTimelineHour(hour) {
+      return String(hour).padStart(2, "0");
+    },
+
+    getTimelineMinutesPosition(minutes) {
+      return this.clamp((minutes / (24 * 60)) * 100, 0, 100);
+    },
+
+    getTimelineHourPosition(hour) {
+      return (hour / 24) * 100;
+    },
+
+    getTimelineLessonStyle(lesson) {
+      const date = new Date(lesson.scheduled_at);
+      const lessonStart = date.getHours() * 60 + date.getMinutes();
+      const left = this.getTimelineMinutesPosition(lessonStart);
+      const width = (60 / (24 * 60)) * 100;
+      const safeWidth = this.clamp(width, 5, 100);
+
+      return {
+        left: `${this.clamp(left, 0, 100 - safeWidth)}%`,
+        width: `${safeWidth}%`,
+      };
+    },
+
+    isPastTimelineLesson(lesson) {
+      return (
+        lesson.status === "completed" ||
+        new Date(lesson.scheduled_at) < this.timelineNow
+      );
+    },
+
+    shiftTimelineDate(offsetDays) {
+      const nextDate = new Date(this.selectedTimelineDate);
+      nextDate.setDate(nextDate.getDate() + offsetDays);
+      this.selectedTimelineDate = nextDate;
+    },
+
+    goToTodayTimeline() {
+      this.selectedTimelineDate = new Date();
+    },
+
+    scrollTimelineToFocus() {
+      const scroller = this.$refs.timelineScroll;
+      if (!scroller) return;
+
+      const focusDate = this.isSelectedTimelineDateToday
+        ? this.timelineNow
+        : new Date(this.selectedTimelineLessons[0]?.scheduled_at || this.selectedTimelineDate);
+      const focusMinutes = focusDate.getHours() * 60 + focusDate.getMinutes();
+      const focusRatio = focusMinutes / (24 * 60);
+      const targetLeft =
+        scroller.scrollWidth * focusRatio - scroller.clientWidth / 2;
+
+      scroller.scrollLeft = this.clamp(
+        targetLeft,
+        0,
+        scroller.scrollWidth - scroller.clientWidth,
+      );
+    },
+
+    getTimelineLessonLabel(lesson) {
+      const studentName = lesson.student?.full_name || lesson.student?.email || "Diák";
+      return `${this.getLessonTimeLabel(lesson.scheduled_at)}, ${studentName}, ${this.getLessonStatusLabel(lesson.status)}`;
+    },
+
     async openTeacherSection(section) {
       this.activeTeacherSection = section;
 
@@ -2139,9 +2334,6 @@ export default {
     syncLessonWorkbookDraft(lesson) {
       this.lessonWorkbookDraft = {
         sharedNotes: lesson?.shared_notes || "",
-        vocabularyNotes: lesson?.vocabulary_notes || "",
-        correctionsNotes: lesson?.corrections_notes || "",
-        nextSteps: lesson?.next_steps || "",
       };
     },
 

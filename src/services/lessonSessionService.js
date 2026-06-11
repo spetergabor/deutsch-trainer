@@ -92,9 +92,6 @@ export async function updateLessonWorkbook(lessonId, workbook) {
     .from("lesson_sessions")
     .update({
       shared_notes: workbook.sharedNotes || "",
-      vocabulary_notes: workbook.vocabularyNotes || "",
-      corrections_notes: workbook.correctionsNotes || "",
-      next_steps: workbook.nextSteps || "",
       updated_at: new Date().toISOString(),
     })
     .eq("id", lessonId)
