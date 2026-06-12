@@ -12,8 +12,8 @@
       </button>
     </header>
 
-    <div class="lesson-room-grid">
-      <section class="lesson-room-video">
+    <div class="lesson-room-grid" :class="{ 'is-note-only': isCompletedLesson }">
+      <section v-if="!isCompletedLesson" class="lesson-room-video">
         <JitsiRoom
           :lesson="lesson"
           :display-name="participantLabel"
@@ -145,6 +145,10 @@ export default {
       };
 
       return labels[this.realtimeStatus] || labels.connecting;
+    },
+
+    isCompletedLesson() {
+      return this.lesson?.status === "completed";
     },
   },
 

@@ -76,6 +76,10 @@
   min-height: calc(100vh - 170px);
 }
 
+.lesson-room-grid.is-note-only {
+  grid-template-columns: minmax(0, 1fr);
+}
+
 .lesson-room-video,
 .lesson-room-workbook {
   min-width: 0;
@@ -151,6 +155,12 @@
   display: flex;
   flex-direction: column;
   gap: 16px;
+}
+
+.lesson-room-grid.is-note-only .lesson-room-workbook {
+  max-width: 980px;
+  width: min(100%, 980px);
+  margin: 0 auto;
 }
 
 .lesson-room-workbook-head h2 {
