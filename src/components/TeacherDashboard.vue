@@ -1,13 +1,22 @@
 <template>
   <div class="teacher-dashboard">
-    <section v-if="!activeTeacherSection" class="teacher-portal">
-      <div class="teacher-portal-header">
-        <div>
-          <h1>Tanári áttekintés</h1>
-          <p>Gyors kép arról, kivel érdemes ma foglalkozni.</p>
-        </div>
-      </div>
+    <LessonRoom
+      v-if="selectedLesson"
+      role-label="Tanári óra"
+      :lesson="selectedLesson"
+      :participant-label="selectedLessonParticipantLabel"
+      :date-label="formatDate(selectedLesson.scheduled_at)"
+      :status-label="getLessonStatusLabel(selectedLesson.status)"
+      :model-value="lessonWorkbookDraft.sharedNotes"
+      :is-saving="isSavingLessonWorkbook"
+      :can-complete="selectedLesson.status !== 'completed'"
+      @update:model-value="lessonWorkbookDraft.sharedNotes = $event"
+      @close="closeSelectedLesson"
+      @save="saveSelectedLessonWorkbook"
+      @complete="completeSelectedLesson"
+    />
 
+    <section v-else-if="!activeTeacherSection" class="teacher-portal">
       <section class="teacher-upcoming-lessons">
         <div class="teacher-upcoming-lessons-head">
           <div>
@@ -88,13 +97,14 @@
                     :key="`timeline-${lesson.id}`"
                     class="teacher-timeline-event"
                     :class="{
+                      active: preparationLesson?.id === lesson.id,
                       'is-completed': isPastTimelineLesson(lesson),
                       'is-cancelled': lesson.status === 'cancelled',
                     }"
                     type="button"
                     :aria-label="getTimelineLessonLabel(lesson)"
                     :style="getTimelineLessonStyle(lesson)"
-                    @click="openLessonFromPortal(lesson)"
+                    @click="selectPreparationLesson(lesson)"
                   >
                     <strong>{{ getLessonTimeLabel(lesson.scheduled_at) }}</strong>
                     <span>{{ lesson.student?.full_name || lesson.student?.email || "Diák" }}</span>
@@ -121,11 +131,12 @@
               :key="lesson.id"
               class="teacher-upcoming-lesson"
               :class="{
+                active: preparationLesson?.id === lesson.id,
                 'is-completed': isPastTimelineLesson(lesson),
                 'is-cancelled': lesson.status === 'cancelled',
               }"
               type="button"
-              @click="openLessonFromPortal(lesson)"
+              @click="selectPreparationLesson(lesson)"
             >
               <div class="teacher-upcoming-date">
                 <strong>{{ getLessonDayLabel(lesson.scheduled_at) }}</strong>
@@ -134,6 +145,63 @@
               </div>
             </button>
           </div>
+
+          <article v-if="preparationLesson" class="teacher-lesson-prep-card">
+            <div class="teacher-lesson-prep-head">
+              <div>
+                <span>Óra előtti előkészítő</span>
+                <h3>{{ preparationStudentName }}</h3>
+                <p>{{ preparationLesson.topic || "Online óra" }} · {{ formatDate(preparationLesson.scheduled_at) }}</p>
+              </div>
+
+              <strong>{{ getLessonStatusLabel(preparationLesson.status) }}</strong>
+            </div>
+
+            <div class="teacher-lesson-prep-grid">
+              <section>
+                <span>Órai cél</span>
+                <p>{{ preparationLesson.goal || "Nincs külön cél megadva." }}</p>
+              </section>
+
+              <section>
+                <span>Figyelendő pont</span>
+                <p>{{ preparationAttentionText }}</p>
+              </section>
+
+              <section>
+                <span>Legutóbbi anyag</span>
+                <p>{{ preparationLatestMaterialText }}</p>
+              </section>
+
+              <section>
+                <span>Gyors javaslat</span>
+                <p>{{ preparationSuggestionText }}</p>
+              </section>
+            </div>
+
+            <div class="teacher-lesson-prep-actions">
+              <a
+                v-if="preparationLesson.meet_url"
+                :href="preparationLesson.meet_url"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Meet
+              </a>
+
+              <button type="button" @click="openLessonFromPortal(preparationLesson)">
+                Munkafüzet megnyitása
+              </button>
+
+              <button
+                type="button"
+                class="secondary"
+                @click="openHomeworkForLesson(preparationLesson)"
+              >
+                Házi kiadása
+              </button>
+            </div>
+          </article>
         </template>
       </section>
 
@@ -467,57 +535,12 @@
                   Még nincs ütemezett óra ehhez a diákhoz.
                 </div>
 
-                <div v-if="selectedLesson" class="lesson-workbook-editor">
-                  <div class="lesson-workbook-title">
-                    <div>
-                      <strong>{{ selectedLesson.topic || "Online óra" }}</strong>
-                      <span>{{ selectedLesson.goal || "Közös jegyzet" }}</span>
-                    </div>
-
-                    <div class="lesson-workbook-title-actions">
-                      <a
-                        v-if="selectedLesson.meet_url"
-                        :href="selectedLesson.meet_url"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        Meet
-                      </a>
-
-                      <button
-                        class="lesson-workbook-close"
-                        type="button"
-                        @click="closeSelectedLesson"
-                      >
-                        Bezárás
-                      </button>
-                    </div>
-                  </div>
-
-                  <label>
-                    Közös órai jegyzet
-                    <textarea
-                      v-model="lessonWorkbookDraft.sharedNotes"
-                      placeholder="Ide írhat a tanár és a diák is..."
-                    ></textarea>
-                  </label>
-
-                  <div class="lesson-workbook-actions">
-                    <button
-                      @click="saveSelectedLessonWorkbook"
-                      :disabled="isSavingLessonWorkbook"
-                    >
-                      {{ isSavingLessonWorkbook ? "Mentés..." : "Jegyzet mentése" }}
-                    </button>
-
-                    <button
-                      v-if="selectedLesson.status !== 'completed'"
-                      class="secondary"
-                      @click="completeSelectedLesson"
-                    >
-                      Óra lezárása
-                    </button>
-                  </div>
+                <div
+                  v-if="selectedStudentLessons.length"
+                  class="lesson-workbook-editor lesson-workbook-editor-empty"
+                >
+                  <strong>Nyiss meg egy órát a teljes óra nézethez.</strong>
+                  <p>A listából választott óra videóhellyel és közös munkafüzettel nyílik meg.</p>
                 </div>
               </div>
 
@@ -1153,6 +1176,7 @@ import {
   updateLessonStatus,
   updateLessonWorkbook,
 } from "../services/lessonSessionService";
+import LessonRoom from "./lesson/LessonRoom.vue";
 import verbsData from "../data/verbs.json";
 import nomenData from "../data/nomen.json";
 import adjektivData from "../data/adjektiv.json";
@@ -1162,6 +1186,10 @@ import { sichVerbenData } from "../data/sichVerben";
 
 export default {
   name: "TeacherDashboard",
+
+  components: {
+    LessonRoom,
+  },
 
   props: {
     initialSection: {
@@ -1207,6 +1235,8 @@ export default {
       isSendingTeacherNote: false,
       lessonSessions: [],
       selectedLessonId: "",
+      selectedPreparationLessonId: "",
+      isPreparationCardOpen: true,
       isLessonSessionsLoading: false,
       isSavingLesson: false,
       isSavingLessonWorkbook: false,
@@ -1669,6 +1699,16 @@ export default {
       }) || null;
     },
 
+    selectedLessonParticipantLabel() {
+      return (
+        this.selectedLesson?.student?.full_name ||
+        this.selectedLesson?.student?.email ||
+        this.selectedStudent?.full_name ||
+        this.selectedStudent?.email ||
+        "Diák"
+      );
+    },
+
     selectedTimelineDateKey() {
       return this.getDateKey(this.selectedTimelineDate);
     },
@@ -1701,6 +1741,106 @@ export default {
 
     displayedTeacherLessons() {
       return this.selectedTimelineLessons;
+    },
+
+    preparationLesson() {
+      if (!this.isPreparationCardOpen || !this.displayedTeacherLessons.length) {
+        return null;
+      }
+
+      return this.displayedTeacherLessons.find((lesson) => {
+        return lesson.id === this.selectedPreparationLessonId;
+      }) || this.displayedTeacherLessons[0];
+    },
+
+    preparationStudent() {
+      const studentId =
+        this.preparationLesson?.student_id || this.preparationLesson?.student?.id;
+
+      if (!studentId) {
+        return null;
+      }
+
+      return this.students.find((student) => student.id === studentId) ||
+        this.preparationLesson?.student ||
+        null;
+    },
+
+    preparationStudentName() {
+      return (
+        this.preparationStudent?.full_name ||
+        this.preparationStudent?.email ||
+        "Diák"
+      );
+    },
+
+    preparationAttention() {
+      const studentId =
+        this.preparationLesson?.student_id || this.preparationLesson?.student?.id;
+
+      return this.teacherOverview.attentionStudents.find((student) => {
+        return student.id === studentId;
+      }) || null;
+    },
+
+    preparationAttentionText() {
+      if (this.preparationAttention) {
+        return this.preparationAttention.reason;
+      }
+
+      return "Nincs kiemelt gyenge pont az utolsó eredmények alapján.";
+    },
+
+    preparationLatestMaterial() {
+      const studentId =
+        this.preparationLesson?.student_id || this.preparationLesson?.student?.id;
+
+      if (!studentId) {
+        return null;
+      }
+
+      const homeworkItems = this.homeworkAssignments
+        .filter((assignment) => assignment.student_id === studentId)
+        .map((assignment) => ({
+          type: this.getHomeworkTypeLabel(assignment),
+          title: assignment.title,
+          date: assignment.created_at,
+          status: this.getHomeworkStatusLabel(assignment.status),
+        }));
+
+      const submissionItems = this.writingSubmissions
+        .filter((submission) => submission.student_id === studentId)
+        .map((submission) => ({
+          type: "Beküldött írás",
+          title: submission.task_title,
+          date: submission.created_at,
+          status: this.getSubmissionStatusLabel(submission.status),
+        }));
+
+      return [...homeworkItems, ...submissionItems]
+        .sort((a, b) => new Date(b.date || 0) - new Date(a.date || 0))[0] || null;
+    },
+
+    preparationLatestMaterialText() {
+      const material = this.preparationLatestMaterial;
+
+      if (!material) {
+        return "Nincs még házi vagy beküldött anyag ehhez a diákhoz.";
+      }
+
+      return `${material.title} · ${material.type} · ${material.status}`;
+    },
+
+    preparationSuggestionText() {
+      if (this.preparationAttention) {
+        return "Kezdd rövid célzott ismétléssel, majd írj konkrét következő lépést a munkafüzetbe.";
+      }
+
+      if (this.preparationLatestMaterial) {
+        return "Nézd át az utolsó anyagot, és zárd az órát egy rövid, mérhető házival.";
+      }
+
+      return "Indíts rövid szintfelmérővel, majd rögzítsd az óra célját a közös jegyzetben.";
     },
 
     timelineHours() {
@@ -1885,6 +2025,27 @@ export default {
       return `${this.getLessonTimeLabel(lesson.scheduled_at)}, ${studentName}, ${this.getLessonStatusLabel(lesson.status)}`;
     },
 
+    selectPreparationLesson(lesson) {
+      const lessonId = lesson?.id || "";
+
+      if (!lessonId) {
+        this.selectedPreparationLessonId = "";
+        this.isPreparationCardOpen = false;
+        return;
+      }
+
+      const activePreparationLessonId = this.preparationLesson?.id || "";
+
+      if (this.isPreparationCardOpen && activePreparationLessonId === lessonId) {
+        this.selectedPreparationLessonId = lessonId;
+        this.isPreparationCardOpen = false;
+        return;
+      }
+
+      this.selectedPreparationLessonId = lessonId;
+      this.isPreparationCardOpen = true;
+    },
+
     async openTeacherSection(section) {
       this.activeTeacherSection = section;
 
@@ -1919,6 +2080,24 @@ export default {
       await this.selectStudent(student);
       this.selectedLessonId = lesson.id;
       this.syncLessonWorkbookDraft(lesson);
+    },
+
+    async openHomeworkForLesson(lesson) {
+      const studentId = lesson?.student_id || lesson?.student?.id;
+
+      if (!studentId) return;
+
+      await this.openTeacherSection("writings");
+      this.selectedTeacherMaterialStudentId = studentId;
+      this.selectedTeacherHomeworkKey = "new";
+      this.selectedTeacherMaterialKey = "";
+      this.newHomework.studentId = studentId;
+      this.newHomework.title = lesson.topic
+        ? `${lesson.topic} gyakorlása`
+        : "Óra utáni házi";
+      this.newHomework.instructions = lesson.goal
+        ? `Az órai cél alapján: ${lesson.goal}`
+        : "Rövid ismétlés az órai anyagból.";
     },
 
     goToTeacherPortal() {
@@ -1992,6 +2171,15 @@ export default {
 
       try {
         this.lessonSessions = await fetchTeacherLessonSessions();
+        if (
+          this.selectedPreparationLessonId &&
+          !this.lessonSessions.some((lesson) => {
+            return lesson.id === this.selectedPreparationLessonId;
+          })
+        ) {
+          this.selectedPreparationLessonId = "";
+          this.isPreparationCardOpen = false;
+        }
         this.syncLessonWorkbookDraft(this.selectedLesson);
       } catch (error) {
         console.error("Online órák lekérési hiba:", error.message);

@@ -1,0 +1,262 @@
+.lesson-room-shell {
+  width: 100%;
+  min-height: calc(100vh - 32px);
+  padding: clamp(16px, 2vw, 26px);
+  border: 1px solid rgba(128, 202, 255, 0.18);
+  border-radius: 28px;
+  background:
+    radial-gradient(circle at 18% 12%, rgba(79, 172, 254, 0.16), transparent 34%),
+    radial-gradient(circle at 88% 18%, rgba(255, 213, 106, 0.1), transparent 30%),
+    rgba(10, 8, 15, 0.78);
+  color: #ffffff;
+}
+
+.lesson-room-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 18px;
+}
+
+.lesson-room-header div {
+  min-width: 0;
+}
+
+.lesson-room-header span,
+.lesson-room-workbook-head span,
+.jitsi-room-state span {
+  color: #80caff;
+  font-size: 0.8rem;
+  font-weight: 950;
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+
+.lesson-room-header h1 {
+  margin: 6px 0 5px;
+  color: #ffffff;
+  font-size: clamp(1.55rem, 3vw, 2.6rem);
+  font-weight: 950;
+  line-height: 1.04;
+}
+
+.lesson-room-header p,
+.lesson-room-workbook-head p,
+.jitsi-room-state p {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.62);
+  font-weight: 780;
+  line-height: 1.42;
+}
+
+.lesson-room-close,
+.lesson-room-actions a,
+.lesson-room-actions button,
+.jitsi-room-state a {
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  color: #ffffff;
+  font: inherit;
+  font-weight: 950;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.lesson-room-close {
+  flex: 0 0 auto;
+  padding: 11px 15px;
+}
+
+.lesson-room-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(360px, 0.65fr);
+  gap: 16px;
+  min-height: calc(100vh - 170px);
+}
+
+.lesson-room-video,
+.lesson-room-workbook {
+  min-width: 0;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.055);
+  overflow: hidden;
+}
+
+.lesson-room-video {
+  display: flex;
+  min-height: 420px;
+}
+
+.jitsi-room {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+  min-height: 100%;
+  background: rgba(0, 0, 0, 0.24);
+}
+
+.jitsi-room-frame {
+  position: absolute;
+  inset: 0;
+}
+
+.jitsi-room-frame iframe {
+  width: 100%;
+  height: 100%;
+  border: 0;
+  display: block;
+}
+
+.jitsi-room-state {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  flex: 1;
+  min-height: 100%;
+  padding: clamp(22px, 3vw, 42px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  text-align: center;
+  background:
+    linear-gradient(135deg, rgba(128, 202, 255, 0.14), transparent 42%),
+    rgba(0, 0, 0, 0.18);
+}
+
+.jitsi-room-state strong {
+  color: #ffffff;
+  font-size: clamp(1.7rem, 4vw, 3.5rem);
+  font-weight: 950;
+  line-height: 1;
+}
+
+.jitsi-room-state p {
+  max-width: 440px;
+}
+
+.jitsi-room-state a {
+  margin-top: 8px;
+  padding: 12px 16px;
+  background: rgba(79, 172, 254, 0.18);
+  color: #80caff;
+}
+
+.lesson-room-workbook {
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.lesson-room-workbook-head h2 {
+  margin: 5px 0 6px;
+  color: #ffffff;
+  font-size: clamp(1.25rem, 2vw, 1.8rem);
+  font-weight: 950;
+}
+
+.lesson-room-workbook label {
+  flex: 1;
+  min-height: 320px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  color: rgba(255, 255, 255, 0.72);
+  font-weight: 900;
+}
+
+.lesson-room-workbook textarea {
+  flex: 1;
+  min-height: 320px;
+  width: 100%;
+  resize: vertical;
+  padding: 15px;
+  border: 1px solid rgba(128, 202, 255, 0.18);
+  border-radius: 18px;
+  background: rgba(0, 0, 0, 0.22);
+  color: #ffffff;
+  font: inherit;
+  font-weight: 760;
+  line-height: 1.5;
+}
+
+.lesson-room-workbook textarea:focus {
+  outline: 2px solid rgba(128, 202, 255, 0.26);
+  outline-offset: 2px;
+}
+
+.lesson-room-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.lesson-room-actions a,
+.lesson-room-actions button {
+  padding: 12px 15px;
+  background: rgba(79, 172, 254, 0.18);
+  color: #80caff;
+}
+
+.lesson-room-actions button.secondary {
+  background: rgba(255, 213, 106, 0.13);
+  color: #ffdc7a;
+}
+
+.lesson-room-actions button:disabled {
+  cursor: wait;
+  opacity: 0.62;
+}
+
+.with-desktop-sidebar .lesson-room-shell {
+  min-height: calc(
+    100vh - var(--desktop-content-top, 102px) -
+      var(--desktop-shell-edge, 18px)
+  );
+}
+
+.with-desktop-sidebar .lesson-room-grid {
+  min-height: calc(
+    100vh - var(--desktop-content-top, 102px) -
+      var(--desktop-shell-edge, 18px) - 118px
+  );
+}
+
+@media (max-width: 980px) {
+  .lesson-room-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .lesson-room-video {
+    min-height: 300px;
+  }
+}
+
+@media (max-width: 700px) {
+  .lesson-room-shell {
+    min-height: 100vh;
+    padding: 14px;
+    border-radius: 0;
+  }
+
+  .lesson-room-header {
+    flex-direction: column;
+  }
+
+  .lesson-room-close,
+  .lesson-room-actions a,
+  .lesson-room-actions button,
+  .jitsi-room-state a {
+    width: 100%;
+  }
+
+  .lesson-room-workbook label,
+  .lesson-room-workbook textarea {
+    min-height: 260px;
+  }
+}

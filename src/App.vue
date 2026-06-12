@@ -1307,6 +1307,7 @@ export default {
 @import "./assets/styles/mobile-nav.css";
 @import "./assets/styles/profile.css";
 @import "./assets/styles/teacher-dashboard.css";
+@import "./assets/styles/lesson-room.css";
 
 #app.with-desktop-sidebar .content-wrapper {
   padding-bottom: 0 !important;
@@ -1314,7 +1315,7 @@ export default {
 
 #app.with-desktop-sidebar
   .content-wrapper
-  > :is(.dashboard-layout, .welcome-screen, .practice-screen) {
+  > :is(.dashboard-layout, .welcome-screen, .practice-screen, .lesson-room-shell) {
   margin-bottom: 0 !important;
   padding-bottom: var(--desktop-shell-edge, 18px) !important;
 }

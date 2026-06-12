@@ -580,6 +580,12 @@
   opacity: 0.72;
 }
 
+.teacher-timeline-event.active {
+  border-color: rgba(255, 213, 106, 0.72);
+  box-shadow: 0 0 0 2px rgba(255, 213, 106, 0.18);
+  opacity: 1;
+}
+
 .teacher-timeline-event strong,
 .teacher-timeline-event span {
   display: block;
@@ -660,6 +666,11 @@
   background: rgba(79, 172, 254, 0.2);
 }
 
+.teacher-upcoming-lesson.active .teacher-upcoming-date {
+  border-color: rgba(255, 213, 106, 0.56);
+  background: rgba(255, 213, 106, 0.13);
+}
+
 .teacher-upcoming-lesson.is-completed .teacher-upcoming-date {
   background: rgba(255, 255, 255, 0.08);
   opacity: 0.75;
@@ -723,6 +734,109 @@
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
+}
+
+.teacher-lesson-prep-card {
+  margin-top: 16px;
+  padding: 18px;
+  border: 1px solid rgba(255, 213, 106, 0.22);
+  border-radius: 22px;
+  background:
+    linear-gradient(135deg, rgba(255, 213, 106, 0.08), transparent 46%),
+    rgba(0, 0, 0, 0.16);
+}
+
+.teacher-lesson-prep-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+  margin-bottom: 14px;
+}
+
+.teacher-lesson-prep-head span,
+.teacher-lesson-prep-grid span {
+  color: rgba(255, 213, 106, 0.78);
+  font-size: 0.78rem;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
+.teacher-lesson-prep-head h3 {
+  margin: 5px 0 4px;
+  color: #ffffff;
+  font-size: clamp(1.18rem, 2vw, 1.55rem);
+  font-weight: 950;
+}
+
+.teacher-lesson-prep-head p,
+.teacher-lesson-prep-grid p {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.66);
+  font-weight: 780;
+  line-height: 1.42;
+}
+
+.teacher-lesson-prep-head > strong {
+  flex: 0 0 auto;
+  padding: 7px 11px;
+  border-radius: 999px;
+  background: rgba(255, 213, 106, 0.14);
+  color: #ffdc7a;
+  font-size: 0.78rem;
+  font-weight: 950;
+}
+
+.teacher-lesson-prep-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.teacher-lesson-prep-grid section {
+  min-width: 0;
+  padding: 13px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.teacher-lesson-prep-grid p {
+  margin-top: 7px;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.teacher-lesson-prep-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.teacher-lesson-prep-actions a,
+.teacher-lesson-prep-actions button {
+  padding: 11px 14px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  color: #ffffff;
+  font: inherit;
+  font-weight: 950;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.teacher-lesson-prep-actions a,
+.teacher-lesson-prep-actions button:first-of-type {
+  background: rgba(79, 172, 254, 0.16);
+  color: #80caff;
+}
+
+.teacher-lesson-prep-actions button.secondary {
+  background: rgba(255, 213, 106, 0.13);
+  color: #ffdc7a;
 }
 
 .teacher-upcoming-actions {
@@ -1174,6 +1288,20 @@
     bottom: 16px;
     min-width: 50px;
     padding: 7px;
+  }
+
+  .teacher-lesson-prep-head {
+    flex-direction: column;
+  }
+
+  .teacher-lesson-prep-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .teacher-lesson-prep-actions,
+  .teacher-lesson-prep-actions a,
+  .teacher-lesson-prep-actions button {
+    width: 100%;
   }
 
   .teacher-focus-panel {

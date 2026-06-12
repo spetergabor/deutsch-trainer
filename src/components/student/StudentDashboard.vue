@@ -1,5 +1,19 @@
 <template>
-  <section class="dashboard-layout">
+  <LessonRoom
+    v-if="selectedLesson"
+    role-label="Tanulói óra"
+    :lesson="selectedLesson"
+    :participant-label="authFullName || 'Diák'"
+    :date-label="formatDate(selectedLesson.scheduled_at)"
+    :status-label="getLessonStatusLabel(selectedLesson.status)"
+    :model-value="lessonWorkbookDraft.sharedNotes"
+    :is-saving="isSavingLessonWorkbook"
+    @update:model-value="lessonWorkbookDraft.sharedNotes = $event"
+    @close="closeSelectedLesson"
+    @save="saveSelectedLessonWorkbook"
+  />
+
+  <section v-else class="dashboard-layout">
     <section class="student-home-hero">
       <div class="student-home-main">
         <div class="student-home-person">
@@ -132,18 +146,21 @@
       </div>
     </section>
 
-    <section v-if="!isGuestMode" ref="lessonPanel" class="student-lesson-panel">
+    <section
+      v-if="!isGuestMode"
+      ref="lessonPanel"
+      class="student-lesson-panel is-compact"
+    >
       <div class="student-lesson-head">
         <div>
           <span>Online óra</span>
-          <h2>Következő óra és munkafüzet</h2>
+          <h2>Legutóbbi órai munkafüzetek</h2>
         </div>
 
         <button
-          @click="loadLessonSessions"
-          :disabled="isLoadingLessonSessions"
+          @click="$emit('set-mode', 'student-materials')"
         >
-          {{ isLoadingLessonSessions ? "Frissítés..." : "Frissítés" }}
+          Összes munkafüzet
         </button>
       </div>
 
@@ -155,14 +172,14 @@
         Órák betöltése...
       </div>
 
-      <div v-else-if="!lessonSessions.length" class="student-submissions-empty">
-        Még nincs ütemezett online órád.
+      <div v-else-if="!recentLessonSessions.length" class="student-submissions-empty">
+        Még nincs órai munkafüzeted.
       </div>
 
       <div v-else class="student-lesson-layout">
         <aside class="student-lesson-list">
           <button
-            v-for="lesson in lessonSessions.slice(0, 5)"
+            v-for="lesson in recentLessonSessions"
             :key="lesson.id"
             class="student-lesson-item"
             :class="{ active: selectedLesson?.id === lesson.id }"
@@ -225,7 +242,7 @@
 
         <article v-else class="student-lesson-workbook student-lesson-workbook-empty">
           <strong>Válassz órát a közös jegyzet megnyitásához.</strong>
-          <p>Az óra kártyájára kattintva megnyílik a közös jegyzet, ugyanarra kattintva pedig bezárható.</p>
+          <p>A dashboardon csak a két legutóbbi munkafüzet látszik. A teljes lista a Házi és anyagok menüpontban van.</p>
         </article>
       </div>
     </section>
@@ -278,9 +295,14 @@ import {
   updateLessonWorkbook,
 } from "../../services/lessonSessionService";
 import { fetchStudentHomeworkAssignments } from "../../services/homeworkService";
+import LessonRoom from "../lesson/LessonRoom.vue";
 
 export default {
   name: "StudentDashboard",
+
+  components: {
+    LessonRoom,
+  },
 
   props: {
     userSession: {
@@ -653,6 +675,10 @@ export default {
         || null;
     },
 
+    recentLessonSessions() {
+      return this.lessonSessions.slice(0, 2);
+    },
+
     activeHomeworkCount() {
       return this.homeworkAssignments.filter((assignment) => {
         return ["assigned", "opened"].includes(assignment.status);
@@ -711,7 +737,7 @@ export default {
 
       try {
         this.lessonSessions = await fetchStudentLessonSessions(this.userSession.id);
-        const selectedLessonStillExists = this.lessonSessions.find((lesson) => {
+        const selectedLessonStillExists = this.recentLessonSessions.find((lesson) => {
           return lesson.id === this.selectedLessonId;
         });
 
