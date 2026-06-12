@@ -8,6 +8,7 @@
     :status-label="getLessonStatusLabel(selectedLesson.status)"
     :model-value="lessonWorkbookDraft.sharedNotes"
     :is-saving="isSavingLessonWorkbook"
+    realtime-author-role="student"
     @update:model-value="lessonWorkbookDraft.sharedNotes = $event"
     @close="closeSelectedLesson"
     @save="saveSelectedLessonWorkbook"

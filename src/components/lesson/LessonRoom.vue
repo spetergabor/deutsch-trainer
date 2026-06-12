@@ -33,9 +33,13 @@
           <textarea
             :value="modelValue"
             placeholder="Ide írhat a tanár és a diák is..."
-            @input="$emit('update:modelValue', $event.target.value)"
+            @input="handleWorkbookInput"
           ></textarea>
         </label>
+
+        <p class="lesson-room-live-status">
+          {{ realtimeStatusText }}
+        </p>
 
         <div class="lesson-room-actions">
           <a
@@ -66,6 +70,7 @@
 </template>
 
 <script>
+import { supabase } from "../../supabase";
 import JitsiRoom from "./JitsiRoom.vue";
 
 export default {
@@ -114,6 +119,138 @@ export default {
     canComplete: {
       type: Boolean,
       default: false,
+    },
+
+    realtimeAuthorRole: {
+      type: String,
+      default: "participant",
+    },
+  },
+
+  data() {
+    return {
+      realtimeChannel: null,
+      realtimeStatus: "connecting",
+      realtimeDebounceId: null,
+      realtimeClientId: "",
+    };
+  },
+
+  computed: {
+    realtimeStatusText() {
+      const labels = {
+        connected: "Élő jegyzetkapcsolat aktív",
+        connecting: "Élő jegyzetkapcsolat indítása...",
+        error: "Az élő jegyzetkapcsolat nem elérhető",
+      };
+
+      return labels[this.realtimeStatus] || labels.connecting;
+    },
+  },
+
+  watch: {
+    "lesson.id"() {
+      this.subscribeWorkbookRealtime();
+    },
+  },
+
+  mounted() {
+    this.realtimeClientId =
+      window.crypto?.randomUUID?.() ||
+      `client-${Date.now()}-${Math.random().toString(16).slice(2)}`;
+    this.subscribeWorkbookRealtime();
+  },
+
+  beforeUnmount() {
+    this.clearRealtimeDebounce();
+    this.unsubscribeWorkbookRealtime();
+  },
+
+  methods: {
+    handleWorkbookInput(event) {
+      const sharedNotes = event.target.value;
+
+      this.$emit("update:modelValue", sharedNotes);
+      this.queueWorkbookBroadcast(sharedNotes);
+    },
+
+    queueWorkbookBroadcast(sharedNotes) {
+      this.clearRealtimeDebounce();
+
+      this.realtimeDebounceId = window.setTimeout(() => {
+        this.broadcastWorkbookDraft(sharedNotes);
+      }, 120);
+    },
+
+    clearRealtimeDebounce() {
+      if (this.realtimeDebounceId) {
+        window.clearTimeout(this.realtimeDebounceId);
+        this.realtimeDebounceId = null;
+      }
+    },
+
+    async broadcastWorkbookDraft(sharedNotes) {
+      if (!this.realtimeChannel) {
+        return;
+      }
+
+      try {
+        await this.realtimeChannel.send({
+          type: "broadcast",
+          event: "workbook-draft",
+          payload: {
+            sharedNotes,
+            authorRole: this.realtimeAuthorRole,
+            clientId: this.realtimeClientId,
+            lessonId: this.lesson.id,
+            sentAt: new Date().toISOString(),
+          },
+        });
+      } catch (error) {
+        console.error("Élő munkafüzet küldési hiba:", error);
+        this.realtimeStatus = "error";
+      }
+    },
+
+    subscribeWorkbookRealtime() {
+      this.unsubscribeWorkbookRealtime();
+
+      if (!this.lesson?.id) {
+        this.realtimeStatus = "error";
+        return;
+      }
+
+      this.realtimeStatus = "connecting";
+      this.realtimeChannel = supabase
+        .channel(`lesson-workbook:${this.lesson.id}`, {
+          config: {
+            broadcast: {
+              self: false,
+            },
+          },
+        })
+        .on("broadcast", { event: "workbook-draft" }, ({ payload }) => {
+          if (!payload || payload.clientId === this.realtimeClientId) {
+            return;
+          }
+
+          if (payload.lessonId && payload.lessonId !== this.lesson.id) {
+            return;
+          }
+
+          this.$emit("update:modelValue", payload.sharedNotes || "");
+        })
+        .subscribe((status) => {
+          this.realtimeStatus =
+            status === "SUBSCRIBED" ? "connected" : "connecting";
+        });
+    },
+
+    unsubscribeWorkbookRealtime() {
+      if (this.realtimeChannel) {
+        supabase.removeChannel(this.realtimeChannel);
+        this.realtimeChannel = null;
+      }
     },
   },
 

@@ -10,6 +10,7 @@
       :model-value="lessonWorkbookDraft.sharedNotes"
       :is-saving="isSavingLessonWorkbook"
       :can-complete="selectedLesson.status !== 'completed'"
+      realtime-author-role="teacher"
       @update:model-value="lessonWorkbookDraft.sharedNotes = $event"
       @close="closeSelectedLesson"
       @save="saveSelectedLessonWorkbook"

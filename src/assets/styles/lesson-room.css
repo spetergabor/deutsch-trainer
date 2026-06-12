@@ -190,6 +190,13 @@
   outline-offset: 2px;
 }
 
+.lesson-room-live-status {
+  margin: -4px 0 0;
+  color: rgba(128, 202, 255, 0.72);
+  font-size: 0.78rem;
+  font-weight: 900;
+}
+
 .lesson-room-actions {
   display: flex;
   flex-wrap: wrap;
