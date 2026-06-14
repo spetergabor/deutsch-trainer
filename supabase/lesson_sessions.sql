@@ -12,10 +12,18 @@ create table if not exists public.lesson_sessions (
   vocabulary_notes text not null default '',
   corrections_notes text not null default '',
   next_steps text not null default '',
+  video_started_at timestamptz,
+  video_started_by uuid references public.profiles(id) on delete set null,
   completed_at timestamptz,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
+
+alter table public.lesson_sessions
+  add column if not exists video_started_at timestamptz;
+
+alter table public.lesson_sessions
+  add column if not exists video_started_by uuid references public.profiles(id) on delete set null;
 
 alter table public.lesson_sessions enable row level security;
 

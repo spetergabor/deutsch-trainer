@@ -159,6 +159,7 @@ export default {
 
       return [
         { key: "student-dashboard", label: "Főmenü", icon: "🏠", action: "dashboard" },
+        { key: "student-lessons", label: "Óráim", icon: "🗓️", mode: "student-lessons" },
         { key: "student-materials", label: "Házi és anyagok", icon: "＋", mode: "student-materials" },
         { key: "student-library", label: "Tanulási könyvtár", icon: "🧭", mode: "learning-library" },
       ];

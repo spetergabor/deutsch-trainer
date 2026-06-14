@@ -32,6 +32,7 @@ export function getTaskName(type) {
     "daily-challenge-konjunktiv-ii": "Napi challenge: Konjunktiv II",
     "story-reading": "Story-Lesen",
     "learning-library": "Tanulási könyvtár",
+    "student-lessons": "Óráim",
     "student-materials": "Beküldött anyagaim",
     messages: "Üzenetek",
     "grammar-guide-passiv": "Passiv",

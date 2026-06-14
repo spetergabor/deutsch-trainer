@@ -1,20 +1,5 @@
 <template>
-  <LessonRoom
-    v-if="selectedLesson"
-    role-label="Tanulói óra"
-    :lesson="selectedLesson"
-    participant-label="Diák"
-    :date-label="formatDate(selectedLesson.scheduled_at)"
-    :status-label="getLessonStatusLabel(selectedLesson.status)"
-    :model-value="lessonWorkbookDraft.sharedNotes"
-    :is-saving="isSavingLessonWorkbook"
-    realtime-author-role="student"
-    @update:model-value="lessonWorkbookDraft.sharedNotes = $event"
-    @close="closeSelectedLesson"
-    @save="saveSelectedLessonWorkbook"
-  />
-
-  <section v-else class="student-materials-view">
+  <section class="student-materials-view">
     <div class="student-materials-header">
       <span>Anyagok</span>
       <h2>Házi feladataim és beküldéseim</h2>
@@ -289,104 +274,6 @@
       </div>
     </section>
 
-    <section class="student-homework-panel student-workbooks-panel">
-      <div class="student-lesson-head">
-        <div>
-          <span>Órai munkafüzetek</span>
-          <h2>Közös órai jegyzetek</h2>
-        </div>
-
-        <button
-          @click="loadLessonSessions"
-          :disabled="isLoadingLessonSessions"
-        >
-          {{ isLoadingLessonSessions ? "Frissítés..." : "Frissítés" }}
-        </button>
-      </div>
-
-      <div v-if="lessonSessionSetupError" class="student-materials-empty warning">
-        Az órák táblája még nincs beállítva.
-      </div>
-
-      <div v-else-if="isLoadingLessonSessions" class="student-materials-empty">
-        Munkafüzetek betöltése...
-      </div>
-
-      <div v-else-if="!lessonSessions.length" class="student-materials-empty">
-        Még nincs órai munkafüzeted.
-      </div>
-
-      <div v-else class="student-lesson-layout student-materials-lesson-layout">
-        <aside class="student-lesson-list">
-          <button
-            v-for="lesson in lessonSessions"
-            :key="lesson.id"
-            class="student-lesson-item"
-            :class="{ active: selectedLesson?.id === lesson.id }"
-            @click="selectLessonSession(lesson)"
-          >
-            <strong>{{ lesson.topic || "Online óra" }}</strong>
-            <span>{{ formatDate(lesson.scheduled_at) }}</span>
-            <small>{{ getLessonStatusLabel(lesson.status) }}</small>
-          </button>
-        </aside>
-
-        <article v-if="selectedLesson" class="student-lesson-workbook">
-          <div class="student-lesson-summary">
-            <div>
-              <span>{{ getLessonStatusLabel(selectedLesson.status) }}</span>
-              <h3>{{ selectedLesson.topic || "Online óra" }}</h3>
-              <p>{{ formatDate(selectedLesson.scheduled_at) }}</p>
-            </div>
-
-            <div class="student-lesson-summary-actions">
-              <a
-                v-if="selectedLesson.meet_url"
-                :href="selectedLesson.meet_url"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                Meet megnyitása
-              </a>
-
-              <button
-                type="button"
-                class="student-lesson-close"
-                @click="closeSelectedLesson"
-              >
-                Bezárás
-              </button>
-            </div>
-          </div>
-
-          <p v-if="selectedLesson.goal" class="student-lesson-goal">
-            {{ selectedLesson.goal }}
-          </p>
-
-          <label>
-            Közös órai jegyzet
-            <textarea
-              v-model="lessonWorkbookDraft.sharedNotes"
-              placeholder="Ide írhat a tanár és a diák is..."
-            ></textarea>
-          </label>
-
-          <button
-            class="student-lesson-save"
-            @click="saveSelectedLessonWorkbook"
-            :disabled="isSavingLessonWorkbook"
-          >
-            {{ isSavingLessonWorkbook ? "Mentés..." : "Jegyzet mentése" }}
-          </button>
-        </article>
-
-        <article v-else class="student-lesson-workbook student-lesson-workbook-empty">
-          <strong>Válassz munkafüzetet.</strong>
-          <p>Az óra kártyájára kattintva megnyílik a közös órai jegyzet.</p>
-        </article>
-      </div>
-    </section>
-
     <div v-if="setupError" class="student-materials-empty warning">
       A beküldött írások táblája még nincs beállítva.
     </div>
@@ -403,10 +290,6 @@ import {
   updateHomeworkStatus,
 } from "../../services/homeworkService";
 import {
-  fetchStudentLessonSessions,
-  updateLessonWorkbook,
-} from "../../services/lessonSessionService";
-import {
   HOMEWORK_STATUS,
   canStudentWorkOnHomework,
   getHomeworkFilterStatus,
@@ -415,14 +298,9 @@ import {
   shouldMarkHomeworkStarted,
 } from "../../utils/homeworkLifecycle";
 import { formatDate } from "../../utils/formatters";
-import LessonRoom from "../lesson/LessonRoom.vue";
 
 export default {
   name: "StudentMaterialsView",
-
-  components: {
-    LessonRoom,
-  },
 
   props: {
     userSession: {
@@ -441,14 +319,6 @@ export default {
       homeworkDrafts: {},
       isLoading: false,
       isLoadingHomework: false,
-      lessonSessions: [],
-      selectedLessonId: "",
-      isLoadingLessonSessions: false,
-      isSavingLessonWorkbook: false,
-      lessonSessionSetupError: false,
-      lessonWorkbookDraft: {
-        sharedNotes: "",
-      },
       isSubmittingHomework: false,
       setupError: false,
       activeHomeworkFilter: "todo",
@@ -461,7 +331,6 @@ export default {
     await Promise.all([
       this.loadSubmissions(),
       this.loadHomeworkAssignments(),
-      this.loadLessonSessions(),
     ]);
   },
 
@@ -470,12 +339,7 @@ export default {
       await Promise.all([
         this.loadSubmissions(),
         this.loadHomeworkAssignments(),
-        this.loadLessonSessions(),
       ]);
-    },
-
-    selectedLesson(lesson) {
-      this.syncLessonWorkbookDraft(lesson);
     },
   },
 
@@ -575,15 +439,6 @@ export default {
       );
     },
 
-    selectedLesson() {
-      if (!this.lessonSessions.length || !this.selectedLessonId) {
-        return null;
-      }
-
-      return this.lessonSessions.find((lesson) => lesson.id === this.selectedLessonId)
-        || null;
-    },
-
     emptyHomeworkFilterText() {
       const messages = {
         todo: "Nincs aktív teendőd.",
@@ -632,35 +487,6 @@ export default {
         console.error("Diák házik lekérési hiba:", error.message);
       } finally {
         this.isLoadingHomework = false;
-      }
-    },
-
-    async loadLessonSessions() {
-      if (!this.userSession?.id) {
-        this.lessonSessions = [];
-        this.closeSelectedLesson();
-        return;
-      }
-
-      this.isLoadingLessonSessions = true;
-      this.lessonSessionSetupError = false;
-
-      try {
-        this.lessonSessions = await fetchStudentLessonSessions(this.userSession.id);
-        const selectedLessonStillExists = this.lessonSessions.find((lesson) => {
-          return lesson.id === this.selectedLessonId;
-        });
-
-        if (selectedLessonStillExists) {
-          this.syncLessonWorkbookDraft(selectedLessonStillExists);
-        } else {
-          this.closeSelectedLesson();
-        }
-      } catch (error) {
-        console.error("Diák munkafüzetek lekérési hiba:", error.message);
-        this.lessonSessionSetupError = error.message?.includes("lesson_sessions");
-      } finally {
-        this.isLoadingLessonSessions = false;
       }
     },
 
@@ -758,61 +584,6 @@ export default {
     },
 
     canStudentWorkOnHomework,
-
-    selectLessonSession(lesson) {
-      if (this.selectedLessonId === lesson.id) {
-        this.closeSelectedLesson();
-        return;
-      }
-
-      this.selectedLessonId = lesson.id;
-      this.syncLessonWorkbookDraft(lesson);
-    },
-
-    closeSelectedLesson() {
-      this.selectedLessonId = "";
-      this.syncLessonWorkbookDraft(null);
-    },
-
-    syncLessonWorkbookDraft(lesson) {
-      this.lessonWorkbookDraft = {
-        sharedNotes: lesson?.shared_notes || "",
-      };
-    },
-
-    async saveSelectedLessonWorkbook() {
-      if (!this.selectedLesson?.id || this.isSavingLessonWorkbook) {
-        return;
-      }
-
-      this.isSavingLessonWorkbook = true;
-
-      try {
-        const updated = await updateLessonWorkbook(
-          this.selectedLesson.id,
-          this.lessonWorkbookDraft,
-        );
-
-        this.lessonSessions = this.lessonSessions.map((lesson) =>
-          lesson.id === updated.id ? { ...lesson, ...updated } : lesson,
-        );
-      } catch (error) {
-        console.error("Diák munkafüzet mentési hiba:", error.message);
-        alert("Nem sikerült menteni a munkafüzetet.");
-      } finally {
-        this.isSavingLessonWorkbook = false;
-      }
-    },
-
-    getLessonStatusLabel(status) {
-      const labels = {
-        scheduled: "Ütemezve",
-        completed: "Lezárva",
-        cancelled: "Lemondva",
-      };
-
-      return labels[status] || "Óra";
-    },
 
     async markHomeworkStartedIfNeeded(assignment) {
       if (!assignment?.id || !shouldMarkHomeworkStarted(assignment.status)) {

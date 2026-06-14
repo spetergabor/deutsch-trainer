@@ -10,11 +10,13 @@
       :model-value="lessonWorkbookDraft.sharedNotes"
       :is-saving="isSavingLessonWorkbook"
       :can-complete="selectedLesson.status !== 'completed'"
+      can-start-video
       realtime-author-role="teacher"
       @update:model-value="lessonWorkbookDraft.sharedNotes = $event"
       @close="closeSelectedLesson"
       @save="saveSelectedLessonWorkbook"
       @complete="completeSelectedLesson"
+      @start-video="startSelectedLessonVideo"
     />
 
     <section v-else-if="!activeTeacherSection" class="teacher-portal">
@@ -1174,6 +1176,7 @@ import {
 import {
   createLessonSession,
   fetchTeacherLessonSessions,
+  markLessonVideoStarted,
   updateLessonStatus,
   updateLessonWorkbook,
 } from "../services/lessonSessionService";
@@ -2585,6 +2588,29 @@ export default {
         alert("Nem sikerült menteni a munkafüzetet.");
       } finally {
         this.isSavingLessonWorkbook = false;
+      }
+    },
+
+    async startSelectedLessonVideo() {
+      if (!this.selectedLesson?.id || !this.currentTeacherId) {
+        return;
+      }
+
+      try {
+        const updated = await markLessonVideoStarted(
+          this.selectedLesson.id,
+          this.currentTeacherId,
+        );
+
+        if (!updated) {
+          return;
+        }
+
+        this.lessonSessions = this.lessonSessions.map((lesson) =>
+          lesson.id === updated.id ? { ...lesson, ...updated } : lesson,
+        );
+      } catch (error) {
+        console.error("Videóóra indítási jelzés hiba:", error.message);
       }
     },
 

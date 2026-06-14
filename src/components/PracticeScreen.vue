@@ -55,6 +55,7 @@
       v-if="
         currentMode !== 'profile' &&
         currentMode !== 'student-materials' &&
+        currentMode !== 'student-lessons' &&
         currentMode !== 'learning-library'
       "
       class="desktop-practice-return desktop-practice-title"
@@ -308,6 +309,12 @@
       @open-story="$emit('open-story', $event)"
     />
 
+    <StudentLessonsView
+      v-if="currentMode === 'student-lessons'"
+      :user-session="userSession"
+      :auth-full-name="authFullName"
+    />
+
     <div
       v-if="activeGrammarGuide"
       class="grammar-guide-shell"
@@ -361,6 +368,7 @@
 <script>
 import ProfileView from "./ProfileView.vue";
 import StudentMaterialsView from "./student/StudentMaterialsView.vue";
+import StudentLessonsView from "./student/StudentLessonsView.vue";
 import StudentLearningLibrary from "./student/StudentLearningLibrary.vue";
 import KonnektorenPractice from "./KonnektorenPractice.vue";
 import PraepositionPractice from "./PraepositionPractice.vue";
@@ -385,6 +393,7 @@ export default {
   components: {
     ProfileView,
     StudentMaterialsView,
+    StudentLessonsView,
     StudentLearningLibrary,
     VerbPractice,
     NomenVerbPractice,
@@ -630,7 +639,7 @@ export default {
     },
 
     isTopLevelDesktopPage() {
-      return ["student-materials", "learning-library", "profile"].includes(
+      return ["student-materials", "student-lessons", "learning-library", "profile"].includes(
         this.currentMode,
       );
     },
@@ -652,6 +661,7 @@ export default {
     breadcrumbGroupLabel() {
       if (this.activeHomeworkAssignment) return "Házi feladat";
       if (this.currentMode === "student-materials") return null;
+      if (this.currentMode === "student-lessons") return null;
       if (this.currentMode === "learning-library") return null;
       if (this.currentMode === "profile") return null;
       if (this.isGrammarGuide) return "Nyelvtani segédletek";
@@ -663,6 +673,7 @@ export default {
     breadcrumbCurrentLabel() {
       const labels = {
         "student-materials": "Házi és anyagok",
+        "student-lessons": "Óráim",
         "learning-library": "Tanulási könyvtár",
         profile: "Profil",
       };

@@ -185,6 +185,13 @@ export default {
 
       if (!this.isGuestMode) {
         items.splice(1, 0, {
+          key: "student-lessons",
+          label: "Óráim",
+          icon: "🗓️",
+          mode: "student-lessons",
+        });
+
+        items.splice(2, 0, {
           key: "student-materials",
           label: "Házi és anyagok",
           icon: "＋",

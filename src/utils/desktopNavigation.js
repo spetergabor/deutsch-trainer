@@ -1,5 +1,6 @@
 export const studentSearchItems = [
   { key: "messages", label: "Üzenetek", icon: "💬", group: "Kapcsolat", mode: "messages" },
+  { key: "student-lessons", label: "Óráim", icon: "🗓️", group: "Online órák", mode: "student-lessons" },
   { key: "learning-library", label: "Tanulási könyvtár", icon: "🧭", group: "Könyvtár", mode: "learning-library" },
   { key: "perfekt", label: "Perfekt", icon: "🚀", group: "Gyakorló", mode: "perfekt" },
   { key: "nomen-verb", label: "Nomen-Verb", icon: "📚", group: "Gyakorló", mode: "nomen-verb" },

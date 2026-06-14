@@ -15,10 +15,22 @@
     <div class="lesson-room-grid" :class="{ 'is-note-only': isCompletedLesson }">
       <section v-if="!isCompletedLesson" class="lesson-room-video">
         <JitsiRoom
+          v-if="canJoinVideo"
           :lesson="lesson"
           :display-name="participantLabel"
           @close="$emit('close')"
         />
+
+        <div v-else class="jitsi-room jitsi-room-waiting">
+          <div class="jitsi-room-state is-waiting">
+            <span>Videóhívás</span>
+            <strong>A tanár indítja az órát</strong>
+            <p>
+              Amint a tanár belép a hívásba, itt automatikusan megjelenik a videószoba.
+              A jegyzetet addig is látod és használhatod.
+            </p>
+          </div>
+        </div>
       </section>
 
       <aside class="lesson-room-workbook">
@@ -121,6 +133,11 @@ export default {
       default: false,
     },
 
+    canStartVideo: {
+      type: Boolean,
+      default: false,
+    },
+
     realtimeAuthorRole: {
       type: String,
       default: "participant",
@@ -133,6 +150,8 @@ export default {
       realtimeStatus: "connecting",
       realtimeDebounceId: null,
       realtimeClientId: "",
+      realtimeVideoStartedAt: "",
+      didRequestVideoStart: false,
     };
   },
 
@@ -150,11 +169,34 @@ export default {
     isCompletedLesson() {
       return this.lesson?.status === "completed";
     },
+
+    videoStartedAt() {
+      return this.realtimeVideoStartedAt || this.lesson?.video_started_at || "";
+    },
+
+    canJoinVideo() {
+      return this.canStartVideo || Boolean(this.videoStartedAt);
+    },
   },
 
   watch: {
     "lesson.id"() {
+      this.realtimeVideoStartedAt = this.lesson?.video_started_at || "";
+      this.didRequestVideoStart = false;
       this.subscribeWorkbookRealtime();
+      this.ensureTeacherVideoStarted();
+    },
+
+    "lesson.video_started_at"(videoStartedAt) {
+      if (!videoStartedAt) {
+        return;
+      }
+
+      this.realtimeVideoStartedAt = videoStartedAt;
+
+      if (this.canStartVideo) {
+        this.broadcastVideoStarted(videoStartedAt);
+      }
     },
   },
 
@@ -162,7 +204,9 @@ export default {
     this.realtimeClientId =
       window.crypto?.randomUUID?.() ||
       `client-${Date.now()}-${Math.random().toString(16).slice(2)}`;
+    this.realtimeVideoStartedAt = this.lesson?.video_started_at || "";
     this.subscribeWorkbookRealtime();
+    this.ensureTeacherVideoStarted();
   },
 
   beforeUnmount() {
@@ -176,6 +220,49 @@ export default {
 
       this.$emit("update:modelValue", sharedNotes);
       this.queueWorkbookBroadcast(sharedNotes);
+    },
+
+    ensureTeacherVideoStarted() {
+      if (
+        !this.canStartVideo ||
+        this.isCompletedLesson ||
+        this.videoStartedAt ||
+        this.didRequestVideoStart
+      ) {
+        return;
+      }
+
+      this.didRequestVideoStart = true;
+      this.$emit("start-video");
+    },
+
+    syncVideoStarted(videoStartedAt) {
+      const startedAt = videoStartedAt || new Date().toISOString();
+
+      this.realtimeVideoStartedAt = startedAt;
+      this.broadcastVideoStarted(startedAt);
+    },
+
+    async broadcastVideoStarted(videoStartedAt) {
+      if (!this.realtimeChannel) {
+        return;
+      }
+
+      try {
+        await this.realtimeChannel.send({
+          type: "broadcast",
+          event: "video-started",
+          payload: {
+            videoStartedAt,
+            authorRole: this.realtimeAuthorRole,
+            clientId: this.realtimeClientId,
+            lessonId: this.lesson.id,
+            sentAt: new Date().toISOString(),
+          },
+        });
+      } catch (error) {
+        console.error("Videóindítás jelzési hiba:", error);
+      }
     },
 
     queueWorkbookBroadcast(sharedNotes) {
@@ -244,6 +331,20 @@ export default {
 
           this.$emit("update:modelValue", payload.sharedNotes || "");
         })
+        .on("broadcast", { event: "video-started" }, ({ payload }) => {
+          if (!payload || payload.clientId === this.realtimeClientId) {
+            return;
+          }
+
+          if (payload.lessonId && payload.lessonId !== this.lesson.id) {
+            return;
+          }
+
+          const startedAt = payload.videoStartedAt || new Date().toISOString();
+
+          this.realtimeVideoStartedAt = startedAt;
+          this.$emit("video-started", startedAt);
+        })
         .subscribe((status) => {
           this.realtimeStatus =
             status === "SUBSCRIBED" ? "connected" : "connecting";
@@ -258,6 +359,6 @@ export default {
     },
   },
 
-  emits: ["update:modelValue", "close", "save", "complete"],
+  emits: ["update:modelValue", "close", "save", "complete", "start-video", "video-started"],
 };
 </script>

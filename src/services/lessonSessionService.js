@@ -83,6 +83,24 @@ export async function fetchStudentLessonSessions(studentId) {
   return data || [];
 }
 
+export async function fetchLessonSession(lessonId) {
+  if (!lessonId) {
+    return null;
+  }
+
+  const { data, error } = await supabase
+    .from("lesson_sessions")
+    .select("*")
+    .eq("id", lessonId)
+    .single();
+
+  if (error) {
+    throw error;
+  }
+
+  return data || null;
+}
+
 export async function updateLessonWorkbook(lessonId, workbook) {
   if (!lessonId) {
     return null;
@@ -123,6 +141,32 @@ export async function updateLessonStatus(lessonId, status) {
     .from("lesson_sessions")
     .update(patch)
     .eq("id", lessonId)
+    .select()
+    .single();
+
+  if (error) {
+    throw error;
+  }
+
+  return data || null;
+}
+
+export async function markLessonVideoStarted(lessonId, teacherId) {
+  if (!lessonId || !teacherId) {
+    return null;
+  }
+
+  const startedAt = new Date().toISOString();
+
+  const { data, error } = await supabase
+    .from("lesson_sessions")
+    .update({
+      video_started_at: startedAt,
+      video_started_by: teacherId,
+      updated_at: startedAt,
+    })
+    .eq("id", lessonId)
+    .eq("teacher_id", teacherId)
     .select()
     .single();
 

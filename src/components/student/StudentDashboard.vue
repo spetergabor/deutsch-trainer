@@ -12,6 +12,7 @@
     @update:model-value="lessonWorkbookDraft.sharedNotes = $event"
     @close="closeSelectedLesson"
     @save="saveSelectedLessonWorkbook"
+    @video-started="syncLessonVideoStarted"
   />
 
   <section v-else class="dashboard-layout">
@@ -70,7 +71,7 @@
           v-if="!isGuestMode"
           class="student-status-card"
           type="button"
-          @click="openLessonRoute"
+          @click="$emit('set-mode', 'student-lessons')"
         >
           <span>Online óra</span>
           <strong>{{ upcomingLessonTitle }}</strong>
@@ -128,7 +129,7 @@
           v-if="!isGuestMode"
           class="student-route-card"
           type="button"
-          @click="openLessonRoute"
+          @click="$emit('set-mode', 'student-lessons')"
         >
           <span>🗓️</span>
           <strong>Online óra</strong>
@@ -159,7 +160,7 @@
         </div>
 
         <button
-          @click="$emit('set-mode', 'student-materials')"
+          @click="$emit('set-mode', 'student-lessons')"
         >
           Összes munkafüzet
         </button>
@@ -243,7 +244,7 @@
 
         <article v-else class="student-lesson-workbook student-lesson-workbook-empty">
           <strong>Válassz órát a közös jegyzet megnyitásához.</strong>
-          <p>A dashboardon csak a két legutóbbi munkafüzet látszik. A teljes lista a Házi és anyagok menüpontban van.</p>
+          <p>A dashboardon csak a két legutóbbi munkafüzet látszik. A teljes lista az Óráim menüpontban van.</p>
         </article>
       </div>
     </section>
@@ -292,6 +293,7 @@
 <script>
 import { formatDate, getTaskName } from "../../utils/formatters";
 import {
+  fetchLessonSession,
   fetchStudentLessonSessions,
   updateLessonWorkbook,
 } from "../../services/lessonSessionService";
@@ -775,7 +777,7 @@ export default {
       }
     },
 
-    selectLessonSession(lesson) {
+    async selectLessonSession(lesson) {
       if (this.selectedLessonId === lesson.id) {
         this.closeSelectedLesson();
         return;
@@ -783,6 +785,21 @@ export default {
 
       this.selectedLessonId = lesson.id;
       this.syncLessonWorkbookDraft(lesson);
+
+      try {
+        const updated = await fetchLessonSession(lesson.id);
+
+        if (!updated) {
+          return;
+        }
+
+        this.lessonSessions = this.lessonSessions.map((item) =>
+          item.id === updated.id ? { ...item, ...updated } : item,
+        );
+        this.syncLessonWorkbookDraft(updated);
+      } catch (error) {
+        console.error("Óra frissítési hiba:", error.message);
+      }
     },
 
     closeSelectedLesson() {
@@ -808,6 +825,18 @@ export default {
       this.lessonWorkbookDraft = {
         sharedNotes: lesson?.shared_notes || "",
       };
+    },
+
+    syncLessonVideoStarted(videoStartedAt) {
+      if (!this.selectedLesson?.id) {
+        return;
+      }
+
+      this.lessonSessions = this.lessonSessions.map((lesson) =>
+        lesson.id === this.selectedLesson.id
+          ? { ...lesson, video_started_at: videoStartedAt || new Date().toISOString() }
+          : lesson,
+      );
     },
 
     async saveSelectedLessonWorkbook() {
