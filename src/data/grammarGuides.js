@@ -2301,4 +2301,226 @@ export const grammarGuides = [
       "derjenige, der jelentése: az, aki.",
     ],
   },
+  {
+    id: "plusquamperfekt-nachdem",
+    mode: "grammar-guide-plusquamperfekt",
+    title: "Plusquamperfekt és nachdem",
+    subtitle: "Előidejűség a múltban, hatte/war + Partizip II",
+    level: "B1/B2",
+    icon: "⏳",
+    practice: {
+      available: true,
+      mode: "plusquamperfekt",
+      label: "Plusquamperfekt gyakorlása",
+      type: "mixed-writing-choice",
+    },
+    sections: [
+      {
+        title: "Mire való a Plusquamperfekt?",
+        body:
+          "A Plusquamperfekt a német harmadik múlt ideje. Akkor használjuk, ha két dolog történt a múltban, és meg akarjuk mutatni, melyik történt korábban. Ez az előidejűség a múltban: az egyik esemény már lezárult, amikor a másik múltbeli esemény megtörtént.",
+        examples: [
+          {
+            de: "Zuerst hatte ich mein Frühstück gegessen, dann ging ich in die Schule.",
+            hu: "Először megettem a reggelimet, aztán iskolába mentem.",
+          },
+          {
+            de: "Ich war in den Supermarkt gegangen, dann räumte ich auf.",
+            hu: "Elmentem a szupermarketbe, aztán kitakarítottam.",
+          },
+          {
+            de: "Vor zwei Jahren hatte ich dieses Haus gebaut. Gestern verkaufte ich es.",
+            hu: "Két éve építettem ezt a házat. Tegnap eladtam.",
+          },
+        ],
+      },
+      {
+        title: "Képzése",
+        body:
+          "A Plusquamperfekt a haben vagy sein Präteritum alakjából és a főige Partizip II alakjából áll. Magyarul sokszor egyszerű múltként fordítjuk, de németül az a szerepe, hogy jelezze: ez történt előbb.",
+        formula: "hatte / war + Partizip II",
+        examples: [
+          {
+            de: "Ich hatte das Mittagessen gekocht.",
+            hu: "Megfőztem az ebédet.",
+          },
+          {
+            de: "Er war um 5 Uhr angekommen.",
+            hu: "Öt órakor megérkezett.",
+          },
+          {
+            de: "Wir hatten die Aufgabe schon gemacht.",
+            hu: "Már megcsináltuk a feladatot.",
+          },
+        ],
+      },
+      {
+        title: "hatte és war ragozása",
+        body:
+          "A segédige mutatja a személyt és a számot. A főige Partizip II alakban marad, és nem változik. Ugyanúgy kell eldönteni a haben vagy sein használatát, mint Perfektben.",
+        table: [
+          {
+            tense: "ich",
+            form: "hatte / war",
+            example: "ich hatte gelernt, ich war gegangen",
+          },
+          {
+            tense: "du",
+            form: "hattest / warst",
+            example: "du hattest gelernt, du warst gegangen",
+          },
+          {
+            tense: "er, sie, es",
+            form: "hatte / war",
+            example: "er hatte gelernt, sie war gegangen",
+          },
+          {
+            tense: "wir",
+            form: "hatten / waren",
+            example: "wir hatten gelernt, wir waren gegangen",
+          },
+          {
+            tense: "ihr",
+            form: "hattet / wart",
+            example: "ihr hattet gelernt, ihr wart gegangen",
+          },
+          {
+            tense: "sie, Sie",
+            form: "hatten / waren",
+            example: "sie hatten gelernt, Sie waren gegangen",
+          },
+        ],
+      },
+      {
+        title: "haben vagy sein?",
+        body:
+          "A legtöbb ige haben segédigét kap. Sein kell főleg mozgást vagy állapotváltozást kifejező igéknél, illetve néhány gyakori igénél, például sein, bleiben, werden. Ez ugyanaz a logika, mint Perfektben.",
+        table: [
+          {
+            tense: "haben",
+            form: "tárgyas igék és a legtöbb ige",
+            example: "Ich hatte den Text gelesen.",
+          },
+          {
+            tense: "sein",
+            form: "mozgás, állapotváltozás",
+            example: "Sie war nach Hause gegangen.",
+          },
+          {
+            tense: "sein",
+            form: "sein, bleiben, werden",
+            example: "Er war krank gewesen.",
+          },
+        ],
+      },
+      {
+        title: "nachdem múlt időben",
+        body:
+          "A Plusquamperfekt legtöbbször nachdem mondatokban jelenik meg. Ha mindkét cselekvés a múltban történt, akkor a korábbi esemény Plusquamperfektben áll, a későbbi pedig általában Präteritumban vagy elbeszélő múltban.",
+        formula: "Nachdem + Plusquamperfekt, Präteritum",
+        examples: [
+          {
+            de: "Nachdem die Gäste angekommen waren, aßen wir das Abendessen zusammen.",
+            hu: "Miután a vendégek megérkeztek, együtt megettük a vacsorát.",
+          },
+          {
+            de: "Nachdem er sich schwer verletzt hatte, konnte er nicht mehr tanzen.",
+            hu: "Miután súlyosan megsérült, már nem tudott táncolni.",
+          },
+          {
+            de: "Sobald er aufgestanden war, fing er an zu lernen.",
+            hu: "Mihelyt felkelt, elkezdett tanulni.",
+          },
+        ],
+      },
+      {
+        title: "Szórend nachdem után",
+        body:
+          "A nachdem mellékmondatot vezet be, ezért a ragozott ige a mellékmondat végére kerül. Plusquamperfektben ez a ragozott segédige: hatte vagy war. A Partizip II közvetlenül előtte áll.",
+        formula: "Nachdem + Subjekt + ... + Partizip II + hatte/war, ...",
+        examples: [
+          {
+            de: "Nachdem ich die Küche aufgeräumt hatte, ging ich schlafen.",
+            hu: "Miután rendet raktam a konyhában, elmentem aludni.",
+          },
+          {
+            de: "Nachdem wir angekommen waren, riefen wir unsere Eltern an.",
+            hu: "Miután megérkeztünk, felhívtuk a szüleinket.",
+          },
+          {
+            de: "Nachdem Anna den Film gesehen hatte, schrieb sie eine Kritik.",
+            hu: "Miután Anna megnézte a filmet, kritikát írt.",
+          },
+        ],
+      },
+      {
+        title: "Ha a második cselekvés jelenben van",
+        body:
+          "Ha az egyik cselekvés már megtörtént, a másik viszont jelen idejű következmény vagy jelenbeli cselekvés, akkor nem Plusquamperfektet használunk. Ilyenkor a nachdem-os mellékmondat Perfektben áll, a főmondat pedig Präsensben.",
+        formula: "Nachdem + Perfekt, Präsens",
+        examples: [
+          {
+            de: "Nachdem ich aufgeräumt habe, trinke ich eine Tasse Tee.",
+            hu: "Miután kitakarítottam, iszom egy csésze teát.",
+          },
+          {
+            de: "Nachdem wir eingezogen sind, machen wir eine große Party.",
+            hu: "Miután beköltöztünk, nagy partit rendezünk.",
+          },
+          {
+            de: "Nachdem sie die Prüfung bestanden hat, ist sie sehr erleichtert.",
+            hu: "Miután sikerült a vizsgája, nagyon megkönnyebbült.",
+          },
+        ],
+      },
+      {
+        title: "Múlt és múlt, múlt és jelen",
+        body:
+          "A nachdem szerkezetnél mindig azt kell először eldönteni, hogy a főmondat milyen idősíkban van. Ha a főmondat is múlt, a nachdem-os előzmény Plusquamperfekt. Ha a főmondat jelen, a nachdem-os előzmény Perfekt.",
+        table: [
+          {
+            tense: "múlt + múlt",
+            form: "Plusquamperfekt + Präteritum",
+            example: "Nachdem ich gegessen hatte, ging ich los.",
+          },
+          {
+            tense: "múlt + jelen",
+            form: "Perfekt + Präsens",
+            example: "Nachdem ich gegessen habe, gehe ich los.",
+          },
+        ],
+      },
+      {
+        title: "Tipikus hibák",
+        body:
+          "A leggyakoribb hiba, hogy a tanuló mindkét múltbeli eseményt ugyanabba az időbe teszi, így nem derül ki világosan, melyik történt előbb. A másik gyakori hiba a nachdem szórendje: a segédige nem a második helyen áll, hanem a mellékmondat végén.",
+        examples: [
+          {
+            de: "Falsch: Nachdem ich hatte gegessen, ging ich los. → Richtig: Nachdem ich gegessen hatte, ging ich los.",
+            hu: "nachdem után a ragozott ige a végére kerül.",
+          },
+          {
+            de: "Falsch: Nachdem er angekommen ist, gingen wir los. → Richtig: Nachdem er angekommen war, gingen wir los.",
+            hu: "Ha a főmondat múlt, a korábbi esemény Plusquamperfekt.",
+          },
+          {
+            de: "Falsch: Ich war das Essen gekocht. → Richtig: Ich hatte das Essen gekocht.",
+            hu: "Kochen haben-os ige, ezért hatte kell.",
+          },
+        ],
+      },
+    ],
+    quickRules: [
+      "A Plusquamperfekt előidejűséget fejez ki a múltban.",
+      "Képzése: hatte vagy war + Partizip II.",
+      "A haben/sein választása ugyanúgy működik, mint Perfektben.",
+      "A legtöbb ige haben segédigét kap.",
+      "Mozgásnál és állapotváltozásnál gyakori a sein.",
+      "nachdem után mellékmondati szórend van.",
+      "Plusquamperfektben a hatte/war a mellékmondat végére kerül.",
+      "Múlt + múlt: Plusquamperfekt + Präteritum.",
+      "Múlt + jelen: Perfekt + Präsens.",
+      "Magyarul sokszor egyszerű múltként fordítjuk, de németül az időviszonyt jelöli.",
+    ],
+  },
 ];

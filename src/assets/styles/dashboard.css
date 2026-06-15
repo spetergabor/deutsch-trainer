@@ -1942,6 +1942,14 @@ button.student-status-card:hover {
   background: linear-gradient(135deg, #667eea, #764ba2);
 }
 
+.ios-icon.zu-infinitiv {
+  background: linear-gradient(135deg, #80caff, #43e97b);
+}
+
+.ios-icon.plusquamperfekt {
+  background: linear-gradient(135deg, #ffd166, #ef476f);
+}
+
 .ios-icon.sich {
   background: linear-gradient(135deg, #f093fb, #f5576c);
 }
@@ -1956,10 +1964,6 @@ button.student-status-card:hover {
 
 .ios-icon.vocabulary {
   background: linear-gradient(135deg, #f7971e, #ffd200);
-}
-
-.ios-icon.mistake-review {
-  background: linear-gradient(135deg, #ff4757, #ffd166);
 }
 
 .ios-icon.daily-challenge {

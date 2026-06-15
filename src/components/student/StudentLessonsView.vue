@@ -227,6 +227,15 @@ export default {
       this.syncLessonWorkbookDraft(null);
     },
 
+    goBackOneStep() {
+      if (!this.selectedLessonId) {
+        return false;
+      }
+
+      this.closeSelectedLesson();
+      return true;
+    },
+
     syncLessonWorkbookDraft(lesson) {
       this.lessonWorkbookDraft = {
         sharedNotes: lesson?.shared_notes || "",

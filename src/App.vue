@@ -19,6 +19,7 @@
       :back-parent-label="headerBackParentLabel"
       :back-current-label="headerBackCurrentLabel"
       @go-dashboard="goToDashboard"
+      @go-back="goNavigationBack"
       @open-teacher-materials="openTeacherMaterials"
       @open-student-materials="openStudentMaterials"
       @open-messages="openMessagesPanel"
@@ -54,7 +55,7 @@
       :user-role="userRole"
       :can-go-back="canGoDesktopBack"
       :can-go-forward="canGoDesktopForward"
-      @go-back="goDesktopBack"
+      @go-back="goNavigationBack"
       @go-forward="goDesktopForward"
       @set-mode="setCurrentMode"
       @open-teacher-section="openTeacherSection"
@@ -163,6 +164,7 @@
       <!-- GYAKORLATOK / APP AL-OLDALAK -->
       <!-- GYAKORLATOK / APP AL-OLDALAK -->
       <PracticeScreen
+        ref="practiceScreen"
         v-else
         :current-mode="currentMode"
         :header-title="headerTitle"
@@ -189,6 +191,7 @@
         :initial-story-id="selectedStoryId"
         :active-homework-assignment="activeHomeworkAssignment"
         @go-dashboard="goToDashboard"
+        @go-back="goNavigationBack"
         @exercise-finished="handleExerciseFinished"
         @logout="handleLogout"
         @set-mode="setCurrentMode"
@@ -640,8 +643,15 @@ export default {
       });
     },
 
-    goDesktopBack() {
-      if (!this.navigationBackStack.length) return;
+    goNavigationBack() {
+      if (this.$refs.practiceScreen?.goBackOneStep?.()) {
+        return;
+      }
+
+      if (!this.navigationBackStack.length) {
+        this.goToDashboard();
+        return;
+      }
 
       const currentSnapshot = this.getNavigationSnapshot();
       const previousSnapshot = this.navigationBackStack.pop();

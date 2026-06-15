@@ -18,6 +18,8 @@ export function getTaskName(type) {
     osd: "ÖSD Gyakorló",
     praeposition: "Präpositionen",
     konnektoren: "Konnektoren",
+    "zu-infinitiv": "Zu + Infinitiv",
+    plusquamperfekt: "Plusquamperfekt",
     "sich-verben": "Sich-Verben",
     passiv: "Passiv",
     "passiv-writing": "Passiv átalakítás",
@@ -26,7 +28,6 @@ export function getTaskName(type) {
     vocabulary: "Szókincs edző",
     "vocabulary-learn": "Szókártyák",
     "vocabulary-test": "Szókincs teszt",
-    "mistake-review": "Hibatár gyakorló",
     "daily-challenge": "Napi challenge",
     "daily-challenge-adjektiv": "Napi challenge: Adjektiv",
     "daily-challenge-konjunktiv-ii": "Napi challenge: Konjunktiv II",
@@ -46,6 +47,7 @@ export function getTaskName(type) {
     "grammar-guide-konjunktiv-ii": "Konjunktiv II",
     "grammar-guide-modalpartikel": "Modalpartikel",
     "grammar-guide-vonatkozo-nevmas": "Vonatkozó névmás",
+    "grammar-guide-plusquamperfekt": "Plusquamperfekt",
     profile: "Profil",
   };
 

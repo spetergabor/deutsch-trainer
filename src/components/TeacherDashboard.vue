@@ -701,6 +701,8 @@
                       <option value="adjektiv">Adjektivdeklination</option>
                       <option value="passiv">Passiv</option>
                       <option value="pronominaladverb">Pronominaladverbien</option>
+                      <option value="zu-infinitiv">Zu + Infinitiv</option>
+                      <option value="plusquamperfekt">Plusquamperfekt</option>
                       <option value="vocabulary">Szókincs</option>
                     </select>
                   </label>

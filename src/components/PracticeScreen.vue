@@ -7,7 +7,7 @@
     }"
   >
     <header class="practice-nav app-header mobile-practice-nav">
-      <button class="practice-back-btn" @click="$emit('go-dashboard')"></button>
+      <button class="practice-back-btn" @click="$emit('go-back')"></button>
 
       <div class="practice-title">
         {{ headerTitle }}
@@ -137,6 +137,18 @@
           @go-dashboard="$emit('go-dashboard')"
         />
 
+        <ZuInfinitivPractice
+          v-if="currentMode === 'zu-infinitiv'"
+          @exercise-finished="$emit('exercise-finished')"
+          @go-dashboard="$emit('go-dashboard')"
+        />
+
+        <PlusquamperfektPractice
+          v-if="currentMode === 'plusquamperfekt'"
+          @exercise-finished="$emit('exercise-finished')"
+          @go-dashboard="$emit('go-dashboard')"
+        />
+
         <SichVerbenPractice
           v-if="currentMode === 'sich-verben'"
           @exercise-finished="$emit('exercise-finished')"
@@ -163,11 +175,6 @@
           @round-state-change="updateVocabularyRoundPanel"
         />
 
-        <MistakeReviewPractice
-          v-if="currentMode === 'mistake-review'"
-          @exercise-finished="$emit('exercise-finished')"
-          @go-dashboard="$emit('go-dashboard')"
-        />
       </div>
 
       <aside
@@ -310,6 +317,7 @@
     />
 
     <StudentLessonsView
+      ref="studentLessonsView"
       v-if="currentMode === 'student-lessons'"
       :user-session="userSession"
       :auth-full-name="authFullName"
@@ -371,6 +379,8 @@ import StudentMaterialsView from "./student/StudentMaterialsView.vue";
 import StudentLessonsView from "./student/StudentLessonsView.vue";
 import StudentLearningLibrary from "./student/StudentLearningLibrary.vue";
 import KonnektorenPractice from "./KonnektorenPractice.vue";
+import ZuInfinitivPractice from "./ZuInfinitivPractice.vue";
+import PlusquamperfektPractice from "./PlusquamperfektPractice.vue";
 import PraepositionPractice from "./PraepositionPractice.vue";
 import VerbPractice from "./VerbPractice.vue";
 import NomenVerbPractice from "./NomenVerbPractice.vue";
@@ -380,7 +390,6 @@ import SichVerbenPractice from "./SichVerbenPractice.vue";
 import PassivPractice from "./PassivPractice.vue";
 import PronominaladverbPractice from "./PronominaladverbPractice.vue";
 import VocabularyPractice from "./VocabularyPractice.vue";
-import MistakeReviewPractice from "./MistakeReviewPractice.vue";
 import DailyChallengePractice from "./DailyChallengePractice.vue";
 import StoryReadingPractice from "./StoryReadingPractice.vue";
 import GrammarGuideView from "./GrammarGuideView.vue";
@@ -401,11 +410,12 @@ export default {
     OsdPractice,
     PraepositionPractice,
     KonnektorenPractice,
+    ZuInfinitivPractice,
+    PlusquamperfektPractice,
     SichVerbenPractice,
     PassivPractice,
     PronominaladverbPractice,
     VocabularyPractice,
-    MistakeReviewPractice,
     DailyChallengePractice,
     StoryReadingPractice,
     GrammarGuideView,
@@ -549,6 +559,7 @@ export default {
 
   emits: [
     "go-dashboard",
+    "go-back",
     "exercise-finished",
     "logout",
     "set-mode",
@@ -609,11 +620,12 @@ export default {
         "osd",
         "praeposition",
         "konnektoren",
+        "zu-infinitiv",
+        "plusquamperfekt",
         "sich-verben",
         "passiv",
         "pronominaladverb",
         "vocabulary",
-        "mistake-review",
       ].includes(this.currentMode);
     },
 
@@ -707,11 +719,13 @@ export default {
         osd: "Vizsgahelyzetek és írásfeladatok gyakorlása.",
         praeposition: "Vonzatok és prepozíciós kapcsolatok rögzítése.",
         konnektoren: "Mondatkapcsolók és kötőszórend gyakorlása.",
+        "zu-infinitiv": "Dass-mondatok átalakítása zu + Infinitiv szerkezetté.",
+        plusquamperfekt:
+          "Előidejűség, nachdem és Plusquamperfekt gyakorlása.",
         "sich-verben": "Sich-Verben és reflexív szerkezetek ismétlése.",
         passiv: "Passiv szerkezetek felismerése és átalakítása.",
         pronominaladverb: "Worauf, darauf és hasonló alakok használata.",
         vocabulary: "Szókártyák és névelős szókincs teszt.",
-        "mistake-review": "10 vegyes kérdés a korábbi hibáidból.",
       };
 
       return copyByMode[this.currentMode] || "Célzott gyakorló kör.";
@@ -720,7 +734,6 @@ export default {
     exerciseFocusLabel() {
       if (this.activeHomeworkAssignment) return "Házi állapot";
       if (this.currentMode === "vocabulary") return "Teszt XP";
-      if (this.currentMode === "mistake-review") return "Forrás";
       if (this.currentMode === "osd") return "Feladattípus";
       return "Kör";
     },
@@ -731,7 +744,6 @@ export default {
       }
 
       if (this.currentMode === "vocabulary") return "+5 XP tesztben";
-      if (this.currentMode === "mistake-review") return "Vegyes";
       if (this.currentMode === "osd") return "ÖSD Schreiben";
       return "10 kérdés";
     },
@@ -768,15 +780,19 @@ export default {
       };
     },
 
-    handleDesktopBreadcrumbBack() {
-      const targetMode = this.desktopBreadcrumb?.targetMode;
-
-      if (targetMode) {
-        this.$emit("set-mode", targetMode);
-        return;
+    goBackOneStep() {
+      if (
+        this.currentMode === "student-lessons" &&
+        this.$refs.studentLessonsView?.goBackOneStep?.()
+      ) {
+        return true;
       }
 
-      this.$emit("go-dashboard");
+      return false;
+    },
+
+    handleDesktopBreadcrumbBack() {
+      this.$emit("go-back");
     },
   },
 };

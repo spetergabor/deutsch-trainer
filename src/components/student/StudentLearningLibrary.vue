@@ -66,6 +66,16 @@
         <span>Konnektoren</span>
       </div>
 
+      <div class="ios-app" @click="$emit('set-mode', 'zu-infinitiv')">
+        <div class="ios-icon zu-infinitiv">✍️</div>
+        <span>Zu + Inf.</span>
+      </div>
+
+      <div class="ios-app" @click="$emit('set-mode', 'plusquamperfekt')">
+        <div class="ios-icon plusquamperfekt">⏳</div>
+        <span>Plusquamperf.</span>
+      </div>
+
       <div class="ios-app" @click="$emit('set-mode', 'sich-verben')">
         <div class="ios-icon sich">🪞</div>
         <span>Sich-Verben</span>
@@ -84,11 +94,6 @@
       <div class="ios-app" @click="$emit('set-mode', 'vocabulary')">
         <div class="ios-icon vocabulary">🃏</div>
         <span>Szókincs</span>
-      </div>
-
-      <div class="ios-app" @click="$emit('set-mode', 'mistake-review')">
-        <div class="ios-icon mistake-review">🎯</div>
-        <span>Hibatár</span>
       </div>
 
       <div class="ios-app" @click="$emit('set-mode', 'story-reading')">

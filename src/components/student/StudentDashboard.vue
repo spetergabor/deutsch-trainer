@@ -496,6 +496,16 @@ export default {
           label: "Konnektoren",
           icon: "🔀",
         },
+        "zu-infinitiv": {
+          mode: "zu-infinitiv",
+          label: "Zu + Infinitiv",
+          icon: "✍️",
+        },
+        plusquamperfekt: {
+          mode: "plusquamperfekt",
+          label: "Plusquamperfekt",
+          icon: "⏳",
+        },
         "sich-verben": {
           mode: "sich-verben",
           label: "Sich-Verben",

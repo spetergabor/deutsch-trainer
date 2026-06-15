@@ -12,7 +12,7 @@
       <button
         v-if="showBackNavigation"
         class="header-breadcrumb"
-        @click="$emit('go-dashboard')"
+        @click="$emit('go-back')"
       >
         <span class="header-breadcrumb-arrow">←</span>
         <span class="header-breadcrumb-parent">{{ backParentLabel }}</span>
@@ -160,6 +160,7 @@ export default {
 
   emits: [
     "go-dashboard",
+    "go-back",
     "open-teacher-materials",
     "open-student-materials",
     "open-messages",

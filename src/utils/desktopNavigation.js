@@ -8,6 +8,8 @@ export const studentSearchItems = [
   { key: "osd", label: "ÖSD feladatok", icon: "🇦🇹", group: "Gyakorló", mode: "osd" },
   { key: "praeposition", label: "Präpositionen", icon: "🔗", group: "Gyakorló", mode: "praeposition" },
   { key: "konnektoren", label: "Konnektoren", icon: "🔀", group: "Gyakorló", mode: "konnektoren" },
+  { key: "zu-infinitiv", label: "Zu + Infinitiv", icon: "✍️", group: "Gyakorló", mode: "zu-infinitiv" },
+  { key: "plusquamperfekt", label: "Plusquamperfekt", icon: "⏳", group: "Gyakorló", mode: "plusquamperfekt" },
   { key: "sich-verben", label: "Sich-Verben", icon: "🪞", group: "Gyakorló", mode: "sich-verben" },
   { key: "passiv", label: "Passiv", icon: "🛠️", group: "Gyakorló", mode: "passiv" },
   { key: "pronominaladverb", label: "Pronominaladverbien", icon: "🔎", group: "Gyakorló", mode: "pronominaladverb" },
