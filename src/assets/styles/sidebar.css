@@ -3,10 +3,11 @@
 ========================================================= */
 
 .with-desktop-sidebar {
-  --desktop-sidebar-width: clamp(300px, 21vw, 470px);
+  --desktop-sidebar-width: clamp(280px, 17vw, 340px);
   --desktop-shell-gap: 24px;
   --desktop-shell-edge: 18px;
   --desktop-shell-right: var(--desktop-shell-gap);
+  --desktop-dashboard-max-width: 1360px;
   --desktop-topbar-height: 60px;
   --desktop-content-top: calc(
     var(--desktop-shell-edge) + var(--desktop-topbar-height) +
@@ -18,6 +19,12 @@
   );
   --desktop-shell-width: calc(
     100vw - var(--desktop-shell-left) - var(--desktop-shell-right)
+  );
+  --desktop-dashboard-width: calc(
+    min(var(--desktop-dashboard-max-width), var(--desktop-shell-width))
+  );
+  --desktop-dashboard-offset: calc(
+    max(0px, (var(--desktop-shell-width) - var(--desktop-dashboard-width)) / 2)
   );
 }
 

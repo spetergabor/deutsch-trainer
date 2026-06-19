@@ -193,9 +193,9 @@
 :where(.practice-layout, .verb-practice) .practice-box {
   width: min(92%, 720px);
 
-  margin: 18px auto 12px;
+  margin: 26px auto;
 
-  padding: 28px 30px;
+  padding: 34px 30px;
 
   border-radius: 34px;
 
@@ -219,10 +219,11 @@
   flex-direction: column;
 
   align-items: center;
-  gap: 22px;
+  gap: 28px;
 }
 
 :where(.practice-layout, .verb-practice) .practice-box h2 {
+  font-size: 2rem;
   font-weight: 900;
 
   color: white;

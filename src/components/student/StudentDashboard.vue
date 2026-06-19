@@ -17,28 +17,30 @@
 
   <section v-else class="dashboard-layout">
     <section class="student-home-hero">
-      <div class="student-home-main">
+      <div :class="studentHomeUi.heroCard">
         <div class="student-home-person">
           <img
             :src="
               userSession?.user_metadata?.avatar_url ||
               'https://ui-avatars.com/api/?name=' + authFullName
             "
-            class="dashboard-avatar student-home-avatar"
+            :class="studentHomeUi.avatar"
           />
 
           <div>
-            <h1>Üdv, {{ authFullName || "Diák" }}!</h1>
+            <h1 class="m-0 text-[clamp(2.45rem,4.6vw,3.45rem)] font-black leading-none text-white">
+              Üdv, {{ authFullName || "Diák" }}!
+            </h1>
           </div>
         </div>
 
-        <div v-if="!isGuestMode" class="dashboard-profile-xp student-home-stats">
-          <div class="profile-level-pill streak">🔥 {{ activityStats.streak }} nap</div>
-          <div class="profile-level-pill">⭐ {{ xpProfile.xp }} XP</div>
-          <div class="profile-level-pill blue">Level {{ xpProfile.level }}</div>
+        <div v-if="!isGuestMode" class="student-home-stats flex flex-wrap gap-3">
+          <div :class="studentHomeUi.statPill">🔥 {{ activityStats.streak }} nap</div>
+          <div :class="studentHomeUi.statPill">⭐ {{ xpProfile.xp }} XP</div>
+          <div :class="studentHomeUi.statPill">Level {{ xpProfile.level }}</div>
         </div>
 
-        <p>
+        <p class="col-start-1 mt-2 max-w-[680px] text-base font-medium leading-relaxed text-white/65">
           {{
             isGuestMode
               ? "Vendégként kipróbálhatod a feladatokat. Profil, statisztika és mentés nem készül."
@@ -46,19 +48,19 @@
           }}
         </p>
 
-        <div class="student-home-recommendation">
-          <div class="student-home-recommendation-icon">
+        <div :class="studentHomeUi.recommendation">
+          <div :class="studentHomeUi.recommendationIcon">
             {{ recommendedPracticeMeta.icon }}
           </div>
 
           <div>
-            <span>Ma ezt ajánlom</span>
-            <strong>{{ recommendedPracticeMeta.label }}</strong>
-            <small>{{ recommendedPracticeMeta.reason }}</small>
+            <span :class="studentHomeUi.kicker">Ma ezt ajánlom</span>
+            <strong :class="studentHomeUi.cardTitle">{{ recommendedPracticeMeta.label }}</strong>
+            <small :class="studentHomeUi.cardMeta">{{ recommendedPracticeMeta.reason }}</small>
           </div>
 
           <button
-            class="daily-plan-primary"
+            :class="studentHomeUi.primaryButton"
             @click="$emit('set-mode', recommendedPracticeMeta.mode)"
           >
             Indítás
@@ -69,81 +71,81 @@
       <aside class="student-home-status">
         <button
           v-if="!isGuestMode"
-          class="student-status-card"
+          :class="studentHomeUi.statusButton"
           type="button"
           @click="$emit('set-mode', 'student-lessons')"
         >
-          <span>Online óra</span>
-          <strong>{{ upcomingLessonTitle }}</strong>
-          <small>{{ upcomingLessonMeta }}</small>
+          <span :class="studentHomeUi.kicker">Online óra</span>
+          <strong :class="studentHomeUi.cardTitle">{{ upcomingLessonTitle }}</strong>
+          <small :class="studentHomeUi.cardMeta">{{ upcomingLessonMeta }}</small>
         </button>
 
         <button
           v-if="!isGuestMode"
-          class="student-status-card"
+          :class="studentHomeUi.statusButton"
           type="button"
           @click="$emit('set-mode', 'student-materials')"
         >
-          <span>Házi és anyagok</span>
-          <strong>{{ activeHomeworkCount }} teendő</strong>
-          <small>{{ reviewedHomeworkCount }} javított anyag</small>
+          <span :class="studentHomeUi.kicker">Házi és anyagok</span>
+          <strong :class="studentHomeUi.cardTitle">{{ activeHomeworkCount }} teendő</strong>
+          <small :class="studentHomeUi.cardMeta">{{ reviewedHomeworkCount }} javított anyag</small>
         </button>
 
-        <article class="student-status-card">
-          <span>Haladás</span>
-          <strong>{{ last30AveragePercent }}% átlag</strong>
-          <small>{{ weakTopicSummary }}</small>
+        <article :class="studentHomeUi.statusCard">
+          <span :class="studentHomeUi.kicker">Haladás</span>
+          <strong :class="studentHomeUi.cardTitle">{{ last30AveragePercent }}% átlag</strong>
+          <small :class="studentHomeUi.cardMeta">{{ weakTopicSummary }}</small>
         </article>
       </aside>
     </section>
 
     <section class="student-route-section">
       <div class="student-route-head">
-        <span>Útvonalválasztó</span>
+        <span :class="studentHomeUi.sectionBadge">Útvonalválasztó</span>
         <h2>Mivel szeretnél haladni?</h2>
       </div>
 
       <div class="student-route-grid">
         <button
-          class="student-route-card is-primary"
+          :class="[studentHomeUi.routeCard, studentHomeUi.routeCardPrimary]"
           type="button"
           @click="$emit('set-mode', recommendedPracticeMeta.mode)"
         >
-          <span>{{ recommendedPracticeMeta.icon }}</span>
-          <strong>Mai edzés</strong>
-          <small>Ajánlott útvonal az eredményeid alapján.</small>
+          <span :class="studentHomeUi.routeIcon">{{ recommendedPracticeMeta.icon }}</span>
+          <strong :class="studentHomeUi.cardTitle">Mai edzés</strong>
+          <small :class="studentHomeUi.cardMeta">Ajánlott útvonal az eredményeid alapján.</small>
         </button>
 
         <button
           v-if="!isGuestMode"
-          class="student-route-card"
+          :class="studentHomeUi.routeCard"
           type="button"
           @click="$emit('set-mode', 'student-materials')"
         >
-          <span>📥</span>
-          <strong>Házi feladat</strong>
-          <small>{{ activeHomeworkCount }} aktív teendő, {{ submittedHomeworkCount }} leadva.</small>
+          <span :class="studentHomeUi.routeIcon">📥</span>
+          <strong :class="studentHomeUi.cardTitle">Házi feladat</strong>
+          <small :class="studentHomeUi.cardMeta">{{ activeHomeworkCount }} aktív teendő, {{ submittedHomeworkCount }} leadva.</small>
         </button>
 
         <button
           v-if="!isGuestMode"
-          class="student-route-card"
+          :class="studentHomeUi.routeCard"
           type="button"
           @click="$emit('set-mode', 'student-lessons')"
         >
-          <span>🗓️</span>
-          <strong>Online óra</strong>
-          <small>Következő óra és közös munkafüzet.</small>
+          <span :class="studentHomeUi.routeIcon">🗓️</span>
+          <strong :class="studentHomeUi.cardTitle">Online óra</strong>
+          <small :class="studentHomeUi.cardMeta">Következő óra és közös munkafüzet.</small>
         </button>
 
         <button
-          class="student-route-card"
+          :class="studentHomeUi.routeCard"
           type="button"
           @click="$emit('set-mode', 'learning-library')"
         >
-          <span>🧭</span>
-          <strong>Szabad tanulás</strong>
-          <small>Gyakorlók, challenge-ek, szókincs és storyk.</small>
+          <span :class="studentHomeUi.routeIcon">🧭</span>
+          <strong :class="studentHomeUi.cardTitle">Szabad tanulás</strong>
+          <small :class="studentHomeUi.cardMeta">Gyakorlók, challenge-ek, szókincs és storyk.</small>
         </button>
       </div>
     </section>
@@ -160,6 +162,7 @@
         </div>
 
         <button
+          :class="studentHomeUi.secondaryButton"
           @click="$emit('set-mode', 'student-lessons')"
         >
           Összes munkafüzet
@@ -250,10 +253,10 @@
     </section>
 
     <section class="dashboard-daily-plan">
-      <div class="daily-plan-main">
+      <div :class="studentHomeUi.dailyPlanMain">
         <div class="daily-plan-eyebrow">
-          <span>Mai edzés</span>
-          <small>kb. 12-15 perc</small>
+          <span :class="studentHomeUi.greenBadge">Mai edzés</span>
+          <small :class="studentHomeUi.mutedBadge">kb. 12-15 perc</small>
         </div>
 
         <h2>{{ recommendedPracticeMeta.label }} indításával kezdenék</h2>
@@ -263,7 +266,7 @@
         </p>
 
         <button
-          class="daily-plan-primary"
+          :class="studentHomeUi.primaryButton"
           @click="$emit('set-mode', recommendedPracticeMeta.mode)"
         >
           Mai edzés indítása
@@ -274,7 +277,7 @@
         <button
           v-for="step in dailyPlanSteps"
           :key="step.label"
-          class="daily-plan-step"
+          :class="studentHomeUi.dailyPlanStep"
           @click="$emit('set-mode', step.mode)"
         >
           <span>{{ step.number }}</span>
@@ -299,6 +302,46 @@ import {
 } from "../../services/lessonSessionService";
 import { fetchStudentHomeworkAssignments } from "../../services/homeworkService";
 import LessonRoom from "../lesson/LessonRoom.vue";
+
+const STUDENT_HOME_UI = {
+  heroCard:
+    "student-home-main min-w-0 rounded-3xl border border-white/10 bg-white/[0.055] p-6 text-white shadow-xl shadow-black/25 backdrop-blur-2xl sm:p-8 lg:p-11",
+  avatar:
+    "student-home-avatar rounded-full border-4 border-white/10 bg-[linear-gradient(135deg,#667eea,#764ba2)] p-1 object-cover shadow-[0_0_35px_rgba(118,92,255,0.35)]",
+  statPill:
+    "inline-flex min-h-10 min-w-[122px] items-center justify-center rounded-full border border-white/10 bg-white/[0.08] px-4 text-sm font-extrabold leading-none text-white",
+  recommendation:
+    "student-home-recommendation grid items-center gap-5 rounded-3xl bg-black/20 p-5 sm:grid-cols-[72px_minmax(0,1fr)_auto]",
+  recommendationIcon:
+    "flex size-[72px] items-center justify-center rounded-2xl bg-[linear-gradient(135deg,#65a8ff,#51dd91)] text-3xl shadow-lg shadow-[#43e97b]/15",
+  kicker: "text-xs font-black uppercase tracking-normal text-white/55",
+  cardTitle: "mt-1.5 block text-xl font-black leading-tight text-white",
+  cardMeta: "mt-2 block text-sm font-medium leading-relaxed text-white/60",
+  primaryButton:
+    "inline-flex h-12 items-center justify-center rounded-2xl border border-transparent bg-[linear-gradient(135deg,#2ecc71,#27ae60)] px-5 text-base font-black text-white shadow-md shadow-[#2ecc71]/20 outline-none transition hover:-translate-y-0.5 hover:brightness-105 focus-visible:ring-4 focus-visible:ring-[#2ecc71]/20 disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:translate-y-0 disabled:hover:brightness-100",
+  secondaryButton:
+    "inline-flex h-11 items-center justify-center rounded-2xl border border-white/10 bg-white/[0.06] px-5 text-sm font-black text-white outline-none transition hover:-translate-y-px hover:bg-white/10 focus-visible:ring-4 focus-visible:ring-white/10",
+  statusCard:
+    "student-status-card flex min-w-0 flex-col justify-center gap-1 rounded-3xl border border-white/10 bg-black/20 p-5 text-left text-white",
+  statusButton:
+    "student-status-card flex min-w-0 cursor-pointer flex-col justify-center gap-1 rounded-3xl border border-white/10 bg-black/20 p-5 text-left text-white outline-none transition hover:-translate-y-0.5 hover:border-[#80caff]/30 hover:bg-[#4facfe]/10 focus-visible:ring-4 focus-visible:ring-[#4facfe]/15",
+  sectionBadge:
+    "mb-2.5 inline-flex w-max max-w-full rounded-full bg-[#ffd56a]/15 px-3 py-2 text-xs font-black leading-none text-[#ffdc7a]",
+  routeCard:
+    "student-route-card flex min-h-[202px] min-w-0 cursor-pointer flex-col justify-between gap-4 rounded-3xl border border-white/10 bg-black/15 p-5 text-left text-white outline-none transition hover:-translate-y-0.5 hover:border-[#ffd56a]/30 hover:bg-[#ffd56a]/10 focus-visible:ring-4 focus-visible:ring-[#ffd56a]/15",
+  routeCardPrimary:
+    "border-[#43e97b]/25 bg-[#43e97b]/10",
+  routeIcon:
+    "flex size-14 items-center justify-center rounded-2xl bg-[linear-gradient(135deg,#ffb72c,#ffdc7a)] text-2xl shadow-lg shadow-[#ffb72c]/20",
+  dailyPlanMain:
+    "daily-plan-main min-h-[340px] rounded-3xl border border-white/10 bg-white/[0.055] p-6 text-white shadow-xl shadow-black/25 sm:p-8",
+  dailyPlanStep:
+    "daily-plan-step rounded-3xl border border-white/10 bg-white/[0.055] text-white shadow-xl shadow-black/25 outline-none transition hover:-translate-y-0.5 hover:border-[#43e97b]/25 hover:bg-white/[0.075] focus-visible:ring-4 focus-visible:ring-[#43e97b]/15",
+  greenBadge:
+    "inline-flex rounded-full bg-[#43e97b]/15 px-3 py-2 text-xs font-black leading-none text-[#71ff99]",
+  mutedBadge:
+    "inline-flex rounded-full bg-white/[0.08] px-3 py-2 text-xs font-black leading-none text-white/70",
+};
 
 export default {
   name: "StudentDashboard",
@@ -430,6 +473,7 @@ export default {
 
   data() {
     return {
+      studentHomeUi: STUDENT_HOME_UI,
       lessonSessions: [],
       selectedLessonId: "",
       isLoadingLessonSessions: false,

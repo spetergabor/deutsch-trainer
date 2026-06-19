@@ -2,6 +2,11 @@
    GLOBAL DESIGN SYSTEM
 ========================================================= */
 
+@layer theme, utilities;
+
+@import "tailwindcss/theme.css" layer(theme);
+@import "tailwindcss/utilities.css" layer(utilities);
+
 :root {
   --color-bg-dark: #051937;
   --color-bg-black: #000000;

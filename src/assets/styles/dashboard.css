@@ -86,18 +86,8 @@
 }
 
 .student-home-main {
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  background:
-    radial-gradient(circle at 14% 18%, rgba(79, 172, 254, 0.12), transparent 32%),
-    rgba(255, 255, 255, 0.055);
-  box-shadow: 0 18px 42px rgba(0, 0, 0, 0.25);
-}
-
-.student-home-main {
   min-width: 0;
   min-height: 340px;
-  padding: 44px 50px;
-  border-radius: 32px;
 
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
@@ -147,28 +137,9 @@
   line-height: 1;
 }
 
-.student-home-main h1 {
-  margin: 0;
-  color: #ffffff;
-  font-size: 3.25rem;
-  font-weight: 950;
-  line-height: 1;
-}
-
-.student-home-main p {
-  grid-column: 1;
-  max-width: 680px;
-  margin: 8px 0 0;
-  color: rgba(255, 255, 255, 0.64);
-  font-size: 1.03rem;
-  font-weight: 560;
-  line-height: 1.6;
-}
-
 .student-home-stats {
   grid-column: 1;
   justify-content: flex-start;
-  gap: 12px;
   margin: 0;
 }
 
@@ -188,52 +159,6 @@
 
 .student-home-recommendation {
   grid-column: 1 / -1;
-  display: grid;
-  grid-template-columns: 72px minmax(0, 1fr) auto;
-  gap: 22px;
-  align-items: center;
-  padding: 22px 24px;
-  border-radius: 24px;
-  background: rgba(0, 0, 0, 0.18);
-}
-
-.student-home-recommendation-icon {
-  width: 72px;
-  height: 72px;
-  border-radius: 22px;
-  background: linear-gradient(135deg, #65a8ff, #51dd91);
-  display: grid;
-  place-items: center;
-  font-size: 1.75rem;
-  box-shadow: 0 14px 30px rgba(67, 233, 123, 0.16);
-}
-
-.student-home-recommendation span,
-.student-status-card span {
-  color: rgba(255, 255, 255, 0.56);
-  font-size: 0.82rem;
-  font-weight: 950;
-}
-
-.student-home-recommendation strong,
-.student-status-card strong,
-.student-route-card strong {
-  display: block;
-  margin-top: 6px;
-  color: #ffffff;
-  font-size: 1.24rem;
-  font-weight: 950;
-  line-height: 1.1;
-}
-
-.student-home-recommendation small,
-.student-status-card small,
-.student-route-card small {
-  display: block;
-  margin-top: 7px;
-  color: rgba(255, 255, 255, 0.6);
-  font-weight: 560;
-  line-height: 1.48;
 }
 
 .student-home-status {
@@ -244,29 +169,7 @@
 
 .student-status-card {
   min-width: 0;
-  padding: 22px;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 24px;
-  background: rgba(0, 0, 0, 0.18);
-  color: #ffffff;
   font: inherit;
-  text-align: left;
-
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  gap: 4px;
-}
-
-button.student-status-card {
-  cursor: pointer;
-  transition: 0.22s ease;
-}
-
-button.student-status-card:hover {
-  border-color: rgba(128, 202, 255, 0.32);
-  background: rgba(79, 172, 254, 0.1);
-  transform: translateY(-2px);
 }
 
 .student-route-section {
@@ -302,46 +205,8 @@ button.student-status-card:hover {
 }
 
 .student-route-card {
-  min-height: 202px;
   min-width: 0;
-  padding: 22px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 24px;
-  background: rgba(0, 0, 0, 0.16);
-  color: #ffffff;
   font: inherit;
-  text-align: left;
-  cursor: pointer;
-
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  gap: 18px;
-  transition: 0.22s ease;
-}
-
-.student-route-card:hover {
-  border-color: rgba(255, 213, 106, 0.32);
-  background: rgba(255, 213, 106, 0.08);
-  transform: translateY(-2px);
-}
-
-.student-route-card > span:first-child {
-  width: 56px;
-  height: 56px;
-  border-radius: 20px;
-  background: linear-gradient(135deg, #ffb72c, #ffdc7a);
-  display: grid;
-  place-items: center;
-  font-size: 1.45rem;
-  box-shadow: 0 14px 28px rgba(255, 183, 44, 0.18);
-}
-
-.student-route-card.is-primary {
-  border-color: rgba(67, 233, 123, 0.22);
-  background:
-    radial-gradient(circle at 18% 14%, rgba(67, 233, 123, 0.14), transparent 36%),
-    rgba(0, 0, 0, 0.18);
 }
 
 .dashboard-learning-library {
@@ -399,24 +264,7 @@ button.student-status-card:hover {
   margin: 0 0 52px;
 }
 
-.daily-plan-main,
-.daily-plan-step {
-  border: 1px solid rgba(255, 255, 255, 0.09);
-  background:
-    radial-gradient(
-      circle at 14% 18%,
-      rgba(67, 233, 123, 0.14),
-      transparent 30%
-    ),
-    rgba(255, 255, 255, 0.055);
-  color: #ffffff;
-  box-shadow: 0 18px 42px rgba(0, 0, 0, 0.25);
-}
-
 .daily-plan-main {
-  min-height: 340px;
-  padding: 34px;
-  border-radius: 32px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -428,27 +276,6 @@ button.student-status-card:hover {
   flex-wrap: wrap;
   align-items: center;
   gap: 10px;
-}
-
-.daily-plan-eyebrow span,
-.daily-plan-eyebrow small {
-  display: inline-flex;
-  padding: 8px 12px;
-  border-radius: 999px;
-  font-weight: 950;
-  line-height: 1;
-}
-
-.daily-plan-eyebrow span {
-  background: rgba(67, 233, 123, 0.14);
-  color: #71ff99;
-  font-size: 0.82rem;
-}
-
-.daily-plan-eyebrow small {
-  background: rgba(255, 255, 255, 0.08);
-  color: rgba(255, 255, 255, 0.68);
-  font-size: 0.78rem;
 }
 
 .daily-plan-main h2 {
@@ -1504,24 +1331,12 @@ button.student-status-card:hover {
   width: 100%;
   min-height: 116px;
   padding: 20px;
-  border-radius: 26px;
   display: grid;
   grid-template-columns: auto minmax(0, 1fr);
   gap: 18px;
   align-items: center;
   font: inherit;
   text-align: left;
-  cursor: pointer;
-  transition:
-    transform 0.18s ease,
-    border-color 0.18s ease,
-    background 0.18s ease;
-}
-
-.daily-plan-step:hover {
-  transform: translateY(-2px);
-  border-color: rgba(67, 233, 123, 0.36);
-  background: rgba(255, 255, 255, 0.075);
 }
 
 .daily-plan-step > span {
@@ -2429,10 +2244,6 @@ button.grammar-practice-chip:hover {
     height: 82px;
   }
 
-  .student-home-main h1 {
-    font-size: 2.6rem;
-  }
-
   .student-home-stats {
     grid-column: 1;
     margin-top: 0;
@@ -2624,13 +2435,8 @@ button.grammar-practice-chip:hover {
     padding-inline: 22px;
   }
 
-  .student-home-main p {
-    margin-top: 4px;
-  }
-
   .student-home-recommendation {
     margin-top: 2px;
-    padding-inline: 22px;
   }
 
   .lessons-ios-grid {
@@ -2658,8 +2464,6 @@ button.grammar-practice-chip:hover {
 
   .daily-plan-main {
     min-height: auto;
-    padding: 22px;
-    border-radius: 28px;
   }
 
   .daily-plan-main h2 {
@@ -2677,7 +2481,6 @@ button.grammar-practice-chip:hover {
   .daily-plan-step {
     min-height: auto;
     padding: 16px;
-    border-radius: 22px;
   }
 
   .daily-challenge-card {

@@ -419,6 +419,7 @@ export default {
     },
 
     showAppHeader() {
+      if (!this.userSession) return false;
       if (this.showDesktopSidebar) return false;
 
       return !this.currentMode || this.windowWidth > 700;
@@ -1319,8 +1320,47 @@ export default {
 @import "./assets/styles/teacher-dashboard.css";
 @import "./assets/styles/lesson-room.css";
 
+.with-desktop-sidebar .content-wrapper,
 #app.with-desktop-sidebar .content-wrapper {
   padding-bottom: 0 !important;
+}
+
+.with-desktop-sidebar
+  .content-wrapper
+  > :is(
+    .dashboard-layout,
+    .welcome-screen,
+    .practice-screen,
+    .lesson-room-shell,
+    .messages-page
+  ) {
+  width: var(--desktop-dashboard-width, var(--desktop-shell-width, 100%)) !important;
+  max-width: var(
+    --desktop-dashboard-width,
+    var(--desktop-shell-width, 100%)
+  ) !important;
+  margin-left: var(--desktop-dashboard-offset, 0) !important;
+  margin-right: 0 !important;
+}
+
+.with-desktop-sidebar:has(
+    .content-wrapper
+      > :is(
+        .dashboard-layout,
+        .welcome-screen,
+        .practice-screen,
+        .lesson-room-shell,
+        .messages-page
+      )
+  )
+  .desktop-topbar {
+  left: calc(
+    var(--desktop-shell-left, 317px) + var(--desktop-dashboard-offset, 0px)
+  ) !important;
+  width: var(
+    --desktop-dashboard-width,
+    var(--desktop-shell-width, 100%)
+  ) !important;
 }
 
 #app.with-desktop-sidebar

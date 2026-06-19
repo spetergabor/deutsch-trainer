@@ -1,12 +1,12 @@
 <template>
-  <div class="profile-page">
+  <div class="profile-page text-white">
     <div
       class="profile-dashboard-grid"
       :class="{ 'teacher-profile-grid': isTeacherProfile }"
     >
-      <div class="profile-top-card">
-        <div class="profile-avatar-wrapper">
-          <img :src="avatarUrl" class="profile-avatar-image" alt="Profilkép" />
+      <div :class="profileUi.heroCard">
+        <div class="flex flex-col items-center gap-4">
+          <img :src="avatarUrl" :class="profileUi.avatar" alt="Profilkép" />
 
           <input
             ref="avatarInput"
@@ -17,7 +17,7 @@
           />
 
           <button
-            class="change-avatar-btn"
+            :class="profileUi.secondaryButton"
             @click="$refs.avatarInput.click()"
             :disabled="isUploadingAvatar"
           >
@@ -25,13 +25,17 @@
           </button>
         </div>
 
-        <h1>{{ editableName || "Diák" }}</h1>
-        <p>{{ userSession?.email }}</p>
+        <h1 class="mb-1 mt-5 text-[clamp(2rem,4vw,3rem)] font-black leading-tight text-white">
+          {{ editableName || "Diák" }}
+        </h1>
+        <p class="m-0 text-base font-bold text-white/60">
+          {{ userSession?.email }}
+        </p>
 
-        <div class="profile-badges">
-          <span>🔥 {{ activityStats.streak }} nap</span>
-          <span>⭐ {{ xpProfile.xp }} XP</span>
-          <span>📚 {{ stats.totalDone }} feladat</span>
+        <div class="mt-5 flex flex-wrap justify-center gap-2.5">
+          <span :class="profileUi.badge">🔥 {{ activityStats.streak }} nap</span>
+          <span :class="profileUi.badge">⭐ {{ xpProfile.xp }} XP</span>
+          <span :class="profileUi.badge">📚 {{ stats.totalDone }} feladat</span>
         </div>
       </div>
 
@@ -55,7 +59,7 @@
           </div>
         </div>
 
-        <button @click="$emit('set-mode', recommendedPractice.type)">
+        <button :class="profileUi.infoButton" @click="$emit('set-mode', recommendedPractice.type)">
           Gyakorlás indítása
         </button>
       </article>
@@ -63,23 +67,23 @@
       <article class="widget-card profile-account-card">
         <h3>👤 Fiók adatok</h3>
 
-        <div class="setting-row">
-          <span>Név</span>
-          <input v-model="editableName" class="profile-input" />
+        <div :class="profileUi.settingRow">
+          <span :class="profileUi.settingLabel">Név</span>
+          <input v-model="editableName" :class="profileUi.input" />
         </div>
 
-        <div class="setting-row">
-          <span>Email</span>
-          <input :value="userSession?.email" disabled class="profile-input disabled" />
+        <div :class="profileUi.settingRow">
+          <span :class="profileUi.settingLabel">Email</span>
+          <input :value="userSession?.email" disabled :class="[profileUi.input, profileUi.disabledInput]" />
         </div>
 
-        <div class="setting-row">
-          <span>Regisztrált</span>
-          <strong>{{ registrationDate }}</strong>
+        <div :class="profileUi.settingRow">
+          <span :class="profileUi.settingLabel">Regisztrált</span>
+          <strong class="text-right font-black text-white">{{ registrationDate }}</strong>
         </div>
 
         <button
-          class="save-profile-btn"
+          :class="profileUi.primaryButton"
           @click="saveProfile"
           :disabled="isSavingProfile"
         >
@@ -263,7 +267,7 @@
       <article class="widget-card documents-widget">
         <h3>📂 Dokumentumok</h3>
 
-        <button class="upload-btn" @click="triggerFileInput" :disabled="isUploading">
+        <button :class="profileUi.uploadButton" @click="triggerFileInput" :disabled="isUploading">
           {{ isUploading ? "Töltés... ⏳" : "+ Új fájl feltöltése" }}
         </button>
 
@@ -290,12 +294,12 @@
         <textarea
           :value="newNoteText"
           placeholder="Írd ide a jegyzeted..."
-          class="simple-textarea"
+          :class="profileUi.textarea"
           @input="$emit('update:new-note-text', $event.target.value)"
         ></textarea>
 
         <button
-          class="select-btn btn-save-note"
+          :class="profileUi.noteButton"
           @click="$emit('save-note')"
           :disabled="!newNoteText.trim()"
         >
@@ -338,8 +342,8 @@
       <article class="widget-card danger-zone">
         <h3>⚠️ Fiók műveletek</h3>
 
-        <button class="danger-btn" @click="handleLogout">Kilépés</button>
-        <button class="danger-btn red" @click="deleteAccount">Fiók törlése</button>
+        <button :class="profileUi.dangerButton" @click="handleLogout">Kilépés</button>
+        <button :class="profileUi.destructiveButton" @click="deleteAccount">Fiók törlése</button>
       </article>
     </div>
   </div>
@@ -348,6 +352,37 @@
 <script>
 import { supabase } from "../supabase";
 import { formatDate, getTaskName } from "../utils/formatters";
+
+const PROFILE_UI = {
+  heroCard:
+    "profile-hero-card flex h-full min-h-[360px] flex-col items-center rounded-3xl border border-white/10 bg-white/[0.055] px-6 py-8 text-center shadow-lg shadow-black/25 backdrop-blur-2xl sm:px-8 sm:py-9",
+  avatar:
+    "size-[118px] rounded-full border-4 border-white/10 bg-[linear-gradient(135deg,#667eea,#764ba2)] p-1 object-cover shadow-[0_0_35px_rgba(118,92,255,0.35)] transition hover:scale-[1.03]",
+  badge:
+    "inline-flex items-center rounded-full border border-white/10 bg-white/[0.08] px-3.5 py-2 text-sm font-extrabold text-white",
+  settingRow:
+    "grid grid-cols-1 gap-2 border-b border-white/[0.07] py-3.5 sm:grid-cols-[130px_minmax(0,1fr)] sm:items-center sm:gap-3.5",
+  settingLabel: "text-sm font-extrabold text-white/60 sm:text-base",
+  input:
+    "h-12 w-full rounded-2xl border border-white/10 bg-black/20 px-4 text-base font-semibold text-white outline-none transition placeholder:font-medium placeholder:text-white/40 focus:border-[#7b89ff] focus:bg-black/30 focus:ring-4 focus:ring-[#7b89ff]/15",
+  disabledInput: "cursor-not-allowed opacity-60",
+  textarea:
+    "min-h-[130px] w-full resize-y rounded-2xl border border-white/10 bg-black/20 px-4 py-3.5 text-base font-semibold leading-relaxed text-white outline-none transition placeholder:font-medium placeholder:text-white/40 focus:border-[#7b89ff] focus:bg-black/30 focus:ring-4 focus:ring-[#7b89ff]/15",
+  primaryButton:
+    "mt-5 inline-flex h-12 w-full items-center justify-center rounded-2xl border border-transparent bg-[linear-gradient(135deg,#2ecc71,#27ae60)] px-5 text-base font-black text-white shadow-md shadow-[#2ecc71]/20 outline-none transition hover:-translate-y-0.5 hover:brightness-105 focus-visible:ring-4 focus-visible:ring-[#2ecc71]/20 disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:translate-y-0 disabled:hover:brightness-100",
+  infoButton:
+    "mt-5 inline-flex h-12 w-full items-center justify-center rounded-2xl border border-transparent bg-[linear-gradient(135deg,#4facfe,#3498db)] px-5 text-base font-black text-white shadow-md shadow-[#3498db]/20 outline-none transition hover:-translate-y-0.5 hover:brightness-105 focus-visible:ring-4 focus-visible:ring-[#3498db]/20",
+  secondaryButton:
+    "inline-flex h-11 items-center justify-center rounded-2xl border border-white/10 bg-white/[0.06] px-5 text-[0.95rem] font-black text-white outline-none transition hover:-translate-y-px hover:bg-white/10 focus-visible:ring-4 focus-visible:ring-white/10 disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:translate-y-0",
+  uploadButton:
+    "mb-3 inline-flex min-h-12 w-full items-center justify-center rounded-2xl border border-dashed border-[#53e37b]/45 bg-[#53e37b]/10 px-5 py-3 text-base font-black text-[#53e37b] outline-none transition hover:-translate-y-0.5 hover:bg-[#53e37b]/15 hover:shadow-md hover:shadow-[#53e37b]/10 focus-visible:ring-4 focus-visible:ring-[#53e37b]/15 disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:translate-y-0",
+  noteButton:
+    "mt-4 inline-flex h-12 w-full shrink-0 items-center justify-center rounded-2xl border border-transparent bg-[linear-gradient(135deg,#667eea,#764ba2)] px-5 text-base font-black text-white shadow-md shadow-[#667eea]/20 outline-none transition hover:-translate-y-0.5 hover:brightness-105 focus-visible:ring-4 focus-visible:ring-[#667eea]/25 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:translate-y-0 disabled:hover:brightness-100",
+  dangerButton:
+    "inline-flex h-12 w-full items-center justify-center rounded-2xl border border-white/10 bg-white/[0.06] px-5 text-base font-black text-white outline-none transition hover:-translate-y-px hover:bg-white/10 focus-visible:ring-4 focus-visible:ring-white/10",
+  destructiveButton:
+    "inline-flex h-12 w-full items-center justify-center rounded-2xl border border-[#e74c3c]/40 bg-[#e74c3c]/15 px-5 text-base font-black text-[#ff7676] outline-none transition hover:-translate-y-px hover:bg-[#e74c3c]/25 focus-visible:ring-4 focus-visible:ring-[#e74c3c]/20",
+};
 
 export default {
   name: "ProfileView",
@@ -452,6 +487,7 @@ export default {
 
   data() {
     return {
+      profileUi: PROFILE_UI,
       editableName: this.authFullName || "",
       avatarUrl: "",
       isUploadingAvatar: false,
@@ -647,19 +683,10 @@ export default {
   align-items: stretch;
 }
 
-.profile-top-card {
+.profile-hero-card {
   grid-column: span 2;
   height: 100%;
   min-height: 360px;
-  padding: 34px;
-  border-radius: 32px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  background: rgba(255, 255, 255, 0.055);
-  border: 1px solid rgba(255, 255, 255, 0.09);
-  box-shadow: 0 15px 34px rgba(0, 0, 0, 0.22);
 }
 
 .profile-summary-card {
@@ -693,137 +720,13 @@ export default {
   text-align: right;
 }
 
-.profile-summary-card button {
-  width: 100%;
-  margin-top: 22px;
-  padding: 14px 18px;
-  border: none;
-  border-radius: 999px;
-  background: linear-gradient(135deg, #4facfe, #3498db);
-  color: white;
-  font: inherit;
-  font-weight: 950;
-  cursor: pointer;
-}
-
-.profile-avatar-wrapper {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 16px;
-  margin-bottom: 18px;
-}
-
-.profile-avatar-image {
-  width: 118px;
-  height: 118px;
-  padding: 4px;
-  border: 4px solid rgba(255, 255, 255, 0.08);
-  border-radius: 50%;
-  background: linear-gradient(135deg, #667eea, #764ba2);
-  object-fit: cover;
-  box-shadow: 0 0 35px rgba(118, 92, 255, 0.35);
-}
-
 .hidden-avatar-input,
 .hidden-file-input {
   display: none !important;
 }
 
-.change-avatar-btn,
-.save-profile-btn,
-.danger-btn {
-  font-family: inherit;
-}
-
-.change-avatar-btn {
-  padding: 12px 18px;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.07);
-  color: white;
-  font-weight: 850;
-  cursor: pointer;
-}
-
-.profile-top-card h1 {
-  margin: 0 0 6px;
-  color: white;
-  font-size: clamp(2rem, 4vw, 3rem);
-  font-weight: 950;
-}
-
-.profile-top-card p {
-  margin: 0;
-  color: rgba(255, 255, 255, 0.62);
-  font-weight: 750;
-}
-
-.profile-badges {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 10px;
-  margin-top: 18px;
-}
-
-.profile-badges span {
-  padding: 9px 14px;
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  color: white;
-  font-size: 0.9rem;
-  font-weight: 850;
-}
-
 .profile-account-card {
   min-height: 360px;
-}
-
-.setting-row {
-  display: grid;
-  grid-template-columns: 130px minmax(0, 1fr);
-  align-items: center;
-  gap: 14px;
-  padding: 14px 0;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
-}
-
-.setting-row span {
-  color: rgba(255, 255, 255, 0.58);
-  font-weight: 800;
-}
-
-.profile-input {
-  width: 100%;
-  padding: 13px 15px;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 16px;
-  box-sizing: border-box;
-  background: rgba(0, 0, 0, 0.22);
-  color: white;
-  font-size: 1rem;
-  font-weight: 700;
-  outline: none;
-}
-
-.profile-input.disabled {
-  opacity: 0.55;
-  cursor: not-allowed;
-}
-
-.save-profile-btn {
-  width: 100%;
-  margin-top: 22px;
-  padding: 14px 18px;
-  border: none;
-  border-radius: 999px;
-  background: linear-gradient(135deg, #2ecc71, #27ae60);
-  color: white;
-  font-size: 1rem;
-  font-weight: 950;
-  cursor: pointer;
 }
 
 .profile-wide-card {
@@ -858,7 +761,7 @@ export default {
     min-height: auto;
   }
 
-  .profile-dashboard-grid.teacher-profile-grid > .profile-top-card {
+  .profile-dashboard-grid.teacher-profile-grid > .profile-hero-card {
     grid-row: 1;
     grid-column: span 2;
   }
@@ -893,30 +796,12 @@ export default {
   color: #ff7676;
 }
 
-.danger-btn {
-  width: 100%;
-  margin-top: 0;
-  padding: 14px 18px;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.06);
-  color: white;
-  font-weight: 900;
-  cursor: pointer;
-}
-
-.danger-btn.red {
-  border-color: rgba(231, 76, 60, 0.4);
-  background: rgba(231, 76, 60, 0.12);
-  color: #ff7676;
-}
-
 @media (max-width: 1100px) {
   .profile-dashboard-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  .profile-top-card {
+  .profile-hero-card {
     grid-column: 1 / -1;
   }
 }
@@ -932,16 +817,9 @@ export default {
     grid-template-columns: 1fr;
   }
 
-  .profile-top-card {
+  .profile-hero-card {
     grid-column: auto;
     min-height: auto;
-    padding: 28px 20px;
-    border-radius: 28px;
-  }
-
-  .setting-row {
-    grid-template-columns: 1fr;
-    gap: 8px;
   }
 }
 </style>
