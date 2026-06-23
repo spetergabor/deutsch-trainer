@@ -12,7 +12,7 @@
       :can-complete="selectedLesson.status !== 'completed'"
       can-start-video
       realtime-author-role="teacher"
-      @update:model-value="lessonWorkbookDraft.sharedNotes = $event"
+      @update:model-value="handleLessonWorkbookUpdate"
       @close="closeSelectedLesson"
       @save="saveSelectedLessonWorkbook"
       @complete="completeSelectedLesson"
@@ -1247,6 +1247,7 @@ export default {
       isSendingTeacherNote: false,
       lessonSessions: [],
       selectedLessonId: "",
+      selectedLessonSnapshot: null,
       selectedPreparationLessonId: "",
       isPreparationCardOpen: true,
       isLessonSessionsLoading: false,
@@ -1702,13 +1703,13 @@ export default {
     },
 
     selectedLesson() {
-      if (!this.selectedStudentLessons.length || !this.selectedLessonId) {
+      if (!this.selectedLessonId) {
         return null;
       }
 
       return this.selectedStudentLessons.find((lesson) => {
         return lesson.id === this.selectedLessonId;
-      }) || null;
+      }) || this.selectedLessonSnapshot || null;
     },
 
     selectedLessonParticipantLabel() {
@@ -2091,6 +2092,7 @@ export default {
       this.activeTeacherSection = "students";
       await this.selectStudent(student);
       this.selectedLessonId = lesson.id;
+      this.selectedLessonSnapshot = { ...lesson };
       this.syncLessonWorkbookDraft(lesson);
     },
 
@@ -2192,7 +2194,15 @@ export default {
           this.selectedPreparationLessonId = "";
           this.isPreparationCardOpen = false;
         }
-        this.syncLessonWorkbookDraft(this.selectedLesson);
+
+        const selectedLessonStillExists = this.lessonSessions.find((lesson) => {
+          return lesson.id === this.selectedLessonId;
+        });
+
+        if (selectedLessonStillExists) {
+          this.selectedLessonSnapshot = { ...selectedLessonStillExists };
+          this.syncLessonWorkbookDraft(selectedLessonStillExists);
+        }
       } catch (error) {
         console.error("Online órák lekérési hiba:", error.message);
         this.lessonSessionSetupError = error.message?.includes("lesson_sessions");
@@ -2429,6 +2439,7 @@ export default {
       this.selectedStudent = student;
       this.isStudentDataLoading = true;
       this.selectedLessonId = "";
+      this.selectedLessonSnapshot = null;
 
       this.teacherNoteText = "";
       this.studentNotes = [];
@@ -2455,6 +2466,7 @@ export default {
       ]);
 
       this.selectedLessonId = this.selectedLesson?.id || "";
+      this.selectedLessonSnapshot = this.selectedLesson ? { ...this.selectedLesson } : null;
       this.syncLessonWorkbookDraft(this.selectedLesson);
       this.isStudentDataLoading = false;
     },
@@ -2462,6 +2474,7 @@ export default {
     clearSelectedStudent() {
       this.selectedStudent = null;
       this.selectedLessonId = "";
+      this.selectedLessonSnapshot = null;
       this.teacherNoteText = "";
       this.studentNotes = [];
       this.studentFiles = [];
@@ -2523,11 +2536,13 @@ export default {
       }
 
       this.selectedLessonId = lesson.id;
+      this.selectedLessonSnapshot = { ...lesson };
       this.syncLessonWorkbookDraft(lesson);
     },
 
     closeSelectedLesson() {
       this.selectedLessonId = "";
+      this.selectedLessonSnapshot = null;
       this.syncLessonWorkbookDraft(null);
     },
 
@@ -2535,6 +2550,17 @@ export default {
       this.lessonWorkbookDraft = {
         sharedNotes: lesson?.shared_notes || "",
       };
+    },
+
+    handleLessonWorkbookUpdate(sharedNotes) {
+      this.lessonWorkbookDraft.sharedNotes = sharedNotes;
+
+      if (this.selectedLessonSnapshot) {
+        this.selectedLessonSnapshot = {
+          ...this.selectedLessonSnapshot,
+          shared_notes: sharedNotes,
+        };
+      }
     },
 
     async scheduleLessonForSelectedStudent() {
@@ -2591,6 +2617,7 @@ export default {
         this.lessonSessions = this.lessonSessions.map((lesson) =>
           lesson.id === updated.id ? { ...lesson, ...updated } : lesson,
         );
+        this.selectedLessonSnapshot = { ...updated };
       } catch (error) {
         console.error("Munkafüzet mentési hiba:", error.message);
         alert("Nem sikerült menteni a munkafüzetet.");
@@ -2617,6 +2644,7 @@ export default {
         this.lessonSessions = this.lessonSessions.map((lesson) =>
           lesson.id === updated.id ? { ...lesson, ...updated } : lesson,
         );
+        this.selectedLessonSnapshot = { ...updated };
       } catch (error) {
         console.error("Videóóra indítási jelzés hiba:", error.message);
       }

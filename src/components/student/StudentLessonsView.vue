@@ -9,7 +9,7 @@
     :model-value="lessonWorkbookDraft.sharedNotes"
     :is-saving="isSavingLessonWorkbook"
     realtime-author-role="student"
-    @update:model-value="lessonWorkbookDraft.sharedNotes = $event"
+    @update:model-value="handleLessonWorkbookUpdate"
     @close="closeSelectedLesson"
     @save="saveSelectedLessonWorkbook"
     @video-started="syncLessonVideoStarted"
@@ -185,6 +185,7 @@ export default {
       lessonsUi: LESSONS_UI,
       lessonSessions: [],
       selectedLessonId: "",
+      selectedLessonSnapshot: null,
       lessonWorkbookDraft: {
         sharedNotes: "",
       },
@@ -200,11 +201,12 @@ export default {
     },
 
     selectedLesson() {
-      if (!this.lessonSessions.length || !this.selectedLessonId) {
+      if (!this.selectedLessonId) {
         return null;
       }
 
       return this.lessonSessions.find((lesson) => lesson.id === this.selectedLessonId)
+        || this.selectedLessonSnapshot
         || null;
     },
 
@@ -248,8 +250,9 @@ export default {
         });
 
         if (selectedLessonStillExists) {
+          this.selectedLessonSnapshot = { ...selectedLessonStillExists };
           this.syncLessonWorkbookDraft(selectedLessonStillExists);
-        } else {
+        } else if (!this.selectedLessonId) {
           this.closeSelectedLesson();
         }
       } catch (error) {
@@ -265,6 +268,7 @@ export default {
       if (!lesson?.id) return;
 
       this.selectedLessonId = lesson.id;
+      this.selectedLessonSnapshot = { ...lesson };
       this.syncLessonWorkbookDraft(lesson);
 
       try {
@@ -277,6 +281,7 @@ export default {
         this.lessonSessions = this.lessonSessions.map((item) =>
           item.id === updated.id ? { ...item, ...updated } : item,
         );
+        this.selectedLessonSnapshot = { ...updated };
         this.syncLessonWorkbookDraft(updated);
       } catch (error) {
         console.error("Óra frissítési hiba:", error.message);
@@ -285,6 +290,7 @@ export default {
 
     closeSelectedLesson() {
       this.selectedLessonId = "";
+      this.selectedLessonSnapshot = null;
       this.syncLessonWorkbookDraft(null);
     },
 
@@ -303,6 +309,17 @@ export default {
       };
     },
 
+    handleLessonWorkbookUpdate(sharedNotes) {
+      this.lessonWorkbookDraft.sharedNotes = sharedNotes;
+
+      if (this.selectedLessonSnapshot) {
+        this.selectedLessonSnapshot = {
+          ...this.selectedLessonSnapshot,
+          shared_notes: sharedNotes,
+        };
+      }
+    },
+
     syncLessonVideoStarted(videoStartedAt) {
       if (!this.selectedLesson?.id) {
         return;
@@ -313,6 +330,11 @@ export default {
           ? { ...lesson, video_started_at: videoStartedAt || new Date().toISOString() }
           : lesson,
       );
+
+      this.selectedLessonSnapshot = {
+        ...this.selectedLesson,
+        video_started_at: videoStartedAt || new Date().toISOString(),
+      };
     },
 
     async saveSelectedLessonWorkbook() {
@@ -331,6 +353,7 @@ export default {
         this.lessonSessions = this.lessonSessions.map((lesson) =>
           lesson.id === updated.id ? { ...lesson, ...updated } : lesson,
         );
+        this.selectedLessonSnapshot = { ...updated };
       } catch (error) {
         console.error("Diák órai jegyzet mentési hiba:", error.message);
         alert("Nem sikerült menteni az órai jegyzetet.");

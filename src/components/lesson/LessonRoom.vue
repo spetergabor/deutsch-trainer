@@ -84,6 +84,7 @@
 
 <script>
 import { supabase } from "../../supabase";
+import { updateLessonWorkbook } from "../../services/lessonSessionService";
 import JitsiRoom from "./JitsiRoom.vue";
 
 const LESSON_UI = {
@@ -196,6 +197,8 @@ export default {
       realtimeChannel: null,
       realtimeStatus: "connecting",
       realtimeDebounceId: null,
+      autosaveDebounceId: null,
+      lastAutosavedNotes: "",
       realtimeClientId: "",
       realtimeVideoStartedAt: "",
       didRequestVideoStart: false,
@@ -224,12 +227,18 @@ export default {
     canJoinVideo() {
       return this.canStartVideo || Boolean(this.videoStartedAt);
     },
+
+    draftStorageKey() {
+      return this.lesson?.id ? `lesson-workbook-draft:${this.lesson.id}` : "";
+    },
   },
 
   watch: {
     "lesson.id"() {
       this.realtimeVideoStartedAt = this.lesson?.video_started_at || "";
       this.didRequestVideoStart = false;
+      this.lastAutosavedNotes = this.modelValue || "";
+      this.restoreCachedWorkbookDraft();
       this.subscribeWorkbookRealtime();
       this.ensureTeacherVideoStarted();
     },
@@ -252,12 +261,16 @@ export default {
       window.crypto?.randomUUID?.() ||
       `client-${Date.now()}-${Math.random().toString(16).slice(2)}`;
     this.realtimeVideoStartedAt = this.lesson?.video_started_at || "";
+    this.lastAutosavedNotes = this.modelValue || "";
+    this.restoreCachedWorkbookDraft();
     this.subscribeWorkbookRealtime();
     this.ensureTeacherVideoStarted();
   },
 
   beforeUnmount() {
+    this.flushWorkbookAutosave();
     this.clearRealtimeDebounce();
+    this.clearAutosaveDebounce();
     this.unsubscribeWorkbookRealtime();
   },
 
@@ -278,7 +291,9 @@ export default {
       const sharedNotes = event.target.value;
 
       this.$emit("update:modelValue", sharedNotes);
+      this.writeCachedWorkbookDraft(sharedNotes);
       this.queueWorkbookBroadcast(sharedNotes);
+      this.queueWorkbookAutosave(sharedNotes);
     },
 
     ensureTeacherVideoStarted() {
@@ -339,6 +354,96 @@ export default {
       }
     },
 
+    clearAutosaveDebounce() {
+      if (this.autosaveDebounceId) {
+        window.clearTimeout(this.autosaveDebounceId);
+        this.autosaveDebounceId = null;
+      }
+    },
+
+    queueWorkbookAutosave(sharedNotes) {
+      this.clearAutosaveDebounce();
+
+      this.autosaveDebounceId = window.setTimeout(() => {
+        this.saveWorkbookDraft(sharedNotes);
+      }, 700);
+    },
+
+    flushWorkbookAutosave() {
+      if (!this.autosaveDebounceId) {
+        return;
+      }
+
+      this.clearAutosaveDebounce();
+      this.saveWorkbookDraft(this.modelValue || "");
+    },
+
+    async saveWorkbookDraft(sharedNotes) {
+      if (!this.lesson?.id || sharedNotes === this.lastAutosavedNotes) {
+        return;
+      }
+
+      try {
+        const updated = await updateLessonWorkbook(this.lesson.id, { sharedNotes });
+        this.lastAutosavedNotes = updated?.shared_notes || sharedNotes || "";
+        this.writeCachedWorkbookDraft(this.lastAutosavedNotes);
+      } catch (error) {
+        console.error("Órai jegyzet autosave hiba:", error);
+      }
+    },
+
+    restoreCachedWorkbookDraft() {
+      const cachedNotes = this.readCachedWorkbookDraft();
+
+      if (!cachedNotes || cachedNotes === this.modelValue) {
+        return;
+      }
+
+      if (!this.modelValue || cachedNotes.length >= this.modelValue.length) {
+        this.$emit("update:modelValue", cachedNotes);
+        this.queueWorkbookBroadcast(cachedNotes);
+        this.queueWorkbookAutosave(cachedNotes);
+      }
+    },
+
+    readCachedWorkbookDraft() {
+      if (!this.draftStorageKey || typeof window === "undefined") {
+        return "";
+      }
+
+      try {
+        const rawDraft = window.sessionStorage.getItem(this.draftStorageKey);
+
+        if (!rawDraft) {
+          return "";
+        }
+
+        const draft = JSON.parse(rawDraft);
+        return draft?.sharedNotes || "";
+      } catch (error) {
+        console.error("Órai jegyzet cache olvasási hiba:", error);
+        return "";
+      }
+    },
+
+    writeCachedWorkbookDraft(sharedNotes) {
+      if (!this.draftStorageKey || typeof window === "undefined") {
+        return;
+      }
+
+      try {
+        window.sessionStorage.setItem(
+          this.draftStorageKey,
+          JSON.stringify({
+            sharedNotes: sharedNotes || "",
+            savedAt: new Date().toISOString(),
+          }),
+        );
+      } catch (error) {
+        console.error("Órai jegyzet cache mentési hiba:", error);
+      }
+    },
+
     async broadcastWorkbookDraft(sharedNotes) {
       if (!this.realtimeChannel) {
         return;
@@ -388,7 +493,11 @@ export default {
             return;
           }
 
-          this.$emit("update:modelValue", payload.sharedNotes || "");
+          const sharedNotes = payload.sharedNotes || "";
+
+          this.$emit("update:modelValue", sharedNotes);
+          this.writeCachedWorkbookDraft(sharedNotes);
+          this.queueWorkbookAutosave(sharedNotes);
         })
         .on("broadcast", { event: "video-started" }, ({ payload }) => {
           if (!payload || payload.clientId === this.realtimeClientId) {
