@@ -88,7 +88,7 @@
             ref="answerInput"
             v-model="userAnswer"
             type="text"
-            class="pill-input pronominal-answer-input"
+            class="practice-input pronominal-answer-input"
             placeholder="pl. worauf"
             :disabled="isAnswered"
             :class="{
@@ -102,7 +102,7 @@
         <div class="button-group ui-unit">
           <button
             v-if="selectedMode === 'writing' && !isAnswered"
-            class="pill-button btn-green"
+            class="practice-btn-primary"
             :disabled="!userAnswer.trim()"
             @click="checkWritingAnswer"
           >
@@ -111,7 +111,7 @@
 
           <button
             v-if="isAnswered"
-            class="pill-button btn-blue"
+            class="practice-btn-secondary"
             @click="nextQuestion"
           >
             Következő
@@ -151,7 +151,7 @@
           </span>
         </p>
 
-        <button class="pill-button btn-green" @click="startNextAction">
+        <button class="practice-btn-primary" @click="startNextAction">
           {{
             incorrectAnswersInRound === 0
               ? "Új kör indítása"
@@ -159,7 +159,7 @@
           }}
         </button>
 
-        <button class="pill-button btn-blue" @click="$emit('go-dashboard')">
+        <button class="practice-btn-secondary" @click="$emit('go-dashboard')">
           Vissza a főmenübe
         </button>
       </div>
@@ -486,172 +486,4 @@ export default {
 };
 </script>
 
-<style scoped>
-.pronominaladverb-practice {
-  max-width: 760px;
-}
-
-.pronominal-mode-picker {
-  width: min(760px, 100%);
-  margin: 0 auto;
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 18px;
-}
-
-.pronominal-mode-card {
-  min-height: 240px;
-  padding: 28px;
-  border: 1px solid rgba(255, 255, 255, 0.09);
-  border-radius: 28px;
-  display: grid;
-  align-content: center;
-  justify-items: start;
-  gap: 14px;
-  background: rgba(255, 255, 255, 0.055);
-  color: #ffffff;
-  font: inherit;
-  text-align: left;
-  box-shadow: 0 15px 34px rgba(0, 0, 0, 0.22);
-  cursor: pointer;
-}
-
-.pronominal-mode-card span {
-  width: 76px;
-  height: 76px;
-  border-radius: 24px;
-  display: grid;
-  place-items: center;
-  background: linear-gradient(135deg, #36d1dc, #5b86e5);
-  font-size: 2rem;
-  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.24);
-}
-
-.pronominal-mode-card strong {
-  font-size: 1.45rem;
-  font-weight: 950;
-  line-height: 1.08;
-}
-
-.pronominal-mode-card small {
-  color: rgba(255, 255, 255, 0.62);
-  font-size: 0.95rem;
-  font-weight: 800;
-  line-height: 1.4;
-}
-
-.pronominaladverb-practice :deep(.practice-box) {
-  gap: 26px;
-}
-
-.pronominaladverb-practice :deep(.quiz-area) {
-  gap: 22px;
-}
-
-.pronominal-question-card {
-  width: 100%;
-  max-width: 640px;
-  padding: 22px;
-  border-radius: 26px;
-  display: grid;
-  gap: 14px;
-  background: rgba(0, 0, 0, 0.18);
-  text-align: center;
-}
-
-.pronominal-type {
-  display: inline-flex;
-  justify-content: center;
-  margin-bottom: 8px;
-  padding: 8px 14px;
-  border-radius: 999px;
-  background: rgba(52, 152, 219, 0.18);
-  color: #8fe6ff;
-  font-size: 0.88rem;
-  font-weight: 900;
-}
-
-.pronominal-prompt {
-  margin: 0;
-  color: rgba(255, 255, 255, 0.66);
-  font-size: 0.95rem;
-  font-weight: 850;
-  line-height: 1.4;
-}
-
-.pronominal-sentence {
-  margin: 0;
-  font-size: clamp(1.45rem, 3vw, 2.1rem);
-  line-height: 1.18;
-  overflow-wrap: break-word;
-}
-
-.pronominal-options {
-  display: grid;
-  gap: 12px;
-  width: 100%;
-  max-width: 640px;
-  margin: 0 auto;
-}
-
-.pronominal-option-btn {
-  width: 100%;
-  min-height: 58px;
-  padding: 15px 18px;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 18px;
-  background: rgba(255, 255, 255, 0.055);
-  color: #ffffff;
-  font: inherit;
-  font-size: 0.98rem;
-  font-weight: 850;
-  text-align: left;
-  cursor: pointer;
-}
-
-.pronominal-option-btn.correct {
-  border-color: rgba(46, 204, 113, 0.45);
-  background: rgba(46, 204, 113, 0.16);
-}
-
-.pronominal-option-btn.wrong {
-  border-color: rgba(255, 71, 87, 0.45);
-  background: rgba(255, 71, 87, 0.14);
-}
-
-.pronominal-option-btn.muted {
-  opacity: 0.5;
-}
-
-.pronominal-writing-input,
-.pronominaladverb-practice :deep(.button-group),
-.pronominaladverb-practice :deep(.feedback-box) {
-  width: 100%;
-  max-width: 640px;
-}
-
-.example-box {
-  margin-top: 15px;
-  text-align: left;
-}
-
-.example-box p {
-  margin: 0;
-}
-
-@media (max-width: 700px) {
-  .pronominal-mode-picker {
-    grid-template-columns: 1fr;
-  }
-
-  .pronominal-mode-card {
-    min-height: 190px;
-    padding: 24px;
-  }
-
-  .pronominal-question-card {
-    padding: 18px;
-    border-radius: 22px;
-  }
-}
-</style>
+<style scoped src="../assets/styles/practice-legacy.css"></style>

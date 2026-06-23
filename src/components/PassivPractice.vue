@@ -101,7 +101,7 @@
         <div class="button-group ui-unit">
           <button
             v-if="selectedMode === 'writing' && !isAnswered"
-            class="pill-button btn-green"
+            class="practice-btn-primary"
             :disabled="!userAnswer.trim()"
             @click="checkWritingAnswer"
           >
@@ -110,7 +110,7 @@
 
           <button
             v-if="isAnswered"
-            class="pill-button btn-blue"
+            class="practice-btn-secondary"
             @click="nextQuestion"
           >
             Következő
@@ -150,7 +150,7 @@
           </span>
         </p>
 
-        <button class="pill-button btn-green" @click="startNextAction">
+        <button class="practice-btn-primary" @click="startNextAction">
           {{
             incorrectAnswersInRound === 0
               ? "Új kör indítása"
@@ -158,7 +158,7 @@
           }}
         </button>
 
-        <button class="pill-button btn-blue" @click="$emit('go-dashboard')">
+        <button class="practice-btn-secondary" @click="$emit('go-dashboard')">
           Vissza a főmenübe
         </button>
       </div>
@@ -483,257 +483,4 @@ export default {
 };
 </script>
 
-<style scoped>
-.passiv-practice {
-  max-width: 760px;
-}
-
-.passiv-mode-picker {
-  width: min(760px, 100%);
-  margin: 0 auto;
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 18px;
-}
-
-.passiv-mode-card {
-  min-height: 240px;
-  padding: 28px;
-  border: 1px solid rgba(255, 255, 255, 0.09);
-  border-radius: 28px;
-  display: grid;
-  align-content: center;
-  justify-items: start;
-  gap: 14px;
-  background: rgba(255, 255, 255, 0.055);
-  color: #ffffff;
-  font: inherit;
-  text-align: left;
-  box-shadow: 0 15px 34px rgba(0, 0, 0, 0.22);
-  cursor: pointer;
-  transition:
-    transform 0.18s ease,
-    border-color 0.18s ease,
-    background 0.18s ease;
-}
-
-.passiv-mode-card:hover {
-  transform: translateY(-2px);
-  border-color: rgba(67, 233, 123, 0.42);
-  background: rgba(255, 255, 255, 0.075);
-}
-
-.passiv-mode-card span {
-  width: 76px;
-  height: 76px;
-  border-radius: 24px;
-  display: grid;
-  place-items: center;
-  background: linear-gradient(135deg, #667eea, #43e97b);
-  font-size: 2rem;
-  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.24);
-}
-
-.passiv-mode-card strong {
-  font-size: 1.45rem;
-  font-weight: 950;
-  line-height: 1.08;
-}
-
-.passiv-mode-card small {
-  color: rgba(255, 255, 255, 0.62);
-  font-size: 0.95rem;
-  font-weight: 800;
-  line-height: 1.4;
-}
-
-.passiv-practice :deep(.practice-box) {
-  gap: 26px;
-}
-
-.passiv-practice :deep(.quiz-area) {
-  gap: 22px;
-}
-
-.passiv-question-card {
-  width: 100%;
-  max-width: 640px;
-  padding: 22px;
-  border-radius: 26px;
-  display: grid;
-  gap: 14px;
-  background: rgba(0, 0, 0, 0.18);
-  text-align: center;
-}
-
-.passiv-type {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: 8px;
-  padding: 8px 14px;
-  border-radius: 999px;
-  background: rgba(102, 126, 234, 0.18);
-  color: #bfc8ff;
-  font-size: 0.88rem;
-  font-weight: 900;
-}
-
-.passiv-prompt {
-  margin: 0;
-  color: rgba(255, 255, 255, 0.66);
-  font-size: 0.95rem;
-  font-weight: 850;
-  line-height: 1.4;
-}
-
-.passiv-sentence {
-  margin: 0;
-  font-size: clamp(1.5rem, 3vw, 2.2rem);
-  line-height: 1.18;
-  overflow-wrap: break-word;
-}
-
-.passiv-options {
-  display: grid;
-  gap: 12px;
-  width: 100%;
-  max-width: 640px;
-  margin: 0 auto;
-}
-
-.passiv-option-btn {
-  width: 100%;
-  min-height: 58px;
-  padding: 15px 18px;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 18px;
-  background: rgba(255, 255, 255, 0.055);
-  color: #ffffff;
-  font: inherit;
-  font-size: 0.98rem;
-  font-weight: 850;
-  text-align: left;
-  cursor: pointer;
-  transition:
-    transform 0.18s ease,
-    border-color 0.18s ease,
-    background 0.18s ease,
-    opacity 0.18s ease;
-}
-
-.passiv-option-btn:hover:not(:disabled) {
-  transform: translateY(-2px);
-  border-color: rgba(102, 126, 234, 0.45);
-  background: rgba(255, 255, 255, 0.08);
-}
-
-.passiv-option-btn.correct {
-  border-color: rgba(46, 204, 113, 0.45);
-  background: rgba(46, 204, 113, 0.16);
-}
-
-.passiv-option-btn.wrong {
-  border-color: rgba(255, 71, 87, 0.45);
-  background: rgba(255, 71, 87, 0.14);
-}
-
-.passiv-option-btn.muted {
-  opacity: 0.5;
-}
-
-.passiv-writing-input {
-  max-width: 640px;
-}
-
-.passiv-answer-textarea {
-  width: 100%;
-  min-height: 112px;
-  padding: 18px 20px;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  outline: none;
-  border-radius: 22px;
-  box-sizing: border-box;
-  background: rgba(0, 0, 0, 0.22);
-  color: #ffffff;
-  font: inherit;
-  font-size: 1rem;
-  font-weight: 750;
-  line-height: 1.5;
-  resize: vertical;
-  transition:
-    border-color 0.2s ease,
-    box-shadow 0.2s ease,
-    background 0.2s ease;
-}
-
-.passiv-answer-textarea::placeholder {
-  color: rgba(255, 255, 255, 0.38);
-}
-
-.passiv-answer-textarea:focus {
-  border-color: rgba(102, 126, 234, 0.85);
-  background: rgba(0, 0, 0, 0.3);
-  box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.15);
-}
-
-.passiv-answer-textarea.input-correct {
-  border-color: rgba(46, 204, 113, 0.72);
-  background: rgba(46, 204, 113, 0.12);
-}
-
-.passiv-answer-textarea.input-wrong {
-  border-color: rgba(255, 71, 87, 0.68);
-  background: rgba(255, 71, 87, 0.1);
-}
-
-.passiv-practice :deep(.button-group) {
-  max-width: 640px;
-  margin-top: -4px;
-}
-
-.passiv-practice :deep(.feedback-box) {
-  width: 100%;
-  max-width: 640px;
-  margin-top: 0;
-}
-
-.example-box {
-  margin-top: 15px;
-  text-align: left;
-}
-
-.example-box p {
-  margin: 0;
-}
-
-@media (max-width: 700px) {
-  .passiv-mode-picker {
-    grid-template-columns: 1fr;
-  }
-
-  .passiv-mode-card {
-    min-height: 190px;
-    padding: 24px;
-  }
-
-  .passiv-practice :deep(.practice-box) {
-    gap: 20px;
-  }
-
-  .passiv-question-card {
-    padding: 18px;
-    border-radius: 22px;
-  }
-
-  .passiv-options {
-    gap: 10px;
-  }
-
-  .passiv-option-btn {
-    min-height: 54px;
-    padding: 13px 15px;
-    border-radius: 16px;
-  }
-}
-</style>
+<style scoped src="../assets/styles/practice-legacy.css"></style>

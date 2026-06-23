@@ -192,7 +192,7 @@
 
           <button
             v-if="!isRevealed"
-            class="pill-button btn-blue"
+            class="practice-btn-secondary"
             @click="isRevealed = true"
           >
             Fordítás mutatása
@@ -270,7 +270,7 @@
               ref="answerInput"
               v-model="userAnswer"
               type="text"
-              class="pill-input"
+              class="practice-input"
               :placeholder="answerPlaceholder"
               :disabled="isAnswered"
               :class="{
@@ -284,7 +284,7 @@
           <div class="button-group ui-unit vocab-test-actions">
             <button
               v-if="!isAnswered"
-              class="pill-button btn-green"
+              class="practice-btn-primary"
               :disabled="!userAnswer.trim()"
               @click="checkTestAnswer"
             >
@@ -293,7 +293,7 @@
 
             <button
               v-else
-              class="pill-button btn-blue"
+              class="practice-btn-secondary"
               @click="nextItem"
             >
               Következő
@@ -321,7 +321,7 @@
         </p>
 
         <button
-          class="pill-button btn-green"
+          class="practice-btn-primary"
           @click="startNextAction"
         >
           {{
@@ -332,7 +332,7 @@
         </button>
 
         <button
-          class="pill-button btn-blue"
+          class="practice-btn-secondary"
           @click="$emit('go-dashboard')"
         >
           Vissza a főmenübe
@@ -1664,8 +1664,9 @@ export default {
   max-width: 520px;
 }
 
-.vocabulary-practice.is-test-mode .vocab-answer-wrap .pill-input,
-.vocabulary-practice.is-test-mode .vocab-test-actions .pill-button {
+.vocabulary-practice.is-test-mode .vocab-answer-wrap .practice-input,
+.vocabulary-practice.is-test-mode .vocab-test-actions .practice-btn-primary,
+.vocabulary-practice.is-test-mode .vocab-test-actions .practice-btn-secondary {
   width: 100%;
   max-width: none;
   min-height: 58px;
@@ -1925,7 +1926,7 @@ export default {
     margin-top: 6px;
   }
 
-  .vocabulary-practice.is-test-mode .vocab-answer-wrap .pill-input {
+  .vocabulary-practice.is-test-mode .vocab-answer-wrap .practice-input {
     min-height: 60px;
     margin: 0;
     padding: 0 22px;
@@ -1936,16 +1937,20 @@ export default {
     margin-top: 0;
   }
 
-  .vocabulary-practice.is-test-mode .vocab-test-actions .pill-button {
+  .vocabulary-practice.is-test-mode .vocab-test-actions .practice-btn-primary,
+  .vocabulary-practice.is-test-mode .vocab-test-actions .practice-btn-secondary {
     min-height: 60px;
     margin: 0;
-    border-radius: 30px;
+    border-radius: var(--practice-control-radius, 0.5rem) !important;
     font-size: 1rem;
   }
 
   .vocabulary-practice.is-test-mode
     .vocab-test-actions
-    .pill-button:disabled {
+    .practice-btn-primary:disabled,
+  .vocabulary-practice.is-test-mode
+    .vocab-test-actions
+    .practice-btn-secondary:disabled {
     background: rgba(255, 255, 255, 0.1);
     color: rgba(255, 255, 255, 0.5);
     opacity: 1;

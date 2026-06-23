@@ -1,6 +1,6 @@
 <template>
   <section
-    class="practice-screen"
+    class="practice-screen nemet-page-shell"
     :class="{
       'grammar-practice-screen': isGrammarGuide,
       'profile-practice-screen': currentMode === 'profile',
@@ -325,7 +325,7 @@
 
     <div
       v-if="activeGrammarGuide"
-      class="grammar-guide-shell"
+      class="grammar-guide-shell nemet-page-shell !mx-auto !w-[min(100%,1080px)] !max-w-[1080px] box-border [.with-desktop-sidebar_&]:!ml-0 [.with-desktop-sidebar_&]:!mr-0 [.with-desktop-sidebar_&]:!w-[min(100%,var(--desktop-shell-width))] [.with-desktop-sidebar_&]:!max-w-[min(var(--desktop-shell-width),1080px)]"
     >
       <GrammarGuideView
         :guide-id="activeGrammarGuide.id"
@@ -473,8 +473,8 @@ export default {
     },
 
     activityCalendar: {
-      type: Array,
-      default: () => [],
+      type: [Array, Object],
+      default: () => ({ weeks: [], monthLabels: [], activeDays: 0 }),
     },
 
     recentExercises: {

@@ -15,18 +15,22 @@
     @video-started="syncLessonVideoStarted"
   />
 
-  <section v-else class="student-materials-view student-lessons-view">
-    <div class="student-materials-header">
-      <span>Online órák</span>
-      <h2>Óráim</h2>
-      <p>Következő óra, korábbi alkalmak és közös órai jegyzetek egy helyen.</p>
+  <section v-else :class="lessonsUi.shell">
+    <div :class="lessonsUi.header">
+      <span :class="lessonsUi.headerKicker">Online órák</span>
+      <h2 :class="lessonsUi.headerTitle">Óráim</h2>
+      <p :class="lessonsUi.headerCopy">
+        Következő óra, korábbi alkalmak és közös órai jegyzetek egy helyen.
+      </p>
     </div>
 
-    <section class="student-lessons-next">
-      <div class="student-lessons-next-copy">
-        <span>Következő óra</span>
-        <h3>{{ upcomingLesson?.topic || "Nincs ütemezett következő óra" }}</h3>
-        <p>
+    <section :class="lessonsUi.nextCard">
+      <div :class="lessonsUi.nextCopy">
+        <span :class="lessonsUi.cardKicker">Következő óra</span>
+        <h3 :class="lessonsUi.nextTitle">
+          {{ upcomingLesson?.topic || "Nincs ütemezett következő óra" }}
+        </h3>
+        <p :class="lessonsUi.nextMeta">
           {{
             upcomingLesson
               ? `${formatDate(upcomingLesson.scheduled_at)} · ${getLessonStatusLabel(upcomingLesson.status)}`
@@ -37,6 +41,7 @@
 
       <button
         type="button"
+        :class="lessonsUi.primaryAction"
         :disabled="!upcomingLesson"
         @click="selectLessonSession(upcomingLesson)"
       >
@@ -44,15 +49,16 @@
       </button>
     </section>
 
-    <section class="student-homework-panel student-lessons-panel">
-      <div class="student-lesson-head">
-        <div>
-          <span>Óraarchívum</span>
-          <h2>Korábbi és ütemezett órák</h2>
+    <section :class="lessonsUi.panel">
+      <div :class="lessonsUi.panelHead">
+        <div :class="lessonsUi.panelHeadText">
+          <span :class="lessonsUi.cardKicker">Óraarchívum</span>
+          <h2 :class="lessonsUi.panelTitle">Korábbi és ütemezett órák</h2>
         </div>
 
         <button
           type="button"
+          :class="lessonsUi.refreshButton"
           @click="loadLessonSessions"
           :disabled="isLoadingLessonSessions"
         >
@@ -60,32 +66,44 @@
         </button>
       </div>
 
-      <div v-if="lessonSessionSetupError" class="student-materials-empty warning">
+      <div
+        v-if="lessonSessionSetupError"
+        :class="[
+          lessonsUi.empty,
+          lessonsUi.emptyWarning,
+        ]"
+      >
         Az órák táblája még nincs beállítva.
       </div>
 
-      <div v-else-if="isLoadingLessonSessions" class="student-materials-empty">
+      <div v-else-if="isLoadingLessonSessions" :class="lessonsUi.empty">
         Órák betöltése...
       </div>
 
-      <div v-else-if="!lessonSessions.length" class="student-materials-empty">
+      <div v-else-if="!lessonSessions.length" :class="lessonsUi.empty">
         Még nincs online órád.
       </div>
 
-      <div v-else class="student-lessons-list">
+      <div v-else :class="lessonsUi.lessonList">
         <button
           v-for="lesson in orderedLessonSessions"
           :key="lesson.id"
           type="button"
-          class="student-lessons-item"
+          :class="lessonsUi.lessonItem"
           @click="selectLessonSession(lesson)"
         >
-          <div>
-            <strong>{{ lesson.topic || "Online óra" }}</strong>
-            <span>{{ formatDate(lesson.scheduled_at) }}</span>
+          <div class="min-w-0">
+            <strong :class="lessonsUi.lessonItemTitle">
+              {{ lesson.topic || "Online óra" }}
+            </strong>
+            <span :class="lessonsUi.lessonItemMeta">
+              {{ formatDate(lesson.scheduled_at) }}
+            </span>
           </div>
 
-          <small>{{ getLessonStatusLabel(lesson.status) }}</small>
+          <small :class="lessonsUi.lessonItemStatus">
+            {{ getLessonStatusLabel(lesson.status) }}
+          </small>
         </button>
       </div>
     </section>
@@ -100,6 +118,48 @@ import {
   updateLessonWorkbook,
 } from "../../services/lessonSessionService";
 import { formatDate } from "../../utils/formatters";
+
+const LESSONS_UI = {
+  shell:
+    "student-materials-view student-lessons-view nemet-page-shell nemet-page-shell--compact",
+  header: "mb-6 text-left",
+  headerKicker:
+    "inline-flex items-center rounded-full bg-[#ffd56a]/16 px-3 py-2 text-xs font-black leading-none text-[#ffdc7a]",
+  headerTitle:
+    "mt-3 text-4xl font-black leading-tight text-white sm:text-5xl",
+  headerCopy:
+    "max-w-3xl text-base font-semibold leading-relaxed text-white/60",
+  nextCard:
+    "mb-5 flex flex-col gap-4 rounded-[26px] border border-[#80caff]/18 bg-[linear-gradient(135deg,rgba(79,172,254,0.16),rgba(255,255,255,0)_46%),rgba(255,255,255,0.055)] p-5 shadow-[0_18px_40px_rgba(0,0,0,0.22)] md:flex-row md:items-center md:justify-between",
+  nextCopy: "min-w-0",
+  cardKicker:
+    "inline-flex text-xs font-black uppercase tracking-[0.02em] text-[#80caff]",
+  nextTitle:
+    "mt-2 text-2xl font-black leading-tight text-white sm:text-[2.1rem]",
+  nextMeta: "mt-2 text-sm font-semibold leading-relaxed text-white/64",
+  primaryAction:
+    "inline-flex h-11 items-center justify-center rounded-full border border-white/12 bg-[#4faccf]/18 px-5 text-sm font-black text-[#80caff] transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-40",
+  panel:
+    "rounded-[24px] border border-[#ffd56a]/25 bg-white/[0.055] p-5 shadow-[0_18px_40px_rgba(0,0,0,0.22)] sm:p-6",
+  panelHead:
+    "mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between",
+  panelHeadText: "min-w-0",
+  panelTitle: "mt-2 text-3xl font-black leading-tight text-white sm:text-[2rem]",
+  refreshButton:
+    "inline-flex h-10 w-fit items-center rounded-full border border-white/12 bg-white/10 px-4 text-sm font-black text-white/80 transition hover:bg-white/15",
+  empty:
+    "rounded-xl border border-white/10 bg-white/5 p-4 text-sm font-black leading-relaxed text-white/65",
+  emptyWarning: "text-[#ffdc7a]",
+  lessonList: "grid gap-2.5",
+  lessonItem:
+    "flex w-full items-center justify-between gap-3 rounded-[18px] border border-white/12 bg-black/20 px-4 py-3.5 text-left text-white transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#80caff]/35 hover:border-[#80caff]/34 hover:bg-[#4faccf]/13",
+  lessonItemTitle:
+    "block min-w-0 text-base font-black leading-snug text-white truncate",
+  lessonItemMeta:
+    "mt-1 block text-sm font-bold leading-relaxed text-white/64 truncate",
+  lessonItemStatus:
+    "shrink-0 text-xs font-black uppercase tracking-[0.02em] text-[#80caff]",
+};
 
 export default {
   name: "StudentLessonsView",
@@ -122,6 +182,7 @@ export default {
 
   data() {
     return {
+      lessonsUi: LESSONS_UI,
       lessonSessions: [],
       selectedLessonId: "",
       lessonWorkbookDraft: {

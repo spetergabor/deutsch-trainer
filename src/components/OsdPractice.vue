@@ -102,7 +102,7 @@
             </div>
           </div>
 
-          <button class="pill-button btn-green" @click="showInfoPopup = false">
+          <button class="practice-btn-primary" @click="showInfoPopup = false">
             Értem
           </button>
         </div>

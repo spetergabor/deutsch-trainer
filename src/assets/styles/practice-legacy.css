@@ -1,0 +1,1117 @@
+/* =========================================================
+   PRACTICE TASK LEGACY STYLES
+   (extracted from task components with per-task scoped overrides)
+========================================================= */
+
+/* ---------------------------------------------------------
+   PassivPractice.vue
+--------------------------------------------------------- */
+.passiv-practice {
+  max-width: 760px;
+}
+
+.passiv-mode-picker {
+  width: min(760px, 100%);
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.passiv-mode-card {
+  min-height: 240px;
+  padding: 28px;
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: 28px;
+  display: grid;
+  align-content: center;
+  justify-items: start;
+  gap: 14px;
+  background: rgba(255, 255, 255, 0.055);
+  color: #ffffff;
+  font: inherit;
+  text-align: left;
+  box-shadow: 0 15px 34px rgba(0, 0, 0, 0.22);
+  cursor: pointer;
+  transition:
+    transform 0.18s ease,
+    border-color 0.18s ease,
+    background 0.18s ease;
+}
+
+.passiv-mode-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(67, 233, 123, 0.42);
+  background: rgba(255, 255, 255, 0.075);
+}
+
+.passiv-mode-card span {
+  width: 76px;
+  height: 76px;
+  border-radius: 24px;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(135deg, #667eea, #43e97b);
+  font-size: 2rem;
+  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.24);
+}
+
+.passiv-mode-card strong {
+  font-size: 1.45rem;
+  font-weight: 950;
+  line-height: 1.08;
+}
+
+.passiv-mode-card small {
+  color: rgba(255, 255, 255, 0.62);
+  font-size: 0.95rem;
+  font-weight: 800;
+  line-height: 1.4;
+}
+
+.passiv-practice :deep(.practice-box) {
+  gap: 26px;
+}
+
+.passiv-practice :deep(.quiz-area) {
+  gap: 22px;
+}
+
+.passiv-question-card {
+  width: 100%;
+  max-width: 640px;
+  padding: 22px;
+  border-radius: 26px;
+  display: grid;
+  gap: 14px;
+  background: rgba(0, 0, 0, 0.18);
+  text-align: center;
+}
+
+.passiv-type {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 8px;
+  padding: 8px 14px;
+  border-radius: 999px;
+  background: rgba(102, 126, 234, 0.18);
+  color: #bfc8ff;
+  font-size: 0.88rem;
+  font-weight: 900;
+}
+
+.passiv-prompt {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.66);
+  font-size: 0.95rem;
+  font-weight: 850;
+  line-height: 1.4;
+}
+
+.passiv-sentence {
+  margin: 0;
+  font-size: clamp(1.5rem, 3vw, 2.2rem);
+  line-height: 1.18;
+  overflow-wrap: break-word;
+}
+
+.passiv-options {
+  display: grid;
+  gap: 12px;
+  width: 100%;
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+.passiv-option-btn {
+  width: 100%;
+  min-height: 58px;
+  padding: 15px 18px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.055);
+  color: #ffffff;
+  font: inherit;
+  font-size: 0.98rem;
+  font-weight: 850;
+  text-align: left;
+  cursor: pointer;
+  transition:
+    transform 0.18s ease,
+    border-color 0.18s ease,
+    background 0.18s ease,
+    opacity 0.18s ease;
+}
+
+.passiv-option-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  border-color: rgba(102, 126, 234, 0.45);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.passiv-option-btn.correct {
+  border-color: rgba(46, 204, 113, 0.45);
+  background: rgba(46, 204, 113, 0.16);
+}
+
+.passiv-option-btn.wrong {
+  border-color: rgba(255, 71, 87, 0.45);
+  background: rgba(255, 71, 87, 0.14);
+}
+
+.passiv-option-btn.muted {
+  opacity: 0.5;
+}
+
+.passiv-writing-input {
+  max-width: 640px;
+}
+
+.passiv-answer-textarea {
+  width: 100%;
+  min-height: 112px;
+  padding: 18px 20px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  outline: none;
+  border-radius: var(--practice-control-radius, 0.5rem) !important;
+  box-sizing: border-box;
+  background: rgba(0, 0, 0, 0.22);
+  color: #ffffff;
+  font: inherit;
+  font-size: 1rem;
+  font-weight: 750;
+  line-height: 1.5;
+  resize: vertical;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    background 0.2s ease;
+}
+
+.passiv-answer-textarea::placeholder {
+  color: rgba(255, 255, 255, 0.38);
+}
+
+.passiv-answer-textarea:focus {
+  border-color: rgba(102, 126, 234, 0.85);
+  background: rgba(0, 0, 0, 0.3);
+  box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.15);
+}
+
+.passiv-answer-textarea.input-correct {
+  border-color: rgba(46, 204, 113, 0.72);
+  background: rgba(46, 204, 113, 0.12);
+}
+
+.passiv-answer-textarea.input-wrong {
+  border-color: rgba(255, 71, 87, 0.68);
+  background: rgba(255, 71, 87, 0.1);
+}
+
+.passiv-practice :deep(.button-group) {
+  max-width: 640px;
+  margin-top: -4px;
+}
+
+.passiv-practice :deep(.feedback-box) {
+  width: 100%;
+  max-width: 640px;
+  margin-top: 0;
+}
+
+.example-box {
+  margin-top: 15px;
+  text-align: left;
+}
+
+.example-box p {
+  margin: 0;
+}
+
+@media (max-width: 700px) {
+  .passiv-mode-picker {
+    grid-template-columns: 1fr;
+  }
+
+  .passiv-mode-card {
+    min-height: 190px;
+    padding: 24px;
+  }
+
+  .passiv-practice :deep(.practice-box) {
+    gap: 20px;
+  }
+
+  .passiv-question-card {
+    padding: 18px;
+    border-radius: 22px;
+  }
+
+  .passiv-options {
+    gap: 10px;
+  }
+
+  .passiv-option-btn {
+    min-height: 54px;
+    padding: 13px 15px;
+    border-radius: 16px;
+  }
+}
+
+/* ---------------------------------------------------------
+   PronominaladverbPractice.vue
+--------------------------------------------------------- */
+.pronominaladverb-practice {
+  max-width: 760px;
+}
+
+.pronominal-mode-picker {
+  width: min(760px, 100%);
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.pronominal-mode-card {
+  min-height: 240px;
+  padding: 28px;
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: 28px;
+  display: grid;
+  align-content: center;
+  justify-items: start;
+  gap: 14px;
+  background: rgba(255, 255, 255, 0.055);
+  color: #ffffff;
+  font: inherit;
+  text-align: left;
+  box-shadow: 0 15px 34px rgba(0, 0, 0, 0.22);
+  cursor: pointer;
+}
+
+.pronominal-mode-card span {
+  width: 76px;
+  height: 76px;
+  border-radius: 24px;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(135deg, #36d1dc, #5b86e5);
+  font-size: 2rem;
+  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.24);
+}
+
+.pronominal-mode-card strong {
+  font-size: 1.45rem;
+  font-weight: 950;
+  line-height: 1.08;
+}
+
+.pronominal-mode-card small {
+  color: rgba(255, 255, 255, 0.62);
+  font-size: 0.95rem;
+  font-weight: 800;
+  line-height: 1.4;
+}
+
+.pronominaladverb-practice :deep(.practice-box) {
+  gap: 26px;
+}
+
+.pronominaladverb-practice :deep(.quiz-area) {
+  gap: 22px;
+}
+
+.pronominal-question-card {
+  width: 100%;
+  max-width: 640px;
+  padding: 22px;
+  border-radius: 26px;
+  display: grid;
+  gap: 14px;
+  background: rgba(0, 0, 0, 0.18);
+  text-align: center;
+}
+
+.pronominal-type {
+  display: inline-flex;
+  justify-content: center;
+  margin-bottom: 8px;
+  padding: 8px 14px;
+  border-radius: 999px;
+  background: rgba(52, 152, 219, 0.18);
+  color: #8fe6ff;
+  font-size: 0.88rem;
+  font-weight: 900;
+}
+
+.pronominal-prompt {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.66);
+  font-size: 0.95rem;
+  font-weight: 850;
+  line-height: 1.4;
+}
+
+.pronominal-sentence {
+  margin: 0;
+  font-size: clamp(1.45rem, 3vw, 2.1rem);
+  line-height: 1.18;
+  overflow-wrap: break-word;
+}
+
+.pronominal-options {
+  display: grid;
+  gap: 12px;
+  width: 100%;
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+.pronominal-option-btn {
+  width: 100%;
+  min-height: 58px;
+  padding: 15px 18px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.055);
+  color: #ffffff;
+  font: inherit;
+  font-size: 0.98rem;
+  font-weight: 850;
+  text-align: left;
+  cursor: pointer;
+}
+
+.pronominal-option-btn.correct {
+  border-color: rgba(46, 204, 113, 0.45);
+  background: rgba(46, 204, 113, 0.16);
+}
+
+.pronominal-option-btn.wrong {
+  border-color: rgba(255, 71, 87, 0.45);
+  background: rgba(255, 71, 87, 0.14);
+}
+
+.pronominal-option-btn.muted {
+  opacity: 0.5;
+}
+
+.pronominal-writing-input,
+.pronominaladverb-practice :deep(.button-group),
+.pronominaladverb-practice :deep(.feedback-box) {
+  width: 100%;
+  max-width: 640px;
+}
+
+.example-box {
+  margin-top: 15px;
+  text-align: left;
+}
+
+.example-box p {
+  margin: 0;
+}
+
+@media (max-width: 700px) {
+  .pronominal-mode-picker {
+    grid-template-columns: 1fr;
+  }
+
+  .pronominal-mode-card {
+    min-height: 190px;
+    padding: 24px;
+  }
+
+  .pronominal-question-card {
+    padding: 18px;
+    border-radius: 22px;
+  }
+}
+
+/* ---------------------------------------------------------
+   ZuInfinitivPractice.vue
+--------------------------------------------------------- */
+.zu-infinitiv-practice {
+  max-width: 720px;
+}
+
+.zu-infinitiv-practice :deep(.practice-box) {
+  align-items: stretch;
+}
+
+.zu-infinitiv-practice :deep(.quiz-area) {
+  width: 100%;
+}
+
+.zu-infinitiv-question-card {
+  text-align: left;
+}
+
+.zu-infinitiv-type {
+  display: inline-flex;
+  margin-bottom: 14px;
+  padding: 7px 12px;
+  border: 1px solid rgba(128, 202, 255, 0.36);
+  border-radius: 999px;
+  background: rgba(128, 202, 255, 0.14);
+  color: #80caff;
+  font-size: 0.78rem;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
+.zu-infinitiv-prompt {
+  margin: 0 0 12px;
+  color: rgba(255, 255, 255, 0.68);
+  font-weight: 850;
+}
+
+.zu-infinitiv-sentence {
+  margin: 0;
+  padding: 22px;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.07);
+  color: #ffffff;
+  font-size: clamp(1.08rem, 2vw, 1.35rem);
+  font-weight: 900;
+  line-height: 1.55;
+}
+
+.zu-infinitiv-writing-input {
+  margin-top: 18px;
+}
+
+.zu-infinitiv-answer-textarea {
+  width: 100%;
+  min-height: 120px;
+  resize: vertical;
+  padding: 16px 18px;
+  border: 2px solid rgba(255, 255, 255, 0.12);
+  border-radius: var(--practice-control-radius, 0.5rem) !important;
+  background: rgba(255, 255, 255, 0.08);
+  color: #ffffff;
+  font: inherit;
+  font-size: 1rem;
+  font-weight: 760;
+  line-height: 1.5;
+}
+
+.zu-infinitiv-answer-textarea::placeholder {
+  color: rgba(255, 255, 255, 0.38);
+}
+
+.zu-infinitiv-answer-textarea:focus {
+  border-color: rgba(128, 202, 255, 0.75);
+  outline: none;
+  box-shadow: 0 0 0 4px rgba(128, 202, 255, 0.12);
+}
+
+.zu-infinitiv-answer-textarea.input-correct {
+  border-color: rgba(46, 204, 113, 0.9);
+  background: rgba(46, 204, 113, 0.12);
+}
+
+.zu-infinitiv-answer-textarea.input-wrong {
+  border-color: rgba(255, 71, 87, 0.85);
+  background: rgba(255, 71, 87, 0.1);
+}
+
+.zu-infinitiv-practice :deep(.button-group),
+.zu-infinitiv-practice :deep(.feedback-box) {
+  margin-top: 18px;
+}
+
+/* ---------------------------------------------------------
+   PlusquamperfektPractice.vue
+--------------------------------------------------------- */
+.plusquamperfekt-practice {
+  max-width: 720px;
+}
+
+.plusquamperfekt-practice :deep(.practice-box) {
+  align-items: stretch;
+}
+
+.plusquamperfekt-practice :deep(.quiz-area) {
+  width: 100%;
+}
+
+.plusquamperfekt-question-card {
+  text-align: left;
+}
+
+.plusquamperfekt-type {
+  display: inline-flex;
+  margin-bottom: 14px;
+  padding: 7px 12px;
+  border: 1px solid rgba(255, 209, 102, 0.36);
+  border-radius: 999px;
+  background: rgba(255, 209, 102, 0.14);
+  color: #ffd166;
+  font-size: 0.78rem;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
+.plusquamperfekt-prompt {
+  margin: 0 0 12px;
+  color: rgba(255, 255, 255, 0.68);
+  font-weight: 850;
+}
+
+.plusquamperfekt-sentence {
+  margin: 0;
+  padding: 22px;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.07);
+  color: #ffffff;
+  font-size: clamp(1.08rem, 2vw, 1.35rem);
+  font-weight: 900;
+  line-height: 1.55;
+}
+
+.plusquamperfekt-writing-input {
+  margin-top: 18px;
+}
+
+.plusquamperfekt-practice .options-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+  width: 100%;
+  margin-top: 18px;
+}
+
+.plusquamperfekt-practice .options-grid.is-sentence-options {
+  grid-template-columns: 1fr;
+  max-width: 760px;
+  margin-right: auto;
+  margin-left: auto;
+}
+
+.plusquamperfekt-practice .option-pill {
+  width: 100%;
+  min-height: 58px;
+  box-sizing: border-box;
+  padding: 14px 18px;
+  border: 1px solid rgba(255, 209, 102, 0.24);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.08);
+  color: #ffffff;
+  font: inherit;
+  font-size: 1rem;
+  font-weight: 900;
+  line-height: 1.25;
+  text-align: center;
+  cursor: pointer;
+  transition:
+    transform 0.2s ease,
+    border-color 0.2s ease,
+    background 0.2s ease,
+    box-shadow 0.2s ease;
+  box-shadow:
+    0 12px 26px rgba(0, 0, 0, 0.22),
+    inset 0 1px 0 rgba(255, 255, 255, 0.12);
+}
+
+.plusquamperfekt-practice .options-grid.is-sentence-options .option-pill {
+  min-height: 72px;
+  padding: 18px 22px;
+  border-radius: 22px;
+  text-align: left;
+  line-height: 1.38;
+}
+
+.plusquamperfekt-practice .option-pill:hover:not(:disabled) {
+  transform: translateY(-2px);
+  border-color: rgba(255, 209, 102, 0.58);
+  background: rgba(255, 209, 102, 0.16);
+}
+
+.plusquamperfekt-practice .option-pill:disabled {
+  cursor: default;
+}
+
+.plusquamperfekt-practice .option-correct {
+  border-color: rgba(46, 204, 113, 0.9) !important;
+  background: rgba(46, 204, 113, 0.22) !important;
+  color: #ffffff !important;
+  box-shadow:
+    0 12px 26px rgba(46, 204, 113, 0.16),
+    inset 0 1px 0 rgba(255, 255, 255, 0.16);
+}
+
+.plusquamperfekt-practice .option-wrong {
+  border-color: rgba(255, 71, 87, 0.9) !important;
+  background: rgba(255, 71, 87, 0.18) !important;
+  color: #ffffff !important;
+}
+
+.plusquamperfekt-answer-textarea {
+  width: 100%;
+  min-height: 120px;
+  resize: vertical;
+  padding: 16px 18px;
+  border: 2px solid rgba(255, 255, 255, 0.12);
+  border-radius: var(--practice-control-radius, 0.5rem) !important;
+  background: rgba(255, 255, 255, 0.08);
+  color: #ffffff;
+  font: inherit;
+  font-size: 1rem;
+  font-weight: 760;
+  line-height: 1.5;
+}
+
+.plusquamperfekt-answer-textarea::placeholder {
+  color: rgba(255, 255, 255, 0.38);
+}
+
+.plusquamperfekt-answer-textarea:focus {
+  border-color: rgba(255, 209, 102, 0.72);
+  outline: none;
+  box-shadow: 0 0 0 4px rgba(255, 209, 102, 0.12);
+}
+
+.plusquamperfekt-answer-textarea.input-correct {
+  border-color: rgba(46, 204, 113, 0.9);
+  background: rgba(46, 204, 113, 0.12);
+}
+
+.plusquamperfekt-answer-textarea.input-wrong {
+  border-color: rgba(255, 71, 87, 0.85);
+  background: rgba(255, 71, 87, 0.1);
+}
+
+.plusquamperfekt-practice :deep(.button-group),
+.plusquamperfekt-practice :deep(.feedback-box) {
+  margin-top: 18px;
+}
+
+.passiv-answer-textarea,
+.zu-infinitiv-answer-textarea,
+.plusquamperfekt-answer-textarea {
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: var(--practice-control-radius, 0.5rem) !important;
+  background: rgba(255, 255, 255, 0.06);
+  color: #ffffff !important;
+  caret-color: #ffffff;
+  font-weight: 600;
+  -webkit-text-fill-color: #ffffff;
+}
+
+.passiv-answer-textarea::placeholder,
+.zu-infinitiv-answer-textarea::placeholder,
+.plusquamperfekt-answer-textarea::placeholder {
+  color: rgba(255, 255, 255, 0.5) !important;
+  -webkit-text-fill-color: rgba(255, 255, 255, 0.5);
+}
+
+.passiv-answer-textarea:focus,
+.zu-infinitiv-answer-textarea:focus,
+.plusquamperfekt-answer-textarea:focus {
+  border-color: #7b89ff;
+  background: rgba(255, 255, 255, 0.08);
+  box-shadow: 0 0 0 3px rgba(123, 137, 255, 0.22);
+}
+
+@media (max-width: 560px) {
+  .plusquamperfekt-practice .options-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ---------------------------------------------------------
+   KonnektorenPractice.vue
+--------------------------------------------------------- */
+.konnektoren-practice {
+  max-width: 650px;
+}
+
+.tag-row {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 18px;
+}
+
+.level-tag,
+.category-tag {
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.level-tag {
+  background: rgba(52, 152, 219, 0.2);
+  color: #3498db;
+  border: 1px solid rgba(52, 152, 219, 0.5);
+}
+
+.category-tag {
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.75);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+}
+
+.sentence-card {
+  max-width: 560px;
+  margin: 0 auto 24px;
+  padding: 24px;
+  border-radius: 22px;
+  background: rgba(255, 255, 255, 0.07);
+  color: #ffffff;
+  font-size: 1.25rem;
+  line-height: 1.65;
+}
+
+.options-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  width: 100%;
+  margin-bottom: 28px; /* tér a Következő gomb előtt */
+}
+
+.option-pill {
+  width: 100%;
+  min-height: 72px;
+  box-sizing: border-box;
+  padding: 15px 18px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.08);
+  color: #ffffff;
+  font-size: 1rem;
+  font-weight: 900;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.option-pill:hover:not(:disabled) {
+  transform: translateY(-2px);
+  background: rgba(52, 152, 219, 0.25);
+  border-color: rgba(52, 152, 219, 0.6);
+}
+
+.option-correct {
+  background: rgba(46, 204, 113, 0.25) !important;
+  border-color: #2ecc71 !important;
+  color: #ffffff !important;
+}
+
+.option-wrong {
+  background: rgba(231, 76, 60, 0.25) !important;
+  border-color: #e74c3c !important;
+  color: #ffffff !important;
+}
+
+.option-disabled {
+  opacity: 0.45;
+}
+
+.example-box {
+  margin-top: 15px;
+  text-align: left;
+}
+
+.example-box p {
+  margin: 8px 0;
+}
+
+.correct-text {
+  color: #2ecc71;
+  font-weight: 900;
+}
+
+@media (max-width: 520px) {
+  .options-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .sentence-card {
+    font-size: 1.05rem;
+    padding: 20px;
+  }
+}
+
+.button-group {
+  width: 100%;
+  margin-top: 10px;
+}
+
+.practice-btn-secondary {
+  width: 100%;
+  padding: 18px;
+  border-radius: var(--practice-control-radius, 0.5rem) !important;
+}
+
+/* ---------------------------------------------------------
+   PraepositionPractice.vue
+--------------------------------------------------------- */
+.praeposition-practice {
+  max-width: 600px;
+}
+
+.gap-sentence {
+  width: 100%;
+  max-width: 420px;
+  margin: 18px auto 24px;
+  padding: 18px;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.07);
+  color: #ffffff;
+  font-size: 1.15rem;
+  line-height: 1.6;
+}
+
+.example-box {
+  margin-top: 15px;
+  text-align: left;
+}
+
+.example-box p {
+  margin: 8px 0;
+}
+
+.correct-text {
+  color: #2ecc71;
+  font-weight: 900;
+}
+
+/* ---------------------------------------------------------
+   DailyChallengePractice.vue
+--------------------------------------------------------- */
+.daily-challenge-practice {
+  max-width: 920px;
+}
+
+.challenge-hero {
+  width: min(920px, 100%);
+  margin: 0 auto 22px;
+  padding: 28px;
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 22px;
+  background: rgba(255, 255, 255, 0.055);
+  color: #ffffff;
+  text-align: left;
+  box-shadow: 0 18px 42px rgba(0, 0, 0, 0.24);
+}
+
+.challenge-hero > div:first-child {
+  min-width: 0;
+}
+
+.challenge-hero span,
+.challenge-step-head > span {
+  display: inline-flex;
+  width: fit-content;
+  padding: 7px 12px;
+  border-radius: 999px;
+  background: rgba(52, 152, 219, 0.14);
+  color: #8fe6ff;
+  font-size: 0.78rem;
+  font-weight: 950;
+}
+
+.challenge-hero h1 {
+  margin: 12px 0 0;
+  font-size: clamp(2rem, 5vw, 3.2rem);
+  line-height: 1.04;
+}
+
+.challenge-hero p {
+  margin: 10px 0 0;
+  color: rgba(255, 255, 255, 0.62);
+  font-weight: 850;
+}
+
+.challenge-hero-icon {
+  width: 88px;
+  height: 88px;
+  flex: 0 0 auto;
+  border-radius: 28px;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(135deg, #667eea, #43e97b);
+  font-size: 2.25rem;
+}
+
+.daily-challenge-practice :deep(.practice-layout),
+.daily-challenge-practice :deep(.practice-box) {
+  width: min(920px, 100%);
+}
+
+.challenge-step {
+  display: grid;
+  gap: 22px;
+  width: 100%;
+}
+
+.challenge-step-head {
+  display: grid;
+  gap: 12px;
+  text-align: left;
+}
+
+.challenge-step-head h2 {
+  margin: 0;
+  color: #ffffff;
+  font-size: 1.65rem;
+  font-weight: 950;
+}
+
+.challenge-step-head p {
+  margin: 7px 0 0;
+  color: rgba(255, 255, 255, 0.62);
+  font-weight: 850;
+}
+
+.challenge-reading,
+.challenge-question {
+  padding: 24px;
+  border-radius: 26px;
+  background: rgba(0, 0, 0, 0.18);
+  text-align: left;
+}
+
+.challenge-reading {
+  display: grid;
+  gap: 16px;
+}
+
+.challenge-reading p {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.78);
+  font-size: 1.02rem;
+  font-weight: 750;
+  line-height: 1.75;
+}
+
+.challenge-highlight-box {
+  display: grid;
+  gap: 12px;
+  margin-top: 6px;
+  padding: 16px;
+  border-radius: 18px;
+  background: rgba(102, 126, 234, 0.14);
+}
+
+.challenge-highlight-box strong {
+  color: #ffffff;
+}
+
+.challenge-highlight-box div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.challenge-highlight-box span {
+  padding: 7px 10px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  color: #ffffff;
+  font-size: 0.82rem;
+  font-weight: 850;
+}
+
+.challenge-question p {
+  margin: 0 0 18px;
+  color: #ffffff;
+  font-size: 1.25rem;
+  font-weight: 900;
+  line-height: 1.35;
+}
+
+.challenge-options {
+  display: grid;
+  gap: 12px;
+}
+
+.challenge-options button {
+  min-height: 58px;
+  padding: 15px 18px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.055);
+  color: #ffffff;
+  font: inherit;
+  font-size: 0.98rem;
+  font-weight: 850;
+  text-align: left;
+  cursor: pointer;
+}
+
+.challenge-options button.correct {
+  border-color: rgba(46, 204, 113, 0.45);
+  background: rgba(46, 204, 113, 0.16);
+}
+
+.challenge-options button.wrong {
+  border-color: rgba(255, 71, 87, 0.45);
+  background: rgba(255, 71, 87, 0.14);
+}
+
+.challenge-options button.muted {
+  opacity: 0.5;
+}
+
+.challenge-input-wrap,
+.daily-challenge-practice :deep(.feedback-box) {
+  width: 100%;
+}
+
+.challenge-actions {
+  display: flex;
+  justify-content: center;
+}
+
+.example-box {
+  margin-top: 15px;
+  text-align: left;
+}
+
+.example-box p {
+  margin: 0;
+}
+
+@media (max-width: 700px) {
+  .daily-challenge-practice {
+    width: min(100%, var(--layout-viewport-shell-width));
+  }
+
+  .challenge-hero {
+    width: 100%;
+    padding: 22px;
+    border-radius: 26px;
+    display: block;
+  }
+
+  .challenge-hero-icon {
+    display: none;
+  }
+
+  .challenge-hero h1 {
+    font-size: clamp(2rem, 9vw, 2.75rem);
+    overflow-wrap: anywhere;
+  }
+
+  .challenge-hero p {
+    font-size: 1rem;
+    line-height: 1.45;
+  }
+
+  .challenge-reading,
+  .challenge-question {
+    padding: 18px;
+    border-radius: 22px;
+  }
+}

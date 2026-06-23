@@ -67,7 +67,7 @@
             ref="answerInput"
             v-model="userAnswer"
             type="text"
-            class="pill-input"
+            class="practice-input"
             placeholder="pl. auf"
             :disabled="isAnswered"
             :class="{
@@ -81,14 +81,14 @@
         <div class="button-group ui-unit">
           <button
             v-if="!isAnswered"
-            class="pill-button btn-green"
+            class="practice-btn-primary"
             :disabled="!userAnswer.trim()"
             @click="checkAnswer"
           >
             Ellenőrzés
           </button>
 
-          <button v-else class="pill-button btn-blue" @click="nextQuestion">
+          <button v-else class="practice-btn-secondary" @click="nextQuestion">
             Következő
           </button>
         </div>
@@ -137,7 +137,7 @@
           </span>
         </p>
 
-        <button class="pill-button btn-green" @click="startNextAction">
+        <button class="practice-btn-primary" @click="startNextAction">
           {{
             incorrectAnswersInRound === 0
               ? "Új kör indítása"
@@ -145,7 +145,7 @@
           }}
         </button>
 
-        <button class="pill-button btn-blue" @click="$emit('go-dashboard')">
+        <button class="practice-btn-secondary" @click="$emit('go-dashboard')">
           Vissza a főmenübe
         </button>
       </div>
@@ -437,36 +437,4 @@ export default {
 };
 </script>
 
-<style scoped>
-.praeposition-practice {
-  max-width: 600px;
-}
-
-.gap-sentence {
-  width: 100%;
-  max-width: 420px;
-  margin: 18px auto 24px;
-  padding: 18px;
-  border-radius: 18px;
-  background: rgba(255, 255, 255, 0.07);
-  color: #ffffff;
-  font-size: 1.15rem;
-  line-height: 1.6;
-}
-
-.example-box {
-  margin-top: 15px;
-  text-align: left;
-}
-
-.example-box p {
-  margin: 8px 0;
-}
-
-.correct-text {
-  color: #2ecc71;
-  font-weight: 900;
-}
-
-
-</style>
+<style scoped src="../assets/styles/practice-legacy.css"></style>

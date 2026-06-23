@@ -150,9 +150,9 @@
       />
 
       <!-- TANÁRI FELÜLET -->
-      <section
+<section
         v-else-if="userRole === 'teacher' && !currentMode"
-        class="welcome-screen teacher-dashboard-shell"
+        class="welcome-screen teacher-dashboard-shell nemet-page-shell"
       >
         <TeacherDashboard
           :key="teacherDashboardKey"
@@ -369,7 +369,7 @@ export default {
       unreadMessages: 0,
       isMessagesMobileConversationOpen: false,
 
-      activityCalendar: [],
+      activityCalendar: { weeks: [], monthLabels: [], activeDays: 0 },
       navigationBackStack: [],
       navigationForwardStack: [],
       isRestoringNavigation: false,
@@ -1066,7 +1066,7 @@ export default {
         coins: 0,
       };
 
-      this.activityCalendar = [];
+      this.activityCalendar = { weeks: [], monthLabels: [], activeDays: 0 };
     },
 
     async fetchStudentDashboardData() {
@@ -1301,46 +1301,18 @@ export default {
 
 <style>
 @import "./assets/styles/app.css";
-@import "./assets/styles/header.css";
 @import "./assets/styles/sidebar.css";
-@import "./assets/styles/auth.css";
-@import "./assets/styles/notifications.css";
 @import "./assets/styles/messages.css";
-@import "./assets/styles/note-modal.css";
 @import "./assets/styles/dashboard.css";
-@import "./assets/styles/student-widgets.css";
-@import "./assets/styles/activity-card.css";
-@import "./assets/styles/daily-goal.css";
-@import "./assets/styles/dashboard-stats.css";
 @import "./assets/styles/practice.css";
 @import "./assets/styles/practice-layout.css";
-@import "./assets/styles/grammar-guide.css";
+@import "./assets/styles/tailwind-shared.css";
 @import "./assets/styles/mobile-nav.css";
-@import "./assets/styles/profile.css";
 @import "./assets/styles/teacher-dashboard.css";
-@import "./assets/styles/lesson-room.css";
 
 .with-desktop-sidebar .content-wrapper,
 #app.with-desktop-sidebar .content-wrapper {
   padding-bottom: 0 !important;
-}
-
-.with-desktop-sidebar
-  .content-wrapper
-  > :is(
-    .dashboard-layout,
-    .welcome-screen,
-    .practice-screen,
-    .lesson-room-shell,
-    .messages-page
-  ) {
-  width: var(--desktop-dashboard-width, var(--desktop-shell-width, 100%)) !important;
-  max-width: var(
-    --desktop-dashboard-width,
-    var(--desktop-shell-width, 100%)
-  ) !important;
-  margin-left: var(--desktop-dashboard-offset, 0) !important;
-  margin-right: 0 !important;
 }
 
 .with-desktop-sidebar:has(
@@ -1365,7 +1337,7 @@ export default {
 
 #app.with-desktop-sidebar
   .content-wrapper
-  > :is(.dashboard-layout, .welcome-screen, .practice-screen, .lesson-room-shell) {
+  > :is(.dashboard-layout, .welcome-screen, .practice-screen, .lesson-room-shell, .nemet-page-shell) {
   margin-bottom: 0 !important;
   padding-bottom: var(--desktop-shell-edge, 18px) !important;
 }
@@ -1385,10 +1357,12 @@ export default {
 }
 
 #app.with-desktop-sidebar
-  .practice-screen
+    .practice-screen
   > :is(
+    .nemet-page-shell,
     .profile-page,
     .student-materials-view,
+    .student-lessons-view,
     .learning-library-view,
     .grammar-guide-shell,
     .story-reading.practice-container,
@@ -1607,7 +1581,7 @@ export default {
 @media (max-width: 700px) {
   :root {
     --mobile-page-gutter: 15px;
-    --mobile-page-width: calc(100% - 30px);
+    --mobile-page-width: calc(100% - (var(--mobile-page-gutter) * 2));
   }
 
   #app,
@@ -1684,32 +1658,6 @@ export default {
     overflow: visible !important;
   }
 
-  .dashboard-layout,
-  .welcome-screen,
-  .student-materials-view,
-  .learning-library-view,
-  .profile-page,
-  .welcome-screen.teacher-dashboard-shell,
-  .grammar-guide-shell,
-  .story-reading.practice-container,
-  .daily-challenge-practice,
-  .desktop-exercise-workspace {
-    width: var(--mobile-page-width) !important;
-    max-width: var(--mobile-page-width) !important;
-    margin-right: auto !important;
-    margin-left: auto !important;
-  }
-
-  .practice-screen:has(.student-materials-view) > .student-materials-view,
-  .practice-screen:has(.learning-library-view) > .learning-library-view,
-  .practice-screen:has(.daily-challenge-practice) > .daily-challenge-practice,
-  .practice-screen:has(.story-reading) > .story-reading {
-    width: var(--mobile-page-width) !important;
-    max-width: var(--mobile-page-width) !important;
-    margin-right: auto !important;
-    margin-left: auto !important;
-  }
-
   .practice-screen:has(.vocab-pack-library)
     .vocabulary-practice
     .vocab-pack-library,
@@ -1757,7 +1705,8 @@ export default {
   .teacher-workspace,
   .grammar-guide,
   .story-reading :is(.story-page-hero, .story-picker, .story-shell),
-  .daily-challenge-practice :is(.challenge-hero, .practice-layout, .practice-box) {
+  .daily-challenge-practice :is(.challenge-hero, .practice-layout, .practice-box),
+  .nemet-page-shell > * {
     max-width: 100% !important;
   }
 }

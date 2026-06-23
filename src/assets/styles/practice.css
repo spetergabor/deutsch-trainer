@@ -41,7 +41,7 @@
 .desktop-practice-return {
   width: min(
     var(--active-practice-width, var(--container-practice)),
-    calc(100% - 40px)
+    var(--layout-shell-width)
   );
   margin: 18px auto 18px;
 
@@ -81,7 +81,7 @@
 .with-desktop-sidebar .desktop-page-breadcrumb {
   width: min(
     var(--active-practice-width, var(--container-practice)),
-    calc(100% - 40px)
+    var(--layout-shell-width)
   );
   min-height: 42px;
   margin: 0 auto 12px;
@@ -163,7 +163,7 @@
 }
 
 .practice-screen:has(.story-reading) {
-  --active-practice-width: min(1080px, calc(100% - 40px));
+  --active-practice-width: min(1080px, var(--layout-shell-width));
   align-items: stretch;
   justify-content: flex-start;
   overflow-x: clip;
@@ -254,7 +254,7 @@
 }
 
 .practice-screen:has(.vocab-pack-library) {
-  --active-practice-width: min(980px, calc(100% - 40px));
+  --active-practice-width: min(980px, var(--layout-shell-width));
 }
 
 .practice-screen:has(.vocab-pack-library) > .desktop-practice-return {
@@ -267,7 +267,7 @@
 }
 
 .practice-screen:has(.daily-challenge-practice) {
-  --active-practice-width: min(920px, calc(100% - 40px));
+  --active-practice-width: min(920px, var(--layout-shell-width));
 }
 
 .practice-screen:has(.daily-challenge-practice) > .desktop-practice-return {
@@ -359,7 +359,7 @@
 }
 
 .practice-screen:has(.desktop-exercise-workspace) {
-  --active-practice-width: min(1120px, calc(100% - 40px));
+  --active-practice-width: min(1120px, var(--layout-shell-width));
   align-items: stretch;
 }
 
@@ -815,7 +815,7 @@
 }
 
 .practice-screen:has(.learning-library-view) {
-  --active-practice-width: min(1180px, calc(100% - 40px));
+  --active-practice-width: min(1180px, var(--layout-shell-width));
   align-items: stretch;
 }
 
@@ -884,7 +884,7 @@
 }
 
 .osd-practice ~ .desktop-practice-return {
-  width: min(1100px, calc(100% - 40px));
+  width: min(1100px, var(--layout-shell-width));
 }
 
 @media (min-width: 701px) {
@@ -894,7 +894,7 @@
 
   .practice-screen:not(.grammar-practice-screen):not(.profile-practice-screen):not(:has(.story-reading)):not(:has(.osd-practice)):not(:has(.vocab-pack-library)):not(:has(.daily-challenge-practice)):not(:has(.desktop-exercise-workspace)):not(:has(.learning-library-view)):not(:has(.student-materials-view))
     > .desktop-practice-return {
-    width: min(calc(var(--practice-desktop-width) * 0.92), calc(100% - 40px));
+    width: min(calc(var(--practice-desktop-width) * 0.92), var(--layout-shell-width));
   }
 
   .practice-screen:not(.grammar-practice-screen):not(.profile-practice-screen):not(:has(.story-reading)):not(:has(.osd-practice)):not(:has(.vocab-pack-library)):not(:has(.daily-challenge-practice)):not(:has(.desktop-exercise-workspace)):not(:has(.learning-library-view)):not(:has(.student-materials-view))
@@ -906,7 +906,7 @@
       .konnektoren-practice,
       .sich-verben-practice
     ) {
-    width: min(var(--practice-desktop-width), calc(100% - 40px)) !important;
+    width: min(var(--practice-desktop-width), var(--layout-shell-width)) !important;
     max-width: var(--practice-desktop-width) !important;
   }
 }
@@ -1030,21 +1030,72 @@
   width: 100%;
 }
 
-.pill-input,
-.pill-button {
+.practice-input,
+.practice-btn-primary,
+.practice-btn-secondary,
+.practice-btn-dark {
+  --practice-control-radius: 0.5rem;
+
   width: 100%;
   max-width: 560px;
   box-sizing: border-box;
 }
 
-.pill-button,
+input.practice-input,
+textarea.practice-input {
+  min-height: 3rem;
+  padding: 0 0.875rem;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: var(--practice-control-radius) !important;
+  background: rgba(255, 255, 255, 0.06);
+  color: #ffffff !important;
+  caret-color: #ffffff;
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1;
+  outline: none;
+  -webkit-text-fill-color: #ffffff;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    background 0.2s ease;
+}
+
+.practice-input::placeholder {
+  color: rgba(255, 255, 255, 0.5) !important;
+  font-weight: 600;
+  -webkit-text-fill-color: rgba(255, 255, 255, 0.5);
+}
+
+input.practice-input:focus,
+textarea.practice-input:focus {
+  border-color: #7b89ff;
+  background: rgba(255, 255, 255, 0.08);
+  box-shadow: 0 0 0 3px rgba(123, 137, 255, 0.22);
+}
+
+input.practice-input.input-correct,
+textarea.practice-input.input-correct {
+  border-color: rgba(46, 204, 113, 0.7) !important;
+  background: rgba(46, 204, 113, 0.08) !important;
+}
+
+input.practice-input.input-wrong,
+textarea.practice-input.input-wrong {
+  border-color: rgba(255, 82, 82, 0.62) !important;
+  background: rgba(255, 82, 82, 0.08) !important;
+}
+
+.practice-btn-primary,
+.practice-btn-secondary,
+.practice-btn-dark,
 .btn-check,
 .btn-next,
 .btn-popup-action {
   min-height: 54px;
-  padding: 14px 28px;
+  padding: 0 1rem;
   border: 0;
-  border-radius: var(--radius-pill);
+  border-radius: var(--practice-control-radius) !important;
 
   display: inline-flex;
   align-items: center;
@@ -1053,7 +1104,7 @@
 
   color: white;
   font-size: 1rem;
-  font-weight: 900;
+  font-weight: 800;
   line-height: 1;
   text-align: center;
 
@@ -1061,29 +1112,27 @@
   transition:
     transform 0.2s ease,
     filter 0.2s ease,
-    opacity 0.2s ease;
+    opacity 0.2s ease,
+    box-shadow 0.2s ease;
 
-  box-shadow:
-    0 14px 30px rgba(0, 0, 0, 0.24),
-    inset 0 1px 0 rgba(255, 255, 255, 0.18);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.18);
 }
 
-.btn-green,
-.btn-check {
+.practice-btn-primary {
   background: linear-gradient(135deg, #43e97b, #2ecc71);
 }
 
-.btn-blue,
-.btn-next,
-.btn-popup-action {
+.practice-btn-secondary {
   background: linear-gradient(135deg, #4facfe, #3498db);
 }
 
-.btn-dark {
+.practice-btn-dark {
   background: linear-gradient(135deg, #3a3446, #201923);
 }
 
-.pill-button:hover,
+.practice-btn-primary:hover,
+.practice-btn-secondary:hover,
+.practice-btn-dark:hover,
 .btn-check:hover,
 .btn-next:hover,
 .btn-popup-action:hover {
@@ -1091,14 +1140,18 @@
   filter: brightness(1.05);
 }
 
-.pill-button:active,
+.practice-btn-primary:active,
+.practice-btn-secondary:active,
+.practice-btn-dark:active,
 .btn-check:active,
 .btn-next:active,
 .btn-popup-action:active {
   transform: scale(0.97);
 }
 
-.pill-button:disabled,
+.practice-btn-primary:disabled,
+.practice-btn-secondary:disabled,
+.practice-btn-dark:disabled,
 .btn-check:disabled,
 .btn-next:disabled,
 .btn-popup-action:disabled {
@@ -1109,8 +1162,10 @@
 }
 
 @media (max-width: 768px) {
-  .pill-input,
-  .pill-button {
+  .practice-input,
+  .practice-btn-primary,
+  .practice-btn-secondary,
+  .practice-btn-dark {
     width: 100%;
     max-width: none;
   }

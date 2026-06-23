@@ -82,7 +82,7 @@
         <div class="button-group ui-unit">
           <button
             v-if="isAnswered"
-            class="pill-button btn-blue"
+            class="practice-btn-secondary"
             @click="nextQuestion"
           >
             Következő
@@ -135,7 +135,7 @@
           </span>
         </p>
 
-        <button class="pill-button btn-green" @click="startNextAction">
+        <button class="practice-btn-primary" @click="startNextAction">
           {{
             incorrectAnswersInRound === 0
               ? "Új kör indítása"
@@ -143,7 +143,7 @@
           }}
         </button>
 
-        <button class="pill-button btn-blue" @click="$emit('go-dashboard')">
+        <button class="practice-btn-secondary" @click="$emit('go-dashboard')">
           Vissza a főmenübe
         </button>
       </div>
@@ -412,128 +412,4 @@ export default {
 };
 </script>
 
-<style scoped>
-.konnektoren-practice {
-  max-width: 650px;
-}
-
-.tag-row {
-  display: flex;
-  justify-content: center;
-  gap: 10px;
-  margin-bottom: 18px;
-}
-
-.level-tag,
-.category-tag {
-  padding: 6px 12px;
-  border-radius: 999px;
-  font-size: 0.75rem;
-  font-weight: 900;
-  text-transform: uppercase;
-}
-
-.level-tag {
-  background: rgba(52, 152, 219, 0.2);
-  color: #3498db;
-  border: 1px solid rgba(52, 152, 219, 0.5);
-}
-
-.category-tag {
-  background: rgba(255, 255, 255, 0.08);
-  color: rgba(255, 255, 255, 0.75);
-  border: 1px solid rgba(255, 255, 255, 0.14);
-}
-
-.sentence-card {
-  max-width: 560px;
-  margin: 0 auto 24px;
-  padding: 24px;
-  border-radius: 22px;
-  background: rgba(255, 255, 255, 0.07);
-  color: #ffffff;
-  font-size: 1.25rem;
-  line-height: 1.65;
-}
-
-.options-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 16px;
-  width: 100%;
-  margin-bottom: 28px; /* tér a Következő gomb előtt */
-}
-
-.option-pill {
-  width: 100%;
-  min-height: 72px;
-  box-sizing: border-box;
-  padding: 15px 18px;
-  border-radius: 999px;
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  background: rgba(255, 255, 255, 0.08);
-  color: #ffffff;
-  font-size: 1rem;
-  font-weight: 900;
-  cursor: pointer;
-  transition: 0.2s ease;
-}
-
-.option-pill:hover:not(:disabled) {
-  transform: translateY(-2px);
-  background: rgba(52, 152, 219, 0.25);
-  border-color: rgba(52, 152, 219, 0.6);
-}
-
-.option-correct {
-  background: rgba(46, 204, 113, 0.25) !important;
-  border-color: #2ecc71 !important;
-  color: #ffffff !important;
-}
-
-.option-wrong {
-  background: rgba(231, 76, 60, 0.25) !important;
-  border-color: #e74c3c !important;
-  color: #ffffff !important;
-}
-
-.option-disabled {
-  opacity: 0.45;
-}
-
-.example-box {
-  margin-top: 15px;
-  text-align: left;
-}
-
-.example-box p {
-  margin: 8px 0;
-}
-
-.correct-text {
-  color: #2ecc71;
-  font-weight: 900;
-}
-
-@media (max-width: 520px) {
-  .options-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .sentence-card {
-    font-size: 1.05rem;
-    padding: 20px;
-  }
-}
-
-.button-group {
-  width: 100%;
-  margin-top: 10px;
-}
-
-.pill-button.btn-blue {
-  width: 100%;
-  padding: 18px;
-  border-radius: 999px;
-}
-</style>
+<style scoped src="../assets/styles/practice-legacy.css"></style>

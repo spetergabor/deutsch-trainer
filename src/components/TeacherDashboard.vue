@@ -1,5 +1,5 @@
 <template>
-  <div class="teacher-dashboard">
+  <div class="teacher-dashboard nemet-page-shell">
     <LessonRoom
       v-if="selectedLesson"
       role-label="Tanári óra"
@@ -320,7 +320,7 @@
 
     <section v-else class="teacher-workspace">
       <header v-if="activeTeacherSection !== 'exercises'" class="teacher-workspace-header">
-        <button class="btn-outline btn-small" @click="goToTeacherPortal">
+        <button :class="teacherUi.outlineButton" @click="goToTeacherPortal">
           ← Vissza
         </button>
 
@@ -374,7 +374,7 @@
                 <p>{{ selectedStudent.email }}</p>
               </div>
 
-              <button class="btn-outline btn-small" @click="clearSelectedStudent">
+              <button :class="teacherUi.outlineButton" @click="clearSelectedStudent">
                 Bezárás
               </button>
             </header>
@@ -624,7 +624,7 @@
 
             <div class="teacher-homework-actions">
               <button
-                class="btn-outline btn-small"
+                :class="teacherUi.outlineButton"
                 @click="fetchWritingSubmissions"
                 :disabled="isWritingSubmissionsLoading"
               >
@@ -632,7 +632,7 @@
               </button>
 
               <button
-                class="btn-outline btn-small"
+                :class="teacherUi.outlineButton"
                 @click="openNewHomeworkForSelectedStudent"
               >
                 + Új házi
@@ -1079,7 +1079,7 @@
               </p>
             </div>
 
-            <button class="btn-outline btn-small" @click="showBaseExercises = !showBaseExercises">
+            <button :class="teacherUi.outlineButton" @click="showBaseExercises = !showBaseExercises">
               {{ showBaseExercises ? "Alap feladatok elrejtése" : "Alap feladatok mutatása" }}
             </button>
           </div>
@@ -1117,7 +1117,7 @@
               <div class="exercise-row-actions">
                 <button
                   v-if="!item.isBaseExercise"
-                  class="btn-outline btn-small"
+                  :class="teacherUi.outlineButton"
                   @click="startExerciseEdit(item)"
                 >
                   Szerkesztés
@@ -1125,7 +1125,7 @@
 
                 <button
                   v-if="!item.isBaseExercise"
-                  class="btn-outline btn-small"
+                  :class="teacherUi.outlineButton"
                   @click="deactivateExercise(item.id)"
                   :disabled="!item.is_active"
                 >
@@ -1190,6 +1190,11 @@ import { praepositionenData } from "../data/praepositionen";
 import { konnektorenData } from "../data/konnektoren";
 import { sichVerbenData } from "../data/sichVerben";
 
+const TEACHER_UI = {
+  outlineButton:
+    "inline-flex min-h-10 w-auto items-center justify-center rounded-lg border border-white/15 bg-white/[0.06] px-4 py-2 text-sm font-extrabold text-white outline-none transition duration-200 hover:-translate-y-px hover:bg-white/10 focus-visible:ring-4 focus-visible:ring-white/10 disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:translate-y-0",
+};
+
 export default {
   name: "TeacherDashboard",
 
@@ -1208,6 +1213,7 @@ export default {
 
   data() {
     return {
+      teacherUi: TEACHER_UI,
       activeTeacherSection: null,
       students: [],
       selectedStudent: null,

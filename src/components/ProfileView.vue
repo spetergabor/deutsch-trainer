@@ -1,5 +1,5 @@
 <template>
-  <div class="profile-page text-white">
+  <div class="profile-page text-white nemet-page-shell">
     <div
       class="profile-dashboard-grid"
       :class="{ 'teacher-profile-grid': isTeacherProfile }"
@@ -91,82 +91,136 @@
         </button>
       </article>
 
-      <article v-if="!isTeacherProfile" class="widget-card activity-card">
-        <div class="activity-header">
+      <article v-if="!isTeacherProfile" class="widget-card profile-activity-card flex flex-col gap-5 max-[700px]:gap-4">
+        <div class="flex items-start justify-between gap-4 max-[700px]:items-center">
           <div>
             <h3>🔥 Aktivitás</h3>
-            <p class="activity-subtitle">Tanulási lendület</p>
+            <p class="m-0 font-extrabold text-white/55">Tanulási lendület</p>
           </div>
 
-          <div class="streak-badge">
-            <span class="fire-icon">🔥</span>
-            <strong>{{ activityStats.streak }}</strong>
-            <small>nap</small>
-          </div>
-        </div>
-
-        <div class="activity-stats-row">
-          <div>
-            <strong>{{ activityStats.today }}</strong>
-            <span>ma</span>
-          </div>
-
-          <div>
-            <strong>{{ activityStats.activeDays }}</strong>
-            <span>aktív nap</span>
-          </div>
-
-          <div>
-            <strong>{{ activityStats.last30Days }}</strong>
-            <span>30 nap</span>
+          <div class="flex min-w-[104px] items-center justify-center gap-2 rounded-full border border-[#ff8964]/30 bg-[#ff6b57]/15 px-4 py-2.5 text-white max-[700px]:min-w-[92px] max-[700px]:px-3">
+            <span class="text-lg">🔥</span>
+            <strong class="text-2xl font-black leading-none max-[700px]:text-xl">{{ activityStats.streak }}</strong>
+            <small class="text-xs font-black opacity-80">nap</small>
           </div>
         </div>
 
-        <div class="dashboard-xp-row">
-          <div>
-            <strong>⭐ {{ xpProfile.xp }}</strong>
-            <span>XP</span>
+        <div class="grid grid-cols-3 gap-2.5">
+          <div :class="profileUi.activityMetricCard">
+            <strong :class="profileUi.activityMetricValue">{{ activityStats.today }}</strong>
+            <span :class="profileUi.activityMetricLabel">ma</span>
           </div>
 
-          <div>
-            <strong>Level {{ xpProfile.level }}</strong>
-            <span>szint</span>
+          <div :class="profileUi.activityMetricCard">
+            <strong :class="profileUi.activityMetricValue">{{ activityStats.activeDays }}</strong>
+            <span :class="profileUi.activityMetricLabel">aktív nap</span>
           </div>
 
-          <div>
-            <strong>🪙 {{ xpProfile.coins }}</strong>
-            <span>coin</span>
+          <div :class="profileUi.activityMetricCard">
+            <strong :class="profileUi.activityMetricValue">{{ activityStats.last30Days }}</strong>
+            <span :class="profileUi.activityMetricLabel">30 nap</span>
           </div>
         </div>
 
-        <div class="activity-grid">
-          <div
-            v-for="day in activityCalendar"
-            :key="day.date"
-            class="activity-dot"
-            :class="day.level"
-            :title="`${day.date}: ${day.count} feladat`"
-          ></div>
+        <div class="grid grid-cols-3 gap-2.5 rounded-2xl bg-black/15 p-2.5">
+          <div :class="profileUi.xpMetricCard">
+            <strong :class="profileUi.xpMetricValue">⭐ {{ xpProfile.xp }}</strong>
+            <span :class="profileUi.xpMetricLabel">XP</span>
+          </div>
+
+          <div :class="profileUi.xpMetricCard">
+            <strong :class="profileUi.xpMetricValue">Level {{ xpProfile.level }}</strong>
+            <span :class="profileUi.xpMetricLabel">szint</span>
+          </div>
+
+          <div :class="profileUi.xpMetricCard">
+            <strong :class="profileUi.xpMetricValue">🪙 {{ xpProfile.coins }}</strong>
+            <span :class="profileUi.xpMetricLabel">coin</span>
+          </div>
+        </div>
+
+        <div class="mt-auto rounded-2xl bg-black/10 p-3">
+          <div class="mb-2 flex items-center justify-between gap-3">
+            <span class="text-xs font-black uppercase text-white/45">Éves aktivitás</span>
+            <small class="font-extrabold text-white/45">{{ yearlyActivityCount }} aktív nap</small>
+          </div>
+
+          <div class="overflow-x-auto pb-1 [scrollbar-color:rgba(255,255,255,0.18)_transparent] [scrollbar-width:thin]">
+            <div class="min-w-max">
+              <div
+                class="mb-1 ml-7 grid h-4 items-end gap-[3px] overflow-hidden"
+                :style="activityMonthGridStyle"
+                aria-hidden="true"
+              >
+                <span
+                  v-for="month in activityMonthLabels"
+                  :key="month.key"
+                  class="text-[0.68rem] font-bold text-white/45"
+                  :style="getActivityMonthStyle(month)"
+                >
+                  {{ month.label }}
+                </span>
+              </div>
+
+              <div class="flex gap-2">
+                <div class="grid grid-rows-7 gap-[3px] pr-1 text-[0.62rem] font-bold text-white/35">
+                  <span></span>
+                  <span>H</span>
+                  <span></span>
+                  <span>Sze</span>
+                  <span></span>
+                  <span>P</span>
+                  <span></span>
+                </div>
+
+                <div
+                  class="grid grid-flow-col grid-rows-7 gap-[3px]"
+                  :style="activityGridStyle"
+                  aria-label="Éves aktivitási naptár"
+                >
+                  <div
+                    v-for="day in activityCells"
+                    :key="day.date"
+                    :class="getYearActivityCellClass(day)"
+                    :title="`${day.date}: ${day.count ? 'aktív nap' : 'nincs aktivitás'}`"
+                  ></div>
+                </div>
+              </div>
+
+              <div class="mt-2 flex items-center justify-end gap-1.5 text-[0.68rem] font-bold text-white/45">
+                <span>Kevesebb</span>
+                <span :class="profileUi.activityLegendCellEmpty"></span>
+                <span :class="profileUi.activityLegendCellOne"></span>
+                <span :class="profileUi.activityLegendCellTwo"></span>
+                <span :class="profileUi.activityLegendCellThree"></span>
+                <span>Több</span>
+              </div>
+            </div>
+          </div>
         </div>
       </article>
 
-      <article v-if="!isTeacherProfile" class="widget-card daily-goal-card">
+      <article v-if="!isTeacherProfile" class="widget-card profile-daily-goal-card">
         <h3>🎯 Mai cél</h3>
 
-        <div class="goal-inline-stats">
-          <span class="goal-big-number">{{ activityStats.today }}/10</span>
-          <span class="goal-inline-label">feladat kész</span>
+        <div class="my-9 flex items-end gap-3">
+          <span class="text-[4.2rem] font-black leading-none text-white">
+            {{ activityStats.today }}/10
+          </span>
+          <span class="mb-2.5 text-2xl font-bold text-white/60">
+            feladat kész
+          </span>
         </div>
 
-        <div class="goal-bar">
+        <div class="mb-9 h-[22px] w-full overflow-hidden rounded-full bg-white/[0.08]">
           <div
-            class="goal-fill"
+            class="h-full rounded-full bg-[linear-gradient(90deg,#7c6cff,#9d7bff)] transition-[width] duration-500"
             :style="{ width: Math.min((activityStats.today / 10) * 100, 100) + '%' }"
           ></div>
         </div>
 
-        <div class="goal-status-box">
-          <span class="goal-status-icon">
+        <div class="flex items-center gap-4 rounded-2xl border border-white/[0.06] bg-black/15 px-7 py-6 text-lg font-extrabold text-white">
+          <span class="flex size-[42px] items-center justify-center rounded-full border-2 border-[#9d7bff]/70 bg-[#7c6cff]/15 text-lg font-black text-[#a58cff]">
             {{ activityStats.today >= 10 ? "✅" : "🎯" }}
           </span>
           <span v-if="activityStats.today >= 10">Mai cél teljesítve 🎉</span>
@@ -177,7 +231,10 @@
       <article v-if="!isTeacherProfile" class="widget-card recent-tasks-card">
         <h3>🕒 Legutóbbi feladatok</h3>
 
-        <div v-if="recentExercises.length" class="recent-tasks-scroll">
+        <div
+          v-if="recentExercises.length"
+          class="max-h-80 overflow-y-auto pr-1.5 [scrollbar-color:rgba(255,255,255,0.18)_transparent] [scrollbar-width:thin]"
+        >
           <div
             v-for="task in recentExercises.slice(0, 30)"
             :key="task.id || task.created_at"
@@ -191,76 +248,95 @@
         <p v-else class="empty-text">Még nem oldottál meg feladatot.</p>
       </article>
 
-      <article v-if="!isTeacherProfile" class="widget-card stats-card visual-stats-card profile-wide-card">
-        <h3>📊 Statisztikák</h3>
+      <article
+        v-if="!isTeacherProfile"
+        class="widget-card stats-card min-[701px]:col-span-2"
+      >
+        <div class="mx-auto grid w-full max-w-[860px] gap-4 2xl:grid-cols-[minmax(0,0.82fr)_minmax(320px,1.18fr)] 2xl:items-start">
+          <h3 class="mb-1 2xl:col-span-2">📊 Statisztikák</h3>
 
-        <div class="practice-recommendation">
-          <span>Ma ezt gyakorold</span>
-          <strong>{{ recommendedPractice.label }}</strong>
-          <small>{{ recommendedPractice.reason }}</small>
+          <div class="grid gap-3.5">
+            <div :class="profileUi.statsPanel">
+              <span :class="profileUi.statsSubtleText">Ma ezt gyakorold</span>
+              <strong class="my-1 block text-[1.35rem] font-black text-white">
+                {{ recommendedPractice.label }}
+              </strong>
+              <small :class="profileUi.statsSubtleText">{{ recommendedPractice.reason }}</small>
 
-          <button @click="$emit('set-mode', recommendedPractice.type)">
-            Indítás
-          </button>
-        </div>
+              <button
+                class="mt-3 inline-flex w-full items-center justify-center rounded-lg border-0 bg-[linear-gradient(135deg,#4facfe,#43e97b)] px-3.5 py-2.5 font-black text-white transition hover:-translate-y-px hover:brightness-105 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[#43e97b]/15"
+                @click="$emit('set-mode', recommendedPractice.type)"
+              >
+                Indítás
+              </button>
+            </div>
 
-        <div class="trend-box" :class="last30Trend.direction">
-          <strong>{{ last30Trend.label }}</strong>
-          <span>{{ last30Trend.detail }}</span>
-        </div>
+            <div :class="getTrendBoxClass(last30Trend.direction)">
+              <strong class="mb-1.5 block font-black text-white">{{ last30Trend.label }}</strong>
+              <span :class="profileUi.statsSubtleText">{{ last30Trend.detail }}</span>
+            </div>
 
-        <div class="stats-chart-box">
-          <div class="stats-chart-header">
-            <strong>{{ last30AveragePercent }}%</strong>
-            <span>átlag az utolsó 30 feladatból</span>
-          </div>
+            <div class="grid grid-cols-2 gap-3.5">
+              <div :class="profileUi.statsAnswerCard">
+                <strong class="block text-[1.6rem] font-black text-white">{{ last30CorrectAnswers }}</strong>
+                <span :class="profileUi.statsAnswerLabel">helyes</span>
+              </div>
 
-          <div class="stats-axis-labels" aria-hidden="true">
-            <span>100%</span>
-            <span>75%</span>
-            <span>50%</span>
-            <span>25%</span>
-          </div>
-
-          <div class="stats-chart-plot">
-            <svg viewBox="0 0 100 100" preserveAspectRatio="none">
-              <line x1="0" y1="25" x2="100" y2="25" />
-              <line x1="0" y1="50" x2="100" y2="50" />
-              <line x1="0" y1="75" x2="100" y2="75" />
-              <path v-if="last30ChartPath" :d="last30ChartPath" />
-            </svg>
-          </div>
-        </div>
-
-        <div class="stats-answer-row">
-          <div>
-            <strong>{{ last30CorrectAnswers }}</strong>
-            <span>helyes</span>
-          </div>
-
-          <div>
-            <strong>{{ last30WrongAnswers }}</strong>
-            <span>hibás</span>
-          </div>
-        </div>
-
-        <div class="weak-topic-list">
-          <strong>Gyenge pontok</strong>
-
-          <div v-if="weakTopics.length">
-            <div
-              v-for="topic in weakTopics"
-              :key="topic.type"
-              class="weak-topic-row"
-            >
-              <span>{{ topic.label }}</span>
-              <small>{{ topic.accuracy }}% · {{ topic.attempts }} próba</small>
+              <div :class="profileUi.statsAnswerCard">
+                <strong class="block text-[1.6rem] font-black text-white">{{ last30WrongAnswers }}</strong>
+                <span :class="profileUi.statsAnswerLabel">hibás</span>
+              </div>
             </div>
           </div>
 
-          <p v-else class="empty-text">
-            Nincs kiugró gyenge téma az utolsó feladatok alapján.
-          </p>
+          <div class="grid gap-3.5">
+            <div class="relative grid h-[240px] grid-rows-[auto_minmax(0,1fr)] gap-3 overflow-hidden rounded-2xl bg-black/20 py-4 pl-14 pr-4 sm:h-[260px]">
+              <div>
+                <strong class="block text-5xl font-black leading-none text-[#53e37b]">
+                  {{ last30AveragePercent }}%
+                </strong>
+                <span class="text-sm font-extrabold text-white/55">átlag az utolsó 30 feladatból</span>
+              </div>
+
+              <div
+                class="pointer-events-none absolute bottom-4 left-4 top-24 flex flex-col justify-between text-[0.68rem] font-black text-white/35"
+                aria-hidden="true"
+              >
+                <span>100%</span>
+                <span>75%</span>
+                <span>50%</span>
+                <span>25%</span>
+              </div>
+
+              <div class="h-full min-h-0 w-full overflow-hidden">
+                <svg class="block h-full min-h-0 w-full overflow-hidden" viewBox="0 0 100 100" preserveAspectRatio="none">
+                  <line :class="profileUi.chartGridLine" x1="0" y1="25" x2="100" y2="25" />
+                  <line :class="profileUi.chartGridLine" x1="0" y1="50" x2="100" y2="50" />
+                  <line :class="profileUi.chartGridLine" x1="0" y1="75" x2="100" y2="75" />
+                  <path v-if="last30ChartPath" :class="profileUi.chartPath" :d="last30ChartPath" />
+                </svg>
+              </div>
+            </div>
+
+            <div :class="profileUi.statsPanel">
+              <strong class="mb-1.5 block font-black text-white">Gyenge pontok</strong>
+
+              <div v-if="weakTopics.length">
+                <div
+                  v-for="topic in weakTopics"
+                  :key="topic.type"
+                  class="flex justify-between gap-3 border-t border-white/[0.07] py-2.5"
+                >
+                  <span class="font-extrabold text-white">{{ topic.label }}</span>
+                  <small :class="profileUi.statsSubtleText">{{ topic.accuracy }}% · {{ topic.attempts }} próba</small>
+                </div>
+              </div>
+
+              <p v-else class="empty-text">
+                Nincs kiugró gyenge téma az utolsó feladatok alapján.
+              </p>
+            </div>
+          </div>
         </div>
       </article>
 
@@ -279,11 +355,15 @@
           @change="$emit('upload-file', $event)"
         />
 
-        <ul v-if="userFiles.length" class="file-list">
-          <li v-for="file in userFiles.slice(0, 3)" :key="file.name">
-            📄 {{ file.name }}
-          </li>
-        </ul>
+        <div v-if="userFiles.length" :class="profileUi.fileList">
+          <strong :class="profileUi.fileListTitle">📄 Feltöltött fájlok</strong>
+
+          <ul class="m-0 grid list-none gap-2.5 p-0">
+            <li v-for="file in userFiles.slice(0, 3)" :key="file.name" :class="profileUi.fileListItem">
+              📄 {{ file.name }}
+            </li>
+          </ul>
+        </div>
 
         <p v-else class="empty-text">Nincsenek feltöltött fájlok.</p>
       </article>
@@ -306,15 +386,15 @@
           Mentés
         </button>
 
-        <div v-if="savedNotes.length" class="notes-scroll-list">
+        <div v-if="savedNotes.length" :class="profileUi.notesScrollList">
           <div
             v-for="note in savedNotes"
             :key="note.id"
-            :class="['mini-note', note.author_role === 'teacher' ? 'teacher-note' : '']"
+            :class="getNoteCardClass(note)"
             @click="$emit('select-note', note)"
           >
-            <div class="note-header">
-              <small>
+            <div :class="profileUi.noteHeader">
+              <small :class="profileUi.noteMeta">
                 <template v-if="note.author_role === 'teacher'">
                   👨‍🏫 Tanári jegyzet · {{ formatDate(note.created_at) }}
                 </template>
@@ -324,7 +404,7 @@
               </small>
 
               <button
-                class="delete-note-btn"
+                :class="profileUi.deleteNoteButton"
                 @click.stop="$emit('delete-note', note.id)"
                 title="Jegyzet törlése"
               >
@@ -332,7 +412,7 @@
               </button>
             </div>
 
-            <p>{{ note.content }}</p>
+            <p :class="profileUi.noteText">{{ note.content }}</p>
           </div>
         </div>
 
@@ -378,10 +458,62 @@ const PROFILE_UI = {
     "mb-3 inline-flex min-h-12 w-full items-center justify-center rounded-2xl border border-dashed border-[#53e37b]/45 bg-[#53e37b]/10 px-5 py-3 text-base font-black text-[#53e37b] outline-none transition hover:-translate-y-0.5 hover:bg-[#53e37b]/15 hover:shadow-md hover:shadow-[#53e37b]/10 focus-visible:ring-4 focus-visible:ring-[#53e37b]/15 disabled:cursor-not-allowed disabled:opacity-60 disabled:hover:translate-y-0",
   noteButton:
     "mt-4 inline-flex h-12 w-full shrink-0 items-center justify-center rounded-2xl border border-transparent bg-[linear-gradient(135deg,#667eea,#764ba2)] px-5 text-base font-black text-white shadow-md shadow-[#667eea]/20 outline-none transition hover:-translate-y-0.5 hover:brightness-105 focus-visible:ring-4 focus-visible:ring-[#667eea]/25 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:translate-y-0 disabled:hover:brightness-100",
+  notesScrollList:
+    "mt-5 max-h-[260px] overflow-y-auto pr-1.5 [scrollbar-color:rgba(255,255,255,0.18)_transparent] [scrollbar-width:thin]",
+  noteCard:
+    "relative mb-3 cursor-pointer rounded-2xl border border-white/[0.07] bg-black/20 py-3.5 pl-4 pr-10 transition hover:bg-white/[0.06]",
+  teacherNoteCard:
+    "border-[#667eea]/35 bg-[#667eea]/10",
+  noteHeader:
+    "flex items-center justify-between gap-3",
+  noteMeta:
+    "mb-1.5 block text-[0.82rem] font-bold text-white/50",
+  deleteNoteButton:
+    "inline-flex size-7 shrink-0 items-center justify-center rounded-full border-0 bg-white/[0.08] text-sm font-black text-white/70 outline-none transition hover:bg-[#ff4757] hover:text-white focus-visible:ring-4 focus-visible:ring-[#ff4757]/20",
+  noteText:
+    "m-0 text-[0.95rem] font-bold leading-snug text-white",
+  fileList:
+    "mt-6",
+  fileListTitle:
+    "mb-3.5 block border-b border-white/[0.08] pb-3 text-base font-black text-white",
+  fileListItem:
+    "flex items-center gap-3 break-all rounded-2xl border border-white/[0.06] bg-black/20 px-4 py-3.5 text-[0.95rem] font-extrabold text-white transition hover:bg-white/[0.06]",
   dangerButton:
     "inline-flex h-12 w-full items-center justify-center rounded-2xl border border-white/10 bg-white/[0.06] px-5 text-base font-black text-white outline-none transition hover:-translate-y-px hover:bg-white/10 focus-visible:ring-4 focus-visible:ring-white/10",
   destructiveButton:
     "inline-flex h-12 w-full items-center justify-center rounded-2xl border border-[#e74c3c]/40 bg-[#e74c3c]/15 px-5 text-base font-black text-[#ff7676] outline-none transition hover:-translate-y-px hover:bg-[#e74c3c]/25 focus-visible:ring-4 focus-visible:ring-[#e74c3c]/20",
+  activityMetricCard:
+    "flex min-h-[76px] flex-col items-center justify-center rounded-2xl bg-black/18 px-2.5 py-3 max-[700px]:min-h-[72px]",
+  activityMetricValue:
+    "text-[1.7rem] font-black leading-none text-[#4ee47d] max-[700px]:text-[1.45rem]",
+  activityMetricLabel:
+    "mt-1.5 text-center text-[0.7rem] font-black uppercase text-white/55",
+  xpMetricCard:
+    "flex min-h-[62px] flex-col items-center justify-center rounded-xl bg-white/[0.055] px-2 py-2.5",
+  xpMetricValue:
+    "text-center text-base font-black leading-tight text-white max-[700px]:text-sm",
+  xpMetricLabel:
+    "mt-1 text-center text-[0.68rem] font-black uppercase text-white/50",
+  statsPanel:
+    "rounded-2xl border border-white/[0.08] bg-white/[0.055] p-4",
+  statsSubtleText:
+    "block text-[0.78rem] font-extrabold text-white/60",
+  statsAnswerCard:
+    "rounded-2xl bg-white/[0.055] p-4 text-center",
+  statsAnswerLabel:
+    "text-xs font-black uppercase text-white/55",
+  chartGridLine:
+    "stroke-white/[0.08] [stroke-width:1]",
+  chartPath:
+    "fill-none stroke-[#53e37b] [filter:drop-shadow(0_0_8px_rgba(83,227,123,0.45))] [stroke-linecap:round] [stroke-linejoin:round] [stroke-width:1.05] [vector-effect:non-scaling-stroke]",
+  activityLegendCellEmpty:
+    "inline-block size-2.5 rounded-sm bg-white/[0.07]",
+  activityLegendCellOne:
+    "inline-block size-2.5 rounded-sm bg-[#2ecc71]/30",
+  activityLegendCellTwo:
+    "inline-block size-2.5 rounded-sm bg-[#2ecc71]/65",
+  activityLegendCellThree:
+    "inline-block size-2.5 rounded-sm bg-[#2ecc71]",
 };
 
 export default {
@@ -413,8 +545,8 @@ export default {
       default: () => ({ xp: 0, level: 1, today_xp: 0, coins: 0 }),
     },
     activityCalendar: {
-      type: Array,
-      default: () => [],
+      type: [Array, Object],
+      default: () => ({ weeks: [], monthLabels: [], activeDays: 0 }),
     },
     recentExercises: {
       type: Array,
@@ -500,6 +632,44 @@ export default {
       return this.userRole === "teacher";
     },
 
+    activityWeeks() {
+      return Array.isArray(this.activityCalendar)
+        ? []
+        : this.activityCalendar?.weeks || [];
+    },
+
+    activityCells() {
+      return this.activityWeeks.flatMap((week) => week.days || []);
+    },
+
+    activityMonthLabels() {
+      return Array.isArray(this.activityCalendar)
+        ? []
+        : this.activityCalendar?.monthLabels || [];
+    },
+
+    yearlyActivityCount() {
+      if (!Array.isArray(this.activityCalendar)) {
+        return this.activityCalendar?.activeDays || 0;
+      }
+
+      return this.activityStats.activeDays || 0;
+    },
+
+    activityGridStyle() {
+      return {
+        gridTemplateRows: "repeat(7, 10px)",
+        gridAutoColumns: "10px",
+      };
+    },
+
+    activityMonthGridStyle() {
+      return {
+        gridTemplateColumns: `repeat(${Math.max(this.activityWeeks.length, 1)}, 10px)`,
+        gridTemplateRows: "1rem",
+      };
+    },
+
     registrationDate() {
       if (!this.userSession?.created_at) return "-";
 
@@ -572,6 +742,60 @@ export default {
 
     triggerFileInput() {
       this.$refs.fileInput?.click();
+    },
+
+    getActivityDotClass(level) {
+      const base =
+        "size-[18px] rounded-md transition duration-200 hover:scale-125 max-[700px]:aspect-square max-[700px]:size-auto max-[700px]:rounded";
+      const levels = {
+        "level-1": "bg-[#2ecc71]/25",
+        "level-2": "bg-[#2ecc71]/45",
+        "level-3": "bg-[#2ecc71]/70",
+        "level-4": "bg-[#2ecc71] shadow-[0_0_12px_rgba(46,204,113,0.45)]",
+      };
+
+      return [base, levels[level] || "bg-white/[0.08]"];
+    },
+
+    getActivityMonthStyle(month) {
+      return {
+        gridColumn: `${month.weekIndex + 1} / span 5`,
+        gridRow: "1",
+      };
+    },
+
+    getYearActivityCellClass(day) {
+      const base =
+        "size-2.5 rounded-sm transition duration-150 hover:scale-125 hover:ring-2 hover:ring-white/20";
+
+      if (!day?.isInYearRange) {
+        return [base, "bg-transparent"];
+      }
+
+      const levels = {
+        "level-1": "bg-[#2ecc71]/30",
+        "level-2": "bg-[#2ecc71]/50",
+        "level-3": "bg-[#2ecc71]/70",
+        "level-4": "bg-[#2ecc71]",
+      };
+
+      return [base, levels[day.level] || "bg-white/[0.07]"];
+    },
+
+    getTrendBoxClass(direction) {
+      const states = {
+        up: "border-[#53e37b]/25",
+        down: "border-[#ff6384]/35",
+      };
+
+      return [this.profileUi.statsPanel, states[direction] || ""];
+    },
+
+    getNoteCardClass(note) {
+      return [
+        this.profileUi.noteCard,
+        note.author_role === "teacher" ? this.profileUi.teacherNoteCard : "",
+      ];
     },
 
     loadAvatar() {
@@ -666,160 +890,3 @@ export default {
   },
 };
 </script>
-
-<style scoped>
-.profile-page {
-  width: min(1180px, calc(100% - 40px));
-  margin: 0 auto;
-  padding: 0 0 90px;
-  box-sizing: border-box;
-  color: white;
-}
-
-.profile-dashboard-grid {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 28px;
-  align-items: stretch;
-}
-
-.profile-hero-card {
-  grid-column: span 2;
-  height: 100%;
-  min-height: 360px;
-}
-
-.profile-summary-card {
-  height: 100%;
-  justify-content: space-between;
-}
-
-.profile-summary-list {
-  display: grid;
-  gap: 14px;
-}
-
-.profile-summary-list div {
-  padding: 16px;
-  border-radius: 20px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 14px;
-  background: rgba(0, 0, 0, 0.2);
-}
-
-.profile-summary-list span {
-  color: rgba(255, 255, 255, 0.58);
-  font-weight: 850;
-}
-
-.profile-summary-list strong {
-  color: #ffffff;
-  font-weight: 950;
-  text-align: right;
-}
-
-.hidden-avatar-input,
-.hidden-file-input {
-  display: none !important;
-}
-
-.profile-account-card {
-  min-height: 360px;
-}
-
-.profile-wide-card {
-  grid-column: 1 / -1;
-}
-
-@media (min-width: 1101px) {
-  .profile-dashboard-grid > .visual-stats-card {
-    grid-row: 3;
-    grid-column: 1 / -1;
-    min-height: auto;
-  }
-
-  .profile-dashboard-grid > .documents-widget {
-    grid-row: 4;
-    grid-column: 2;
-  }
-
-  .profile-dashboard-grid > .notes-widget {
-    grid-row: 4;
-    grid-column: 3;
-  }
-
-  .profile-dashboard-grid > .recent-tasks-card {
-    grid-row: 4;
-    grid-column: 1;
-  }
-
-  .profile-dashboard-grid > .danger-zone {
-    grid-row: 5;
-    grid-column: 1 / -1;
-    min-height: auto;
-  }
-
-  .profile-dashboard-grid.teacher-profile-grid > .profile-hero-card {
-    grid-row: 1;
-    grid-column: span 2;
-  }
-
-  .profile-dashboard-grid.teacher-profile-grid > .profile-account-card {
-    grid-row: 1;
-    grid-column: 3;
-  }
-
-  .profile-dashboard-grid.teacher-profile-grid > .documents-widget {
-    grid-row: 2;
-    grid-column: 1;
-  }
-
-  .profile-dashboard-grid.teacher-profile-grid > .notes-widget {
-    grid-row: 2;
-    grid-column: 2 / 4;
-  }
-
-  .profile-dashboard-grid.teacher-profile-grid > .danger-zone {
-    grid-row: 3;
-    grid-column: 1 / -1;
-  }
-}
-
-.danger-zone {
-  border-color: rgba(231, 76, 60, 0.22);
-  gap: 14px;
-}
-
-.danger-zone h3 {
-  color: #ff7676;
-}
-
-@media (max-width: 1100px) {
-  .profile-dashboard-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .profile-hero-card {
-    grid-column: 1 / -1;
-  }
-}
-
-@media (max-width: 700px) {
-  .profile-page {
-    width: var(--mobile-page-width, calc(100% - 30px));
-    max-width: var(--mobile-page-width, calc(100% - 30px));
-    padding-bottom: 0;
-  }
-
-  .profile-dashboard-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .profile-hero-card {
-    grid-column: auto;
-    min-height: auto;
-  }
-}
-</style>

@@ -1,11 +1,11 @@
 <template>
-  <div class="jitsi-room">
-    <div ref="jitsiRoot" class="jitsi-room-frame"></div>
+  <div :class="ui.room">
+    <div ref="jitsiRoot" :class="ui.frame"></div>
 
-    <div v-if="isLoading || hasLoadError" class="jitsi-room-state">
-      <span>Videóhívás</span>
-      <strong>{{ hasLoadError ? "Nem sikerült betölteni a hívást" : "Jitsi hívás betöltése" }}</strong>
-      <p>
+    <div v-if="isLoading || hasLoadError" :class="ui.state">
+      <span :class="ui.kicker">Videóhívás</span>
+      <strong :class="ui.title">{{ hasLoadError ? "Nem sikerült betölteni a hívást" : "Jitsi hívás betöltése" }}</strong>
+      <p :class="ui.text">
         {{
           hasLoadError
             ? "Nyisd meg külön lapon, vagy próbáld újra az óra újranyitásával."
@@ -13,7 +13,7 @@
         }}
       </p>
 
-      <a :href="roomUrl" target="_blank" rel="noopener noreferrer">
+      <a :href="roomUrl" target="_blank" rel="noopener noreferrer" :class="ui.link">
         Megnyitás külön lapon
       </a>
     </div>
@@ -24,6 +24,23 @@
 const JITSI_SCRIPT_ID = "jitsi-external-api";
 
 let jitsiScriptPromise = null;
+
+const JITSI_UI = {
+  room:
+    "relative min-h-full min-w-0 flex-1 bg-black/25",
+  frame:
+    "absolute inset-0 [&_iframe]:block [&_iframe]:h-full [&_iframe]:w-full [&_iframe]:border-0",
+  state:
+    "absolute inset-0 z-[2] flex min-h-full flex-1 flex-col items-center justify-center gap-3 bg-[linear-gradient(135deg,rgba(128,202,255,0.14),transparent_42%),rgba(0,0,0,0.18)] p-[clamp(22px,3vw,42px)] text-center",
+  kicker:
+    "block text-[0.8rem] font-black uppercase text-[#80caff]",
+  title:
+    "text-[clamp(1.7rem,4vw,3.5rem)] font-black leading-none text-white",
+  text:
+    "m-0 max-w-[440px] font-bold leading-snug text-white/60",
+  link:
+    "mt-2 inline-flex items-center justify-center rounded-full border border-white/10 bg-[#4facfe]/20 px-4 py-3 font-black text-[#80caff] no-underline outline-none transition hover:bg-[#4facfe]/25 focus-visible:ring-4 focus-visible:ring-[#4facfe]/20 max-[700px]:w-full",
+};
 
 function loadJitsiScript(domain) {
   if (window.JitsiMeetExternalAPI) {
@@ -77,6 +94,7 @@ export default {
 
   data() {
     return {
+      ui: JITSI_UI,
       api: null,
       hasLoadError: false,
       isLoading: true,

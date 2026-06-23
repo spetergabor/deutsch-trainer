@@ -10,10 +10,6 @@
 
 .dashboard-layout,
 .welcome-screen {
-  width: calc(100% - 30px);
-  max-width: var(--container-dashboard);
-
-  margin: auto;
   padding: 20px 0 120px;
 }
 
@@ -214,8 +210,7 @@
 }
 
 .learning-library-view {
-  width: min(1180px, calc(100% - 40px));
-  margin: 18px auto 90px;
+  margin: 18px 0 90px;
   text-align: left;
 }
 
@@ -731,8 +726,6 @@
 }
 
 .student-materials-view {
-  width: min(1180px, calc(100% - 40px));
-  margin: 0 auto;
   padding: 0 0 110px;
   color: #ffffff;
 }
@@ -2321,7 +2314,6 @@ button.grammar-practice-chip:hover {
   }
 
   .student-materials-view {
-    width: calc(100% - 20px);
     padding-bottom: 0;
   }
 
@@ -2415,8 +2407,6 @@ button.grammar-practice-chip:hover {
 @media (max-width: 700px) {
   .dashboard-layout,
   .welcome-screen {
-    width: calc(100% - 30px);
-
     padding-top: 64px;
     padding-bottom: 0;
   }

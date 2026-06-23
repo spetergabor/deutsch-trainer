@@ -1,0 +1,294 @@
+@layer components {
+  :root {
+    --page-shell-desktop-width: min(var(--layout-shell-width), 1180px);
+    --page-shell-mobile-width: var(--mobile-page-width, var(--layout-shell-width, 100%));
+  }
+
+  #app.with-desktop-sidebar {
+    --page-shell-desktop-width: min(
+      var(--desktop-dashboard-max-width, 1360px),
+      var(--desktop-shell-width, 100%)
+    );
+  }
+
+  .nemet-page-shell,
+  .dashboard-layout,
+  .welcome-screen,
+  .practice-screen.nemet-page-shell,
+  .lesson-room-shell,
+  .messages-page,
+  .student-materials-view,
+  .student-lessons-view,
+  .learning-library-view,
+  .teacher-dashboard,
+  .teacher-dashboard-shell,
+  .profile-page,
+  .grammar-guide,
+  .grammar-guide-shell,
+  .story-reading.practice-container,
+  .daily-challenge-practice,
+  .profile-practice-screen {
+    width: var(--page-shell-desktop-width) !important;
+    max-width: var(--page-shell-desktop-width) !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    box-sizing: border-box;
+  }
+
+  .nemet-page-shell {
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 1rem;
+    padding-right: 1rem;
+    color: white;
+  }
+
+  .nemet-page-shell--compact {
+    padding-bottom: 2.5rem;
+  }
+
+  .nemet-page-shell--library {
+    padding-bottom: 6rem;
+    text-align: left;
+  }
+
+  .profile-page {
+    margin: 0 auto;
+    padding: 0 0 90px;
+    box-sizing: border-box;
+    color: white;
+  }
+
+  .with-desktop-sidebar .profile-page {
+    align-items: stretch;
+  }
+
+  .with-desktop-sidebar .profile-dashboard-grid {
+    width: 100%;
+  }
+
+  .profile-dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+    gap: 1.75rem;
+    align-items: stretch;
+  }
+
+  .profile-hero-card {
+    grid-column: span 2 / span 2;
+    height: 100%;
+    min-height: 360px;
+  }
+
+  .profile-summary-card {
+    height: 100%;
+    justify-content: space-between;
+  }
+
+  .profile-summary-list {
+    display: grid;
+    gap: 0.875rem;
+  }
+
+  .profile-summary-list div {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.875rem;
+    padding: 1rem;
+    border-radius: 20px;
+    background: rgba(0, 0, 0, 0.2);
+  }
+
+  .profile-summary-list span {
+    color: rgba(255, 255, 255, 0.58);
+    font-weight: 850;
+  }
+
+  .profile-summary-list strong {
+    color: #ffffff;
+    font-weight: 950;
+    text-align: right;
+  }
+
+  .hidden-avatar-input,
+  .hidden-file-input {
+    display: none !important;
+  }
+
+  .profile-account-card {
+    min-height: 360px;
+  }
+
+  .profile-wide-card {
+    grid-column: 1 / -1;
+  }
+
+  .danger-zone {
+    border-color: rgba(231, 76, 60, 0.22);
+    gap: 14px;
+  }
+
+  .danger-zone h3 {
+    color: #ff7676;
+  }
+}
+
+@media (min-width: 1101px) {
+  .profile-dashboard-grid:not(.teacher-profile-grid) > .profile-hero-card {
+    grid-row: 1;
+    grid-column: 1 / span 2;
+  }
+
+  .profile-dashboard-grid:not(.teacher-profile-grid) > .profile-summary-card {
+    grid-row: 1;
+    grid-column: 3;
+  }
+
+  .profile-dashboard-grid:not(.teacher-profile-grid) > .profile-account-card {
+    grid-row: 2;
+    grid-column: 1;
+  }
+
+  .profile-dashboard-grid:not(.teacher-profile-grid) > .profile-activity-card {
+    grid-row: 2;
+    grid-column: 2 / 4;
+  }
+
+  .profile-dashboard-grid:not(.teacher-profile-grid) > .stats-card {
+    grid-row: 3;
+    grid-column: 1 / 3;
+  }
+
+  .profile-dashboard-grid:not(.teacher-profile-grid) > .profile-daily-goal-card {
+    grid-row: 3;
+    grid-column: 3;
+  }
+
+  .profile-dashboard-grid:not(.teacher-profile-grid) > .notes-widget {
+    grid-row: 4;
+    grid-column: 1 / 3;
+  }
+
+  .profile-dashboard-grid:not(.teacher-profile-grid) > .documents-widget {
+    grid-row: 4;
+    grid-column: 3;
+  }
+
+  .profile-dashboard-grid:not(.teacher-profile-grid) > .recent-tasks-card {
+    grid-row: 5;
+    grid-column: 1 / 3;
+  }
+
+  .profile-dashboard-grid:not(.teacher-profile-grid) > .danger-zone {
+    grid-row: 5;
+    grid-column: 3;
+  }
+
+  .profile-dashboard-grid.teacher-profile-grid > .profile-hero-card {
+    grid-row: 1;
+    grid-column: span 2 / span 2;
+  }
+
+  .profile-dashboard-grid.teacher-profile-grid > .profile-account-card {
+    grid-row: 1;
+    grid-column: 3;
+  }
+
+  .profile-dashboard-grid.teacher-profile-grid > .documents-widget {
+    grid-row: 2;
+    grid-column: 1;
+  }
+
+  .profile-dashboard-grid.teacher-profile-grid > .notes-widget {
+    grid-row: 2;
+    grid-column: 2 / 4;
+  }
+
+  .profile-dashboard-grid.teacher-profile-grid > .danger-zone {
+    grid-row: 3;
+    grid-column: 1 / -1;
+  }
+
+  .profile-dashboard-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 640px) {
+  .nemet-page-shell {
+    padding-left: 1.25rem;
+    padding-right: 1.25rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .nemet-page-shell {
+    padding-left: 0;
+    padding-right: 0;
+  }
+}
+
+@media (max-width: 1100px) {
+  .profile-dashboard-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .profile-hero-card {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 700px) {
+  .nemet-page-shell,
+  .dashboard-layout,
+  .welcome-screen,
+  .practice-screen.nemet-page-shell,
+  .lesson-room-shell,
+  .messages-page,
+  .student-materials-view,
+  .student-lessons-view,
+  .learning-library-view,
+  .profile-page,
+  .welcome-screen.teacher-dashboard-shell,
+  .grammar-guide-shell,
+  .story-reading.practice-container,
+  .daily-challenge-practice,
+  .profile-practice-screen,
+  .teacher-dashboard,
+  .teacher-dashboard-shell {
+    width: var(--mobile-page-width, var(--page-shell-mobile-width, 100%)) !important;
+    max-width: var(--mobile-page-width, var(--page-shell-mobile-width, 100%)) !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
+
+  .with-desktop-sidebar .profile-page {
+    width: var(--mobile-page-width, var(--layout-shell-width));
+    max-width: var(--mobile-page-width, var(--layout-shell-width));
+    padding-bottom: 0;
+  }
+
+  .profile-page {
+    width: var(--mobile-page-width, var(--layout-shell-width));
+    max-width: var(--mobile-page-width, var(--layout-shell-width));
+    padding-bottom: 0;
+  }
+
+  .profile-page > * {
+    width: 100%;
+    max-width: none;
+    margin-left: 0;
+    margin-right: 0;
+    box-sizing: border-box;
+  }
+
+  .profile-dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .profile-hero-card {
+    grid-column: auto;
+    min-height: auto;
+  }
+}

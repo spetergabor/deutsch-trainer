@@ -136,7 +136,7 @@ import { grammarGuides } from "../../data/grammarGuides";
 
 const LIBRARY_UI = {
   shell:
-    "learning-library-view dashboard-learning-library !mx-0 !mt-0 !w-full !max-w-none pb-24 text-left text-white",
+    "learning-library-view dashboard-learning-library nemet-page-shell nemet-page-shell--library",
   section: "mt-9",
   sectionHeader: "mb-5 flex flex-col items-start gap-2",
   sectionBadge:

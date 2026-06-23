@@ -1,114 +1,127 @@
 <template>
-  <section class="student-materials-view">
-    <div class="student-materials-header">
-      <span>Anyagok</span>
-      <h2>Házi feladataim és beküldéseim</h2>
-      <p>
+    <section :class="materialsUi.shell">
+    <div :class="materialsUi.header">
+      <span :class="materialsUi.headerKicker">Anyagok</span>
+      <h2 :class="materialsUi.headerTitle">Házi feladataim és beküldéseim</h2>
+      <p :class="materialsUi.headerCopy">
         A tanári feladatokat, beküldött írásokat és javítási állapotokat itt
         követheted.
       </p>
     </div>
 
-    <section class="student-homework-panel">
-      <h2>Anyagaim</h2>
+    <section :class="materialsUi.panel">
+      <h2 :class="materialsUi.sectionTitle">Anyagaim</h2>
 
-      <div class="student-homework-tabs">
+      <div :class="materialsUi.tabs">
         <button
           v-for="filter in homeworkFilters"
           :key="filter.key"
-          :class="{ active: activeHomeworkFilter === filter.key }"
+          :class="[
+            materialsUi.tab,
+            activeHomeworkFilter === filter.key
+              ? materialsUi.tabActive
+              : materialsUi.tabInactive,
+          ]"
           @click="activeHomeworkFilter = filter.key"
         >
           {{ filter.label }}
-          <span>{{ getHomeworkFilterCount(filter.key) }}</span>
+          <span :class="materialsUi.tabCount">{{ getHomeworkFilterCount(filter.key) }}</span>
         </button>
       </div>
 
-      <div v-if="isLoadingHomework" class="student-materials-empty">
+      <div v-if="isLoadingHomework" :class="materialsUi.empty">
         Házik betöltése...
       </div>
 
-      <div v-else-if="!materialItems.length" class="student-materials-empty">
+      <div v-else-if="!materialItems.length" :class="materialsUi.empty">
         Még nincs kiadott vagy beküldött anyagod.
       </div>
 
       <div
         v-else-if="!filteredMaterialItems.length"
-        class="student-materials-empty"
+        :class="materialsUi.empty"
       >
         {{ emptyHomeworkFilterText }}
       </div>
 
-      <div v-else class="student-materials-unified">
-        <aside class="student-materials-list">
+      <div
+        v-else
+        :class="materialsUi.layout"
+      >
+        <aside :class="materialsUi.listContainer">
           <button
             v-for="item in filteredMaterialItems"
             :key="getMaterialItemKey(item)"
-            class="student-materials-item"
-            :class="{ active: isSelectedMaterialItem(item) }"
+            :class="[
+              materialsUi.listItem,
+              isSelectedMaterialItem(item)
+                ? materialsUi.listItemActive
+                : materialsUi.listItemIdle,
+            ]"
             @click="selectMaterialItem(item)"
           >
-            <strong>{{ item.title }}</strong>
-            <span>{{ item.statusLabel }}</span>
-            <small>{{ item.typeLabel }}</small>
-            <small v-if="item.createdAt">{{
-              formatDate(item.createdAt)
-            }}</small>
+            <strong :class="materialsUi.listItemTitle">{{ item.title }}</strong>
+            <span :class="materialsUi.listItemMeta">{{ item.statusLabel }}</span>
+            <span :class="materialsUi.listItemType">{{ item.typeLabel }}</span>
+            <small
+              v-if="item.createdAt"
+              :class="materialsUi.listItemMeta"
+            >
+              {{ formatDate(item.createdAt) }}
+            </small>
           </button>
         </aside>
 
-        <article v-if="selectedMaterialItem" class="student-materials-detail">
-          <div class="student-materials-detail-head">
-            <span
-              v-if="selectedMaterialItem.kind === 'submission'"
-              :class="[
-                'student-submission-status',
-                selectedMaterialItem.raw.status,
-              ]"
-            >
-              {{ selectedMaterialItem.statusLabel }}
-            </span>
-            <span
-              v-else
-              :class="[
-                'student-submission-status',
-                'homework',
-                selectedMaterialItem.raw.status,
-              ]"
-            >
+        <article v-if="selectedMaterialItem" :class="materialsUi.detail">
+          <div :class="materialsUi.detailHead">
+            <span :class="[
+              materialsUi.statusBadge,
+              getMaterialStatusBadgeClass(selectedMaterialItem),
+            ]">
               {{ selectedMaterialItem.statusLabel }}
             </span>
 
-            <h2>{{ selectedMaterialItem.title }}</h2>
-            <p v-if="selectedMaterialItem.createdAt">
+            <h2 :class="materialsUi.detailTitle">
+              {{ selectedMaterialItem.title }}
+            </h2>
+
+            <p v-if="selectedMaterialItem.createdAt" :class="materialsUi.detailDate">
               {{ formatDate(selectedMaterialItem.createdAt) }}
             </p>
           </div>
 
-          <div class="student-materials-meta">
-            <div v-if="selectedMaterialItem.wordCount">
-              <span>Szószám</span>
-              <strong>{{ selectedMaterialItem.wordCount }} szó</strong>
+          <div :class="materialsUi.metaGrid">
+            <div v-if="selectedMaterialItem.wordCount" :class="materialsUi.metaItem">
+              <span :class="materialsUi.metaLabel">Szószám</span>
+              <strong :class="materialsUi.metaValue">{{ selectedMaterialItem.wordCount }} szó</strong>
             </div>
 
-            <div v-if="selectedMaterialItem.expectedWordCount">
-              <span>Elvárt</span>
-              <strong>{{ selectedMaterialItem.expectedWordCount }} szó</strong>
+            <div v-if="selectedMaterialItem.expectedWordCount" :class="materialsUi.metaItem">
+              <span :class="materialsUi.metaLabel">Elvárt</span>
+              <strong :class="materialsUi.metaValue">
+                {{ selectedMaterialItem.expectedWordCount }} szó
+              </strong>
             </div>
 
-            <div v-if="selectedMaterialItem.targetCount">
-              <span>Cél</span>
-              <strong>{{ selectedMaterialItem.targetCount }} feladat</strong>
+            <div v-if="selectedMaterialItem.targetCount" :class="materialsUi.metaItem">
+              <span :class="materialsUi.metaLabel">Cél</span>
+              <strong :class="materialsUi.metaValue">
+                {{ selectedMaterialItem.targetCount }} feladat
+              </strong>
             </div>
 
-            <div v-if="selectedMaterialItem.dueAt">
-              <span>Határidő</span>
-              <strong>{{ formatDate(selectedMaterialItem.dueAt) }}</strong>
+            <div v-if="selectedMaterialItem.dueAt" :class="materialsUi.metaItem">
+              <span :class="materialsUi.metaLabel">Határidő</span>
+              <strong :class="materialsUi.metaValue">
+                {{ formatDate(selectedMaterialItem.dueAt) }}
+              </strong>
             </div>
 
-            <div>
-              <span>Típus</span>
-              <strong>{{ selectedMaterialItem.typeLabel }}</strong>
+            <div :class="materialsUi.metaItem">
+              <span :class="materialsUi.metaLabel">Típus</span>
+              <strong :class="materialsUi.metaValue">
+                {{ selectedMaterialItem.typeLabel }}
+              </strong>
             </div>
           </div>
 
@@ -118,9 +131,9 @@
                 selectedMaterialItem.latestSubmission?.grade ||
                 selectedMaterialItem.latestSubmission?.teacher_feedback
               "
-              class="student-materials-review"
+              :class="materialsUi.reviewSection"
             >
-              <h3>
+              <h3 :class="materialsUi.sectionHeading">
                 {{
                   selectedMaterialItem.raw.status === 'revision_requested'
                     ? 'Újraküldés kérése'
@@ -130,29 +143,37 @@
 
               <div
                 v-if="selectedMaterialItem.latestSubmission.grade"
-                class="student-materials-grade"
+                :class="materialsUi.gradeBox"
               >
-                <span>Osztályzat / értékelés</span>
-                <strong>{{ selectedMaterialItem.latestSubmission.grade }}</strong>
+                <span :class="materialsUi.gradeLabel">Osztályzat / értékelés</span>
+                <strong :class="materialsUi.gradeValue">
+                  {{ selectedMaterialItem.latestSubmission.grade }}
+                </strong>
               </div>
 
-              <p v-if="selectedMaterialItem.latestSubmission.teacher_feedback">
+              <p
+                v-if="selectedMaterialItem.latestSubmission.teacher_feedback"
+                :class="materialsUi.sectionText"
+              >
                 {{ selectedMaterialItem.latestSubmission.teacher_feedback }}
               </p>
 
-              <small v-if="selectedMaterialItem.latestSubmission.reviewed_at">
+              <small
+                v-if="selectedMaterialItem.latestSubmission.reviewed_at"
+                :class="materialsUi.mutedText"
+              >
                 Javítva: {{ formatDate(selectedMaterialItem.latestSubmission.reviewed_at) }}
               </small>
             </section>
 
-            <section>
-              <h3>Feladat</h3>
-              <p>{{ selectedMaterialItem.description }}</p>
+            <section :class="materialsUi.textSection">
+              <h3 :class="materialsUi.sectionHeading">Feladat</h3>
+              <p :class="materialsUi.sectionText">{{ selectedMaterialItem.description }}</p>
             </section>
 
-            <section v-if="selectedMaterialItem.raw.topic">
-              <h3>Téma</h3>
-              <p>{{ selectedMaterialItem.raw.topic }}</p>
+            <section v-if="selectedMaterialItem.raw.topic" :class="materialsUi.textSection">
+              <h3 :class="materialsUi.sectionHeading">Téma</h3>
+              <p :class="materialsUi.sectionText">{{ selectedMaterialItem.raw.topic }}</p>
             </section>
 
             <section
@@ -160,23 +181,24 @@
                 selectedMaterialItem.raw.type === 'writing' &&
                 canStudentWorkOnHomework(selectedMaterialItem.raw.status)
               "
-              class="student-homework-workspace"
+              :class="materialsUi.workspace"
             >
-              <h3>
+              <h3 :class="materialsUi.sectionHeading">
                 {{
                   selectedMaterialItem.raw.status === 'revision_requested'
                     ? 'Újraküldés'
                     : 'Megoldás'
                 }}
               </h3>
+
               <textarea
                 v-model="homeworkDrafts[selectedMaterialItem.raw.id]"
-                class="student-homework-textarea"
+                :class="materialsUi.textarea"
                 placeholder="Ide írd a házi fogalmazást vagy levelet..."
-              ></textarea>
+              />
 
               <button
-                class="student-homework-submit"
+                :class="materialsUi.submitBtn"
                 @click="submitHomeworkWriting(selectedMaterialItem.raw)"
                 :disabled="
                   isSubmittingHomework ||
@@ -192,24 +214,22 @@
                 selectedMaterialItem.raw.type === 'practice' &&
                 canStudentWorkOnHomework(selectedMaterialItem.raw.status)
               "
-              class="student-homework-submit"
-              @click="
-                $emit('start-homework-practice', selectedMaterialItem.raw)
-              "
+              :class="materialsUi.primaryAction"
+              @click="$emit('start-homework-practice', selectedMaterialItem.raw)"
             >
               Gyakorlás indítása
             </button>
 
-            <section v-if="selectedMaterialItem.latestSubmission">
-              <h3>Legutóbbi beküldés</h3>
-              <p class="student-materials-content">
+            <section v-if="selectedMaterialItem.latestSubmission" :class="materialsUi.textSection">
+              <h3 :class="materialsUi.sectionHeading">Legutóbbi beküldés</h3>
+              <p :class="materialsUi.sectionText">
                 {{ selectedMaterialItem.latestSubmission.content }}
               </p>
             </section>
 
             <div
               v-if="!canStudentWorkOnHomework(selectedMaterialItem.raw.status)"
-              class="student-homework-done"
+              :class="materialsUi.doneBadge"
             >
               {{
                 selectedMaterialItem.raw.status === 'closed'
@@ -225,47 +245,57 @@
                 selectedMaterialItem.raw.grade ||
                 selectedMaterialItem.raw.teacher_feedback
               "
-              class="student-materials-review"
+              :class="materialsUi.reviewSection"
             >
-              <h3>Tanári értékelés</h3>
+              <h3 :class="materialsUi.sectionHeading">Tanári értékelés</h3>
 
               <div
                 v-if="selectedMaterialItem.raw.grade"
-                class="student-materials-grade"
+                :class="materialsUi.gradeBox"
               >
-                <span>Osztályzat / értékelés</span>
-                <strong>{{ selectedMaterialItem.raw.grade }}</strong>
+                <span :class="materialsUi.gradeLabel">Osztályzat / értékelés</span>
+                <strong :class="materialsUi.gradeValue">
+                  {{ selectedMaterialItem.raw.grade }}
+                </strong>
               </div>
 
-              <p v-if="selectedMaterialItem.raw.teacher_feedback">
+              <p
+                v-if="selectedMaterialItem.raw.teacher_feedback"
+                :class="materialsUi.sectionText"
+              >
                 {{ selectedMaterialItem.raw.teacher_feedback }}
               </p>
 
-              <small v-if="selectedMaterialItem.raw.reviewed_at">
+              <small
+                v-if="selectedMaterialItem.raw.reviewed_at"
+                :class="materialsUi.mutedText"
+              >
                 Javítva: {{ formatDate(selectedMaterialItem.raw.reviewed_at) }}
               </small>
             </section>
 
-            <section>
-              <h3>Levél témája</h3>
-              <p>{{ selectedMaterialItem.raw.task_situation }}</p>
+            <section :class="materialsUi.textSection">
+              <h3 :class="materialsUi.sectionHeading">Levél témája</h3>
+              <p :class="materialsUi.sectionText">
+                {{ selectedMaterialItem.raw.task_situation }}
+              </p>
             </section>
 
-            <section v-if="selectedMaterialItem.raw.task_points?.length">
-              <h3>Feladat pontjai</h3>
-              <ul>
-                <li
-                  v-for="point in selectedMaterialItem.raw.task_points"
-                  :key="point"
-                >
+            <section
+              v-if="selectedMaterialItem.raw.task_points?.length"
+              :class="materialsUi.textSection"
+            >
+              <h3 :class="materialsUi.sectionHeading">Feladat pontjai</h3>
+              <ul :class="materialsUi.listReset">
+                <li v-for="point in selectedMaterialItem.raw.task_points" :key="point">
                   {{ point }}
                 </li>
               </ul>
             </section>
 
-            <section>
-              <h3>Beküldött szöveg</h3>
-              <p class="student-materials-content">
+            <section :class="materialsUi.textSection">
+              <h3 :class="materialsUi.sectionHeading">Beküldött szöveg</h3>
+              <p :class="materialsUi.sectionText">
                 {{ selectedMaterialItem.raw.content }}
               </p>
             </section>
@@ -274,7 +304,7 @@
       </div>
     </section>
 
-    <div v-if="setupError" class="student-materials-empty warning">
+    <div v-if="setupError" :class="materialsUi.emptyWarning">
       A beküldött írások táblája még nincs beállítva.
     </div>
   </section>
@@ -299,6 +329,98 @@ import {
 } from "../../utils/homeworkLifecycle";
 import { formatDate } from "../../utils/formatters";
 
+const MATERIALS_UI = {
+  shell:
+    "student-materials-view nemet-page-shell nemet-page-shell--compact",
+  header: "mb-6 text-left",
+  headerKicker:
+    "inline-flex items-center rounded-full bg-[#ffd56a]/16 px-3 py-2 text-xs font-black leading-none text-[#ffdc7a]",
+  headerTitle:
+    "mt-3 text-4xl font-black leading-tight text-white sm:text-5xl",
+  headerCopy:
+    "max-w-3xl text-base font-semibold leading-relaxed text-white/60",
+  panel:
+    "rounded-[24px] border border-[#ffd56a]/25 bg-white/[0.055] p-5 shadow-[0_18px_40px_rgba(0,0,0,0.22)] sm:p-6",
+  sectionTitle:
+    "mb-5 text-3xl font-black leading-tight text-white sm:text-4xl",
+  tabs: "mb-4 flex flex-wrap gap-2 rounded-full bg-black/20 p-2",
+  tab: "inline-flex min-h-10 items-center gap-2 rounded-full border border-transparent bg-transparent px-3 py-1.5 text-sm font-black leading-none transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#ffd56a]/20",
+  tabActive: "border-[#ffd56a]/30 bg-[#ffd56a]/15 text-white",
+  tabInactive: "text-white/65 hover:bg-white/10",
+  tabCount:
+    "inline-flex min-h-6 min-w-6 items-center justify-center rounded-full bg-white/10 px-1.5 text-xs font-black text-[#ffdc7a]",
+  empty:
+    "rounded-xl border border-white/10 bg-white/5 p-4 text-sm font-black leading-relaxed text-white/65",
+  emptyWarning: "rounded-xl border border-[#ffd56a]/30 bg-[#ffd56a]/10 p-4 text-sm font-black leading-relaxed text-[#ffdc7a]",
+  layout: "grid gap-4 md:grid-cols-[320px,minmax(0,1fr)]",
+  listContainer: "space-y-2 rounded-xl border border-white/10 bg-black/20 p-2",
+  listItem:
+    "w-full rounded-xl border border-transparent bg-black/10 p-3 text-left transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#ffd56a]/20",
+  listItemActive: "border-[#ffd56a]/40 bg-[#ffd56a]/15 text-white",
+  listItemIdle: "border-transparent text-white/95",
+  listItemTitle:
+    "block min-w-0 text-base font-black leading-snug text-white/95 truncate",
+  listItemMeta:
+    "mt-1 block text-xs font-black text-white/55",
+  listItemType:
+    "mt-1 block text-xs font-black text-white/45",
+  detail:
+    "min-w-0 rounded-xl border border-white/10 bg-black/15 p-4 sm:p-5",
+  detailHead: "mb-4",
+  statusBadge:
+    "inline-flex h-7 items-center rounded-full border px-3 text-xs font-black leading-none",
+  detailTitle: "mt-3 text-[1.7rem] font-black leading-tight text-white",
+  detailDate: "mt-2 text-sm font-semibold text-white/58",
+  metaGrid: "mb-5 grid gap-2.5 sm:grid-cols-2 xl:grid-cols-3",
+  metaItem:
+    "rounded-lg border border-white/10 bg-black/18 p-3",
+  metaLabel:
+    "block text-xs font-black uppercase tracking-[0.02em] text-white/45",
+  metaValue:
+    "mt-1 block text-sm font-black text-white",
+  textSection:
+    "mb-4 rounded-lg border border-white/10 bg-black/12 p-3 sm:p-4",
+  sectionHeading: "m-0 text-xl font-black text-white",
+  sectionText: "mt-2 text-sm leading-relaxed text-white/72",
+  listReset: "pl-5 text-sm leading-relaxed text-white/72",
+  mutedText: "mt-2 block text-xs font-black text-white/50",
+  workspace: "mb-4 flex flex-col gap-3",
+  textarea:
+    "h-44 w-full resize-vertical rounded-xl border border-white/12 bg-black/22 p-4 text-sm font-semibold leading-relaxed text-white placeholder:text-white/50",
+  primaryAction:
+    "inline-flex h-11 w-full items-center justify-center rounded-full border border-white/12 bg-white/10 px-4 text-sm font-black text-white/90 transition hover:bg-white/15",
+  submitBtn:
+    "inline-flex h-11 w-full items-center justify-center rounded-full bg-gradient-to-br from-[#35d06f] to-[#2fc061] text-sm font-black text-white transition hover:scale-[1.01] disabled:cursor-not-allowed disabled:opacity-50",
+  doneBadge:
+    "w-full rounded-full border border-[#43e97b]/30 bg-[#43e97b]/12 px-3 py-3 text-center text-sm font-black text-[#79f2a8]",
+  reviewSection:
+    "rounded-lg border border-[#43e97b]/30 bg-[#43e97b]/10 px-4 py-3",
+  gradeBox:
+    "mb-3 flex items-center justify-between gap-3 rounded-lg border border-white/10 bg-black/18 px-3 py-2",
+  gradeLabel: "text-sm text-white/58",
+  gradeValue: "text-2xl font-black text-[#79f2a8]",
+};
+
+const MATERIAL_STATUS_BADGE = {
+  homework: {
+    todo: "bg-[#ffd56a]/15 border-[#ffd56a]/35 text-[#ffdc7a]",
+    started: "bg-[#80caff]/15 border-[#80caff]/35 text-[#c5e6ff]",
+    submitted: "bg-[#43e97b]/15 border-[#43e97b]/35 text-[#79f2a8]",
+    revision_requested:
+      "bg-[#ff7ea7]/15 border-[#ff7ea7]/35 text-[#ffb3cd]",
+    reviewed: "bg-[#66ffa5]/15 border-[#66ffa5]/35 text-[#a5ffd4]",
+    closed: "bg-white/10 border-white/20 text-white/70",
+  },
+  submission: {
+    todo: "bg-[#ffd56a]/15 border-[#ffd56a]/35 text-[#ffdc7a]",
+    submitted: "bg-[#43e97b]/15 border-[#43e97b]/35 text-[#79f2a8]",
+    reviewed: "bg-[#66ffa5]/15 border-[#66ffa5]/35 text-[#a5ffd4]",
+    closed: "bg-white/10 border-white/20 text-white/70",
+    revision_requested:
+      "bg-[#ff7ea7]/15 border-[#ff7ea7]/35 text-[#ffb3cd]",
+  },
+};
+
 export default {
   name: "StudentMaterialsView",
 
@@ -313,6 +435,7 @@ export default {
 
   data() {
     return {
+      materialsUi: MATERIALS_UI,
       submissions: [],
       selectedSubmission: null,
       homeworkAssignments: [],
@@ -620,6 +743,14 @@ export default {
       if (item.kind === "homework") {
         await this.markHomeworkStartedIfNeeded(item.raw);
       }
+    },
+
+    getMaterialStatusBadgeClass(item) {
+      const kind = item.kind || "homework";
+      const status = item.raw?.status || "default";
+      const map = MATERIAL_STATUS_BADGE[kind] || MATERIAL_STATUS_BADGE.homework;
+
+      return `${MATERIALS_UI.statusBadge} ${map[status] || map.default || ""}`;
     },
 
     formatDate,

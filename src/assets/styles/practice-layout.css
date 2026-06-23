@@ -292,7 +292,7 @@
   width: 100%;
 }
 
-:where(.practice-layout, .verb-practice) .pill-input {
+:where(.practice-layout, .verb-practice) .practice-input {
   width: 100%;
 
   display: block;
@@ -300,7 +300,8 @@
   box-sizing: border-box;
 }
 
-:where(.practice-layout, .verb-practice) .pill-button {
+:where(.practice-layout, .verb-practice)
+  :where(.practice-btn-primary, .practice-btn-secondary, .practice-btn-dark) {
   width: 100%;
 
   display: flex;

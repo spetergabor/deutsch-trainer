@@ -1,6 +1,6 @@
 <template>
   <section
-    class="auth-screen flex min-h-dvh w-[min(90%,1180px)] flex-col items-center justify-center py-[clamp(24px,6vh,64px)] text-center"
+    class="auth-screen nemet-page-shell flex min-h-dvh w-full flex-col items-center justify-center py-[clamp(24px,6vh,64px)] text-center"
   >
     <template v-if="!showLoginForm">
       <h1 class="m-0 text-[clamp(2.35rem,6vw,4.6rem)] font-black leading-tight text-white">

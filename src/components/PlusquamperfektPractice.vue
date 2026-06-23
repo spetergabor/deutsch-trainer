@@ -94,7 +94,7 @@
         <div class="button-group ui-unit">
           <button
             v-if="!isAnswered && currentQuestion.type !== 'choice'"
-            class="pill-button btn-green"
+            class="practice-btn-primary"
             :disabled="!userAnswer.trim()"
             @click="checkWritingAnswer"
           >
@@ -103,7 +103,7 @@
 
           <button
             v-if="isAnswered"
-            class="pill-button btn-blue"
+            class="practice-btn-secondary"
             @click="nextQuestion"
           >
             Következő
@@ -143,7 +143,7 @@
           </span>
         </p>
 
-        <button class="pill-button btn-green" @click="startNextAction">
+        <button class="practice-btn-primary" @click="startNextAction">
           {{
             incorrectAnswersInRound === 0
               ? "Új kör indítása"
@@ -151,7 +151,7 @@
           }}
         </button>
 
-        <button class="pill-button btn-blue" @click="$emit('go-dashboard')">
+        <button class="practice-btn-secondary" @click="$emit('go-dashboard')">
           Vissza a főmenübe
         </button>
       </div>
@@ -443,173 +443,4 @@ export default {
 };
 </script>
 
-<style scoped>
-.plusquamperfekt-practice {
-  max-width: 720px;
-}
-
-.plusquamperfekt-practice :deep(.practice-box) {
-  align-items: stretch;
-}
-
-.plusquamperfekt-practice :deep(.quiz-area) {
-  width: 100%;
-}
-
-.plusquamperfekt-question-card {
-  text-align: left;
-}
-
-.plusquamperfekt-type {
-  display: inline-flex;
-  margin-bottom: 14px;
-  padding: 7px 12px;
-  border: 1px solid rgba(255, 209, 102, 0.36);
-  border-radius: 999px;
-  background: rgba(255, 209, 102, 0.14);
-  color: #ffd166;
-  font-size: 0.78rem;
-  font-weight: 950;
-  text-transform: uppercase;
-}
-
-.plusquamperfekt-prompt {
-  margin: 0 0 12px;
-  color: rgba(255, 255, 255, 0.68);
-  font-weight: 850;
-}
-
-.plusquamperfekt-sentence {
-  margin: 0;
-  padding: 22px;
-  border-radius: 18px;
-  background: rgba(255, 255, 255, 0.07);
-  color: #ffffff;
-  font-size: clamp(1.08rem, 2vw, 1.35rem);
-  font-weight: 900;
-  line-height: 1.55;
-}
-
-.plusquamperfekt-writing-input {
-  margin-top: 18px;
-}
-
-.plusquamperfekt-practice .options-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 14px;
-  width: 100%;
-  margin-top: 18px;
-}
-
-.plusquamperfekt-practice .options-grid.is-sentence-options {
-  grid-template-columns: 1fr;
-  max-width: 760px;
-  margin-right: auto;
-  margin-left: auto;
-}
-
-.plusquamperfekt-practice .option-pill {
-  width: 100%;
-  min-height: 58px;
-  box-sizing: border-box;
-  padding: 14px 18px;
-  border: 1px solid rgba(255, 209, 102, 0.24);
-  border-radius: 18px;
-  background: rgba(255, 255, 255, 0.08);
-  color: #ffffff;
-  font: inherit;
-  font-size: 1rem;
-  font-weight: 900;
-  line-height: 1.25;
-  text-align: center;
-  cursor: pointer;
-  transition:
-    transform 0.2s ease,
-    border-color 0.2s ease,
-    background 0.2s ease,
-    box-shadow 0.2s ease;
-  box-shadow:
-    0 12px 26px rgba(0, 0, 0, 0.22),
-    inset 0 1px 0 rgba(255, 255, 255, 0.12);
-}
-
-.plusquamperfekt-practice .options-grid.is-sentence-options .option-pill {
-  min-height: 72px;
-  padding: 18px 22px;
-  border-radius: 22px;
-  text-align: left;
-  line-height: 1.38;
-}
-
-.plusquamperfekt-practice .option-pill:hover:not(:disabled) {
-  transform: translateY(-2px);
-  border-color: rgba(255, 209, 102, 0.58);
-  background: rgba(255, 209, 102, 0.16);
-}
-
-.plusquamperfekt-practice .option-pill:disabled {
-  cursor: default;
-}
-
-.plusquamperfekt-practice .option-correct {
-  border-color: rgba(46, 204, 113, 0.9) !important;
-  background: rgba(46, 204, 113, 0.22) !important;
-  color: #ffffff !important;
-  box-shadow:
-    0 12px 26px rgba(46, 204, 113, 0.16),
-    inset 0 1px 0 rgba(255, 255, 255, 0.16);
-}
-
-.plusquamperfekt-practice .option-wrong {
-  border-color: rgba(255, 71, 87, 0.9) !important;
-  background: rgba(255, 71, 87, 0.18) !important;
-  color: #ffffff !important;
-}
-
-.plusquamperfekt-answer-textarea {
-  width: 100%;
-  min-height: 120px;
-  resize: vertical;
-  padding: 16px 18px;
-  border: 2px solid rgba(255, 255, 255, 0.12);
-  border-radius: 18px;
-  background: rgba(255, 255, 255, 0.08);
-  color: #ffffff;
-  font: inherit;
-  font-size: 1rem;
-  font-weight: 760;
-  line-height: 1.5;
-}
-
-.plusquamperfekt-answer-textarea::placeholder {
-  color: rgba(255, 255, 255, 0.38);
-}
-
-.plusquamperfekt-answer-textarea:focus {
-  border-color: rgba(255, 209, 102, 0.72);
-  outline: none;
-  box-shadow: 0 0 0 4px rgba(255, 209, 102, 0.12);
-}
-
-.plusquamperfekt-answer-textarea.input-correct {
-  border-color: rgba(46, 204, 113, 0.9);
-  background: rgba(46, 204, 113, 0.12);
-}
-
-.plusquamperfekt-answer-textarea.input-wrong {
-  border-color: rgba(255, 71, 87, 0.85);
-  background: rgba(255, 71, 87, 0.1);
-}
-
-.plusquamperfekt-practice :deep(.button-group),
-.plusquamperfekt-practice :deep(.feedback-box) {
-  margin-top: 18px;
-}
-
-@media (max-width: 560px) {
-  .plusquamperfekt-practice .options-grid {
-    grid-template-columns: 1fr;
-  }
-}
-</style>
+<style scoped src="../assets/styles/practice-legacy.css"></style>

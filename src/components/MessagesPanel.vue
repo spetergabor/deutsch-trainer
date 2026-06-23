@@ -1,6 +1,6 @@
 <template>
   <section
-    class="messages-page"
+    class="messages-page nemet-page-shell"
     :class="{ 'mobile-chat-page': isMobileConversationOpen }"
   >
     <div v-if="setupError" class="messages-empty setup-error">

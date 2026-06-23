@@ -33,7 +33,7 @@
 
       <span
         v-if="unreadMessages"
-        class="notification-badge mobile-notification-badge"
+        :class="notificationBadgeClass"
       >
         {{ unreadMessages }}
       </span>
@@ -49,7 +49,7 @@
 
       <span
         v-if="unreadNotifications"
-        class="notification-badge mobile-notification-badge"
+        :class="notificationBadgeClass"
       >
         {{ unreadNotifications }}
       </span>
@@ -74,6 +74,13 @@
 <script>
 export default {
   name: "MobileBottomNav",
+
+  data() {
+    return {
+      notificationBadgeClass:
+        "absolute right-2 top-2 flex h-5 min-w-5 items-center justify-center rounded-full bg-[#ff4757] px-1.5 text-[0.7rem] font-black leading-none text-white",
+    };
+  },
 
   props: {
     unreadNotifications: {

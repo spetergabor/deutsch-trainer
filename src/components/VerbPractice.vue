@@ -70,7 +70,7 @@
             ref="answerInput"
             v-model="userAnswer"
             type="text"
-            class="pill-input"
+            class="practice-input"
             placeholder="pl. hat geholfen"
             :disabled="isAnswered"
             :class="{
@@ -84,14 +84,14 @@
         <div class="button-group ui-unit">
           <button
             v-if="!isAnswered"
-            class="pill-button btn-green"
+            class="practice-btn-primary"
             :disabled="!userAnswer.trim()"
             @click="checkAnswer"
           >
             Ellenőrzés
           </button>
 
-          <button v-else class="pill-button btn-blue" @click="nextQuestion">
+          <button v-else class="practice-btn-secondary" @click="nextQuestion">
             Következő
           </button>
         </div>
@@ -139,7 +139,7 @@
           ❌ Volt benne hiba. Csak a hibásakat ismételjük újra!
         </p>
 
-        <button class="pill-button btn-green" @click="startNextAction">
+        <button class="practice-btn-primary" @click="startNextAction">
           {{
             incorrectAnswersInRound === 0
               ? "Új kör indítása"
@@ -147,7 +147,7 @@
           }}
         </button>
 
-        <button class="pill-button btn-blue" @click="$emit('go-dashboard')">
+        <button class="practice-btn-secondary" @click="$emit('go-dashboard')">
           Vissza a főmenübe
         </button>
       </div>

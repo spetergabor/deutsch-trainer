@@ -38,6 +38,10 @@
 
   --shadow-card: 0 10px 30px rgba(0, 0, 0, 0.3);
 
+  --layout-page-gutter: 30px;
+  --layout-shell-width: calc(100% - var(--layout-page-gutter));
+  --layout-viewport-shell-width: calc(100vw - var(--layout-page-gutter));
+
   --container-practice: 500px;
   --container-ui: 400px;
   --container-menu: 600px;
@@ -141,30 +145,6 @@ p {
   max-width: var(--container-ui);
   margin-left: auto;
   margin-right: auto;
-}
-
-/* =========================================================
-   HEADER
-========================================================= */
-
-.current-task-title {
-  font-size: 0.8rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-.header-spacer {
-  width: 75px;
-}
-
-.btn-header-back {
-  padding: 7px 18px;
-  border: 0;
-  border-radius: var(--radius-pill);
-  background: rgba(255, 255, 255, 0.15);
-  color: var(--color-white);
-  font-weight: 700;
 }
 
 /* =========================================================

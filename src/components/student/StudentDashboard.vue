@@ -15,7 +15,7 @@
     @video-started="syncLessonVideoStarted"
   />
 
-  <section v-else class="dashboard-layout">
+  <section v-else class="dashboard-layout nemet-page-shell">
     <section class="student-home-hero">
       <div :class="studentHomeUi.heroCard">
         <div class="student-home-person">
@@ -387,8 +387,8 @@ export default {
     },
 
     activityCalendar: {
-      type: Array,
-      default: () => [],
+      type: [Array, Object],
+      default: () => ({ weeks: [], monthLabels: [], activeDays: 0 }),
     },
 
     recentExercises: {

@@ -74,7 +74,7 @@
         <div class="button-group ui-unit">
           <button
             v-if="!isAnswered"
-            class="pill-button btn-green"
+            class="practice-btn-primary"
             :disabled="!userAnswer.trim()"
             @click="checkWritingAnswer"
           >
@@ -83,7 +83,7 @@
 
           <button
             v-if="isAnswered"
-            class="pill-button btn-blue"
+            class="practice-btn-secondary"
             @click="nextQuestion"
           >
             Következő
@@ -123,7 +123,7 @@
           </span>
         </p>
 
-        <button class="pill-button btn-green" @click="startNextAction">
+        <button class="practice-btn-primary" @click="startNextAction">
           {{
             incorrectAnswersInRound === 0
               ? "Új kör indítása"
@@ -131,7 +131,7 @@
           }}
         </button>
 
-        <button class="pill-button btn-blue" @click="$emit('go-dashboard')">
+        <button class="practice-btn-secondary" @click="$emit('go-dashboard')">
           Vissza a főmenübe
         </button>
       </div>
@@ -383,94 +383,4 @@ export default {
 };
 </script>
 
-<style scoped>
-.zu-infinitiv-practice {
-  max-width: 720px;
-}
-
-.zu-infinitiv-practice :deep(.practice-box) {
-  align-items: stretch;
-}
-
-.zu-infinitiv-practice :deep(.quiz-area) {
-  width: 100%;
-}
-
-.zu-infinitiv-question-card {
-  text-align: left;
-}
-
-.zu-infinitiv-type {
-  display: inline-flex;
-  margin-bottom: 14px;
-  padding: 7px 12px;
-  border: 1px solid rgba(128, 202, 255, 0.36);
-  border-radius: 999px;
-  background: rgba(128, 202, 255, 0.14);
-  color: #80caff;
-  font-size: 0.78rem;
-  font-weight: 950;
-  text-transform: uppercase;
-}
-
-.zu-infinitiv-prompt {
-  margin: 0 0 12px;
-  color: rgba(255, 255, 255, 0.68);
-  font-weight: 850;
-}
-
-.zu-infinitiv-sentence {
-  margin: 0;
-  padding: 22px;
-  border-radius: 18px;
-  background: rgba(255, 255, 255, 0.07);
-  color: #ffffff;
-  font-size: clamp(1.08rem, 2vw, 1.35rem);
-  font-weight: 900;
-  line-height: 1.55;
-}
-
-.zu-infinitiv-writing-input {
-  margin-top: 18px;
-}
-
-.zu-infinitiv-answer-textarea {
-  width: 100%;
-  min-height: 120px;
-  resize: vertical;
-  padding: 16px 18px;
-  border: 2px solid rgba(255, 255, 255, 0.12);
-  border-radius: 18px;
-  background: rgba(255, 255, 255, 0.08);
-  color: #ffffff;
-  font: inherit;
-  font-size: 1rem;
-  font-weight: 760;
-  line-height: 1.5;
-}
-
-.zu-infinitiv-answer-textarea::placeholder {
-  color: rgba(255, 255, 255, 0.38);
-}
-
-.zu-infinitiv-answer-textarea:focus {
-  border-color: rgba(128, 202, 255, 0.75);
-  outline: none;
-  box-shadow: 0 0 0 4px rgba(128, 202, 255, 0.12);
-}
-
-.zu-infinitiv-answer-textarea.input-correct {
-  border-color: rgba(46, 204, 113, 0.9);
-  background: rgba(46, 204, 113, 0.12);
-}
-
-.zu-infinitiv-answer-textarea.input-wrong {
-  border-color: rgba(255, 71, 87, 0.85);
-  background: rgba(255, 71, 87, 0.1);
-}
-
-.zu-infinitiv-practice :deep(.button-group),
-.zu-infinitiv-practice :deep(.feedback-box) {
-  margin-top: 18px;
-}
-</style>
+<style scoped src="../assets/styles/practice-legacy.css"></style>

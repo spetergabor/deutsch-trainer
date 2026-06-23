@@ -1,5 +1,5 @@
 <template>
-  <div class="story-reading practice-container">
+  <div class="story-reading practice-container nemet-page-shell">
     <section v-if="!showStatistics" class="story-page-hero">
       <div class="story-page-hero-copy">
         <span>Story-Lesen</span>
@@ -143,7 +143,7 @@
 
           <button
             v-if="isAnswered"
-            class="pill-button btn-blue story-next-btn"
+            class="practice-btn-secondary story-next-btn"
             @click="nextQuestion"
           >
             Következő
@@ -161,11 +161,11 @@
           <span class="correct-text">{{ correctAnswers }} / {{ totalQuestions }}</span>
         </p>
 
-        <button class="pill-button btn-green" @click="resetStory">
+        <button class="practice-btn-primary" @click="resetStory">
           Újrakezdés
         </button>
 
-        <button class="pill-button btn-blue" @click="$emit('go-dashboard')">
+        <button class="practice-btn-secondary" @click="$emit('go-dashboard')">
           Vissza a főmenübe
         </button>
       </div>
@@ -363,7 +363,7 @@ export default {
 
 <style scoped>
 .story-reading.practice-container {
-  width: min(1080px, calc(100% - 40px));
+  width: min(1080px, var(--layout-shell-width));
   max-width: 1080px;
   margin-left: auto;
   margin-right: auto;
@@ -805,8 +805,8 @@ export default {
 
 @media (max-width: 900px) {
   .story-reading.practice-container {
-    width: min(100%, calc(100% - 30px));
-    max-width: min(100%, calc(100% - 30px));
+    width: min(100%, var(--layout-shell-width));
+    max-width: min(100%, var(--layout-shell-width));
   }
 
   .story-page-hero {

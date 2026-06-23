@@ -3,7 +3,6 @@
 ========================================================= */
 
 .messages-page {
-  width: min(1180px, 100%);
   height: calc(100dvh - 124px);
   min-height: 620px;
   margin: 0 auto;
@@ -11,7 +10,6 @@
 }
 
 .with-desktop-sidebar .messages-page {
-  width: var(--desktop-shell-width, 100%);
   height: calc(100dvh - var(--desktop-content-top, 102px) - 18px);
   min-height: 0;
   margin: 0;
@@ -380,7 +378,7 @@
 
 @media (max-width: 700px) {
   .messages-page {
-    width: var(--mobile-page-width, calc(100% - 30px));
+    width: var(--mobile-page-width, var(--layout-shell-width));
     height: auto;
     min-height: calc(100dvh - 96px);
     padding-bottom: calc(var(--mobile-bottom-nav-height, 96px) + 16px);

@@ -48,7 +48,7 @@
     <div class="button-group">
       <button
         v-if="!isLueckenChecked"
-        class="pill-button btn-green"
+        class="practice-btn-primary"
         @click="checkLuecken"
       >
         Ellenőrzés
@@ -56,7 +56,7 @@
 
       <button
         v-else
-        class="pill-button btn-blue"
+        class="practice-btn-secondary"
         @click="resetLuecken"
       >
         Újra

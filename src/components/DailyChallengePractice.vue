@@ -1,5 +1,5 @@
 <template>
-  <div class="practice-container daily-challenge-practice">
+  <div class="practice-container daily-challenge-practice nemet-page-shell">
     <section class="challenge-hero">
       <div>
         <span>{{ challenge.level }} · {{ challenge.estimatedMinutes }} perc</span>
@@ -81,7 +81,7 @@
               ref="answerInput"
               v-model="userAnswer"
               type="text"
-              class="pill-input"
+              class="practice-input"
               :placeholder="inputPlaceholder"
               :disabled="isAnswered"
               :class="{
@@ -119,7 +119,7 @@
         <div class="challenge-actions">
           <button
             v-if="currentStep.type === 'reading'"
-            class="pill-button btn-green"
+            class="practice-btn-primary"
             @click="goNextStep"
           >
             Tovább a kérdésekhez
@@ -127,7 +127,7 @@
 
           <button
             v-else-if="currentStep.type === 'input' && !isAnswered"
-            class="pill-button btn-green"
+            class="practice-btn-primary"
             :disabled="!userAnswer.trim()"
             @click="checkInputAnswer"
           >
@@ -136,7 +136,7 @@
 
           <button
             v-if="currentStep.type !== 'reading' && isAnswered"
-            class="pill-button btn-blue"
+            class="practice-btn-secondary"
             @click="nextQuestion"
           >
             Következő
@@ -158,14 +158,14 @@
         </p>
 
         <button
-          class="pill-button btn-green"
+          class="practice-btn-primary"
           @click="restartChallenge"
         >
           Újrakezdés
         </button>
 
         <button
-          class="pill-button btn-blue"
+          class="practice-btn-secondary"
           @click="$emit('go-dashboard')"
         >
           Vissza a főmenübe
@@ -428,235 +428,4 @@ export default {
 };
 </script>
 
-<style scoped>
-.daily-challenge-practice {
-  max-width: 920px;
-}
-
-.challenge-hero {
-  width: min(920px, 100%);
-  margin: 0 auto 22px;
-  padding: 28px;
-  border: 1px solid rgba(255, 255, 255, 0.09);
-  border-radius: 30px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 22px;
-  background: rgba(255, 255, 255, 0.055);
-  color: #ffffff;
-  text-align: left;
-  box-shadow: 0 18px 42px rgba(0, 0, 0, 0.24);
-}
-
-.challenge-hero > div:first-child {
-  min-width: 0;
-}
-
-.challenge-hero span,
-.challenge-step-head > span {
-  display: inline-flex;
-  width: fit-content;
-  padding: 7px 12px;
-  border-radius: 999px;
-  background: rgba(52, 152, 219, 0.14);
-  color: #8fe6ff;
-  font-size: 0.78rem;
-  font-weight: 950;
-}
-
-.challenge-hero h1 {
-  margin: 12px 0 0;
-  font-size: clamp(2rem, 5vw, 3.2rem);
-  line-height: 1.04;
-}
-
-.challenge-hero p {
-  margin: 10px 0 0;
-  color: rgba(255, 255, 255, 0.62);
-  font-weight: 850;
-}
-
-.challenge-hero-icon {
-  width: 88px;
-  height: 88px;
-  flex: 0 0 auto;
-  border-radius: 28px;
-  display: grid;
-  place-items: center;
-  background: linear-gradient(135deg, #667eea, #43e97b);
-  font-size: 2.25rem;
-}
-
-.daily-challenge-practice :deep(.practice-layout),
-.daily-challenge-practice :deep(.practice-box) {
-  width: min(920px, 100%);
-}
-
-.challenge-step {
-  display: grid;
-  gap: 22px;
-  width: 100%;
-}
-
-.challenge-step-head {
-  display: grid;
-  gap: 12px;
-  text-align: left;
-}
-
-.challenge-step-head h2 {
-  margin: 0;
-  color: #ffffff;
-  font-size: 1.65rem;
-  font-weight: 950;
-}
-
-.challenge-step-head p {
-  margin: 7px 0 0;
-  color: rgba(255, 255, 255, 0.62);
-  font-weight: 850;
-}
-
-.challenge-reading,
-.challenge-question {
-  padding: 24px;
-  border-radius: 26px;
-  background: rgba(0, 0, 0, 0.18);
-  text-align: left;
-}
-
-.challenge-reading {
-  display: grid;
-  gap: 16px;
-}
-
-.challenge-reading p {
-  margin: 0;
-  color: rgba(255, 255, 255, 0.78);
-  font-size: 1.02rem;
-  font-weight: 750;
-  line-height: 1.75;
-}
-
-.challenge-highlight-box {
-  display: grid;
-  gap: 12px;
-  margin-top: 6px;
-  padding: 16px;
-  border-radius: 18px;
-  background: rgba(102, 126, 234, 0.14);
-}
-
-.challenge-highlight-box strong {
-  color: #ffffff;
-}
-
-.challenge-highlight-box div {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-}
-
-.challenge-highlight-box span {
-  padding: 7px 10px;
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.08);
-  color: #ffffff;
-  font-size: 0.82rem;
-  font-weight: 850;
-}
-
-.challenge-question p {
-  margin: 0 0 18px;
-  color: #ffffff;
-  font-size: 1.25rem;
-  font-weight: 900;
-  line-height: 1.35;
-}
-
-.challenge-options {
-  display: grid;
-  gap: 12px;
-}
-
-.challenge-options button {
-  min-height: 58px;
-  padding: 15px 18px;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 18px;
-  background: rgba(255, 255, 255, 0.055);
-  color: #ffffff;
-  font: inherit;
-  font-size: 0.98rem;
-  font-weight: 850;
-  text-align: left;
-  cursor: pointer;
-}
-
-.challenge-options button.correct {
-  border-color: rgba(46, 204, 113, 0.45);
-  background: rgba(46, 204, 113, 0.16);
-}
-
-.challenge-options button.wrong {
-  border-color: rgba(255, 71, 87, 0.45);
-  background: rgba(255, 71, 87, 0.14);
-}
-
-.challenge-options button.muted {
-  opacity: 0.5;
-}
-
-.challenge-input-wrap,
-.daily-challenge-practice :deep(.feedback-box) {
-  width: 100%;
-}
-
-.challenge-actions {
-  display: flex;
-  justify-content: center;
-}
-
-.example-box {
-  margin-top: 15px;
-  text-align: left;
-}
-
-.example-box p {
-  margin: 0;
-}
-
-@media (max-width: 700px) {
-  .daily-challenge-practice {
-    width: min(100%, calc(100vw - 30px));
-  }
-
-  .challenge-hero {
-    width: 100%;
-    padding: 22px;
-    border-radius: 26px;
-    display: block;
-  }
-
-  .challenge-hero-icon {
-    display: none;
-  }
-
-  .challenge-hero h1 {
-    font-size: clamp(2rem, 9vw, 2.75rem);
-    overflow-wrap: anywhere;
-  }
-
-  .challenge-hero p {
-    font-size: 1rem;
-    line-height: 1.45;
-  }
-
-  .challenge-reading,
-  .challenge-question {
-    padding: 18px;
-    border-radius: 22px;
-  }
-}
-</style>
+<style scoped src="../assets/styles/practice-legacy.css"></style>
