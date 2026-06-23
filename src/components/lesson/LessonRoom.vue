@@ -18,7 +18,6 @@
           v-if="canJoinVideo"
           :lesson="lesson"
           :display-name="participantLabel"
-          @close="$emit('close')"
         />
 
         <div v-else :class="lessonUi.jitsiRoom">

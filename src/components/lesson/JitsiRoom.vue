@@ -4,18 +4,20 @@
 
     <div v-if="isLoading || hasLoadError" :class="ui.state">
       <span :class="ui.kicker">Videóhívás</span>
-      <strong :class="ui.title">{{ hasLoadError ? "Nem sikerült betölteni a hívást" : "Jitsi hívás betöltése" }}</strong>
+      <strong :class="ui.title">{{ statusTitle }}</strong>
       <p :class="ui.text">
-        {{
-          hasLoadError
-            ? "Nyisd meg külön lapon, vagy próbáld újra az óra újranyitásával."
-            : "Engedélyezd a kamerát és a mikrofont, amikor a böngésző kéri."
-        }}
+        {{ statusText }}
       </p>
 
-      <a :href="roomUrl" target="_blank" rel="noopener noreferrer" :class="ui.link">
-        Megnyitás külön lapon
-      </a>
+      <div v-if="hasLoadError" class="mt-2 flex flex-wrap justify-center gap-2">
+        <button type="button" :class="ui.link" @click="reconnectMeeting">
+          Újracsatlakozás
+        </button>
+
+        <a :href="roomUrl" target="_blank" rel="noopener noreferrer" :class="ui.link">
+          Megnyitás külön lapon
+        </a>
+      </div>
     </div>
   </div>
 </template>
@@ -99,6 +101,7 @@ export default {
       hasLoadError: false,
       isLoading: true,
       isDestroyed: false,
+      lastCloseReason: "",
     };
   },
 
@@ -116,6 +119,24 @@ export default {
 
     roomUrl() {
       return `https://${this.domain}/${this.roomName}`;
+    },
+
+    statusTitle() {
+      if (this.hasLoadError) {
+        return this.lastCloseReason === "ready-to-close"
+          ? "A videókapcsolat megszakadt"
+          : "Nem sikerült betölteni a hívást";
+      }
+
+      return "Jitsi hívás betöltése";
+    },
+
+    statusText() {
+      if (this.hasLoadError) {
+        return "Az óra nem záródott be. Csatlakozz újra itt, vagy nyisd meg külön lapon a hívást.";
+      }
+
+      return "Engedélyezd a kamerát és a mikrofont, amikor a böngésző kéri.";
     },
   },
 
@@ -164,6 +185,7 @@ export default {
       this.disposeMeeting();
       this.hasLoadError = false;
       this.isLoading = true;
+      this.lastCloseReason = "";
 
       try {
         await loadJitsiScript(this.domain);
@@ -191,9 +213,14 @@ export default {
 
         this.api.addListener("videoConferenceJoined", () => {
           this.isLoading = false;
+          this.hasLoadError = false;
+          this.lastCloseReason = "";
         });
         this.api.addListener("readyToClose", () => {
-          this.$emit("close");
+          this.lastCloseReason = "ready-to-close";
+          this.hasLoadError = true;
+          this.isLoading = false;
+          this.disposeMeeting();
         });
 
         window.setTimeout(() => {
@@ -207,8 +234,12 @@ export default {
         this.isLoading = false;
       }
     },
+
+    reconnectMeeting() {
+      this.createMeeting();
+    },
   },
 
-  emits: ["close"],
+  emits: [],
 };
 </script>

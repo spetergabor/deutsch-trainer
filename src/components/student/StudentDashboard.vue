@@ -794,7 +794,7 @@ export default {
 
       try {
         this.lessonSessions = await fetchStudentLessonSessions(this.userSession.id);
-        const selectedLessonStillExists = this.recentLessonSessions.find((lesson) => {
+        const selectedLessonStillExists = this.lessonSessions.find((lesson) => {
           return lesson.id === this.selectedLessonId;
         });
 
