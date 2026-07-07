@@ -28,8 +28,6 @@
   .story-reading.practice-container,
   .daily-challenge-practice,
   .profile-practice-screen {
-    width: var(--page-shell-desktop-width) !important;
-    max-width: var(--page-shell-desktop-width) !important;
     margin-left: auto !important;
     margin-right: auto !important;
     box-sizing: border-box;
@@ -284,8 +282,6 @@
   }
 
   .practice-screen:has(.learning-library-view) > .learning-library-view {
-    width: calc(100vw - 20px) !important;
-    max-width: calc(100vw - 20px) !important;
     padding-left: 0 !important;
     padding-right: 0 !important;
   }

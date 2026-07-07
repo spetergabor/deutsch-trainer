@@ -1618,8 +1618,6 @@ export default {
   }
 
   .practice-screen:has(.learning-library-view) {
-    width: calc(100vw - 20px) !important;
-    max-width: calc(100vw - 20px) !important;
     margin-right: auto !important;
     margin-left: auto !important;
     align-items: stretch !important;
