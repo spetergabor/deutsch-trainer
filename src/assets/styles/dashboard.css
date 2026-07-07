@@ -2277,6 +2277,10 @@ button.grammar-practice-chip:hover {
     flex-direction: column;
   }
 
+  .student-lesson-panel.is-compact .student-lesson-layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
   .student-submissions-header button {
     width: 100%;
   }
@@ -2427,6 +2431,7 @@ button.grammar-practice-chip:hover {
 
   .student-home-recommendation {
     margin-top: 2px;
+    padding: 22px !important;
   }
 
   .lessons-ios-grid {

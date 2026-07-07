@@ -1617,6 +1617,23 @@ export default {
     padding-left: 0 !important;
   }
 
+  .practice-screen:has(.learning-library-view) {
+    width: calc(100vw - 20px) !important;
+    max-width: calc(100vw - 20px) !important;
+    margin-right: auto !important;
+    margin-left: auto !important;
+    align-items: stretch !important;
+  }
+
+  .practice-screen:has(.learning-library-view) > .learning-library-view {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin-right: 0 !important;
+    margin-left: 0 !important;
+    padding-right: 0 !important;
+    padding-left: 0 !important;
+  }
+
   .practice-screen:has(.vocabulary-practice):not(:has(.vocab-pack-library)):not(:has(.vocab-mode-stage)) {
     height: 100dvh !important;
     min-height: 100dvh !important;
@@ -1693,10 +1710,13 @@ export default {
 
   .student-home-person,
   .student-home-stats,
-  .student-home-main > p,
-  .student-home-recommendation {
+  .student-home-main > p {
     padding-right: 0 !important;
     padding-left: 0 !important;
+  }
+
+  .student-home-recommendation {
+    padding: 22px !important;
   }
 
   .profile-page > *,

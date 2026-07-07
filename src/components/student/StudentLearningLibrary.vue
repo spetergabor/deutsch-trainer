@@ -159,7 +159,7 @@ const LIBRARY_UI = {
   grammarGrid:
     "grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3",
   grammarCard:
-    "grid min-h-[180px] cursor-pointer grid-cols-[auto_minmax(0,1fr)] items-center gap-5 rounded-3xl border border-white/10 bg-white/[0.055] p-5 text-white shadow-xl shadow-black/20 transition hover:-translate-y-0.5 hover:border-[#43e97b]/35 hover:bg-white/[0.075] sm:p-6",
+    "grid min-h-[180px] w-full min-w-0 cursor-pointer grid-cols-[auto_minmax(0,1fr)] items-center gap-5 rounded-3xl border border-white/10 bg-white/[0.055] p-5 text-white shadow-xl shadow-black/20 transition hover:-translate-y-0.5 hover:border-[#43e97b]/35 hover:bg-white/[0.075] sm:p-6",
   grammarIcon:
     "flex size-16 items-center justify-center rounded-2xl bg-[linear-gradient(135deg,#667eea,#43e97b)] text-2xl shadow-lg shadow-black/25 sm:size-20 sm:text-3xl",
   cardBadge:
@@ -176,7 +176,7 @@ const LIBRARY_UI = {
     "inline-flex h-11 items-center justify-center rounded-full border border-white/10 bg-white/[0.065] px-5 text-sm font-black text-white/80 outline-none transition hover:-translate-y-px hover:bg-white/10 hover:text-white focus-visible:ring-4 focus-visible:ring-white/10",
   storyGrid: "grid grid-cols-1 gap-4 lg:grid-cols-3",
   storyCard:
-    "min-h-[210px] cursor-pointer rounded-3xl border border-white/10 bg-white/[0.055] p-6 text-white shadow-xl shadow-black/20 transition hover:-translate-y-0.5 hover:border-[#667eea]/35 hover:bg-white/[0.075]",
+    "min-h-[210px] w-full min-w-0 cursor-pointer rounded-3xl border border-white/10 bg-white/[0.055] p-6 text-white shadow-xl shadow-black/20 transition hover:-translate-y-0.5 hover:border-[#667eea]/35 hover:bg-white/[0.075]",
   storyMetaRow: "mb-5 flex flex-wrap gap-2",
   iconWarm: "bg-[linear-gradient(135deg,#ff9966,#ff5e62)]",
   iconBlue: "bg-[linear-gradient(135deg,#36d1dc,#5b86e5)]",
