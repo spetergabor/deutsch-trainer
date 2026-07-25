@@ -20,7 +20,9 @@
   }
 
   .content-wrapper {
-    padding-bottom: calc(var(--mobile-bottom-nav-height) + 12px);
+    padding-bottom: calc(
+      var(--mobile-bottom-nav-height) + var(--mobile-content-bottom-gap, 8px)
+    );
   }
 
   .mobile-drawer-shell {
@@ -335,9 +337,9 @@
 
   .mobile-bottom-nav {
     position: fixed;
-    left: 10px;
-    right: 10px;
-    bottom: 10px;
+    left: var(--mobile-shell-inset, 10px);
+    right: var(--mobile-shell-inset, 10px);
+    bottom: var(--mobile-shell-inset, 10px);
     z-index: 9999;
 
     display: grid;

@@ -97,7 +97,7 @@
       </div>
     </section>
 
-    <div v-if="isExerciseMode" class="desktop-exercise-workspace">
+    <div v-if="isExerciseMode" class="desktop-exercise-workspace app-mobile-shell">
       <div class="desktop-exercise-main">
         <VerbPractice
           v-if="currentMode === 'perfekt'"
@@ -325,7 +325,7 @@
 
     <div
       v-if="activeGrammarGuide"
-      class="grammar-guide-shell nemet-page-shell !mx-auto !w-[min(100%,1080px)] !max-w-[1080px] box-border [.with-desktop-sidebar_&]:!ml-0 [.with-desktop-sidebar_&]:!mr-0 [.with-desktop-sidebar_&]:!w-[min(100%,var(--desktop-shell-width))] [.with-desktop-sidebar_&]:!max-w-[min(var(--desktop-shell-width),1080px)]"
+      class="grammar-guide-shell app-mobile-shell nemet-page-shell box-border [.with-desktop-sidebar_&]:!ml-0 [.with-desktop-sidebar_&]:!mr-0 [.with-desktop-sidebar_&]:!w-[min(100%,var(--desktop-shell-width))] [.with-desktop-sidebar_&]:!max-w-[min(var(--desktop-shell-width),1080px)]"
     >
       <GrammarGuideView
         :guide-id="activeGrammarGuide.id"

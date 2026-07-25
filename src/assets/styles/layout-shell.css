@@ -1,0 +1,272 @@
+/* =========================================================
+   SHARED LAYOUT SHELLS
+========================================================= */
+
+:root {
+  --mobile-shell-inset: 10px;
+  --mobile-shell-width: calc(100vw - (var(--mobile-shell-inset) * 2));
+  --mobile-page-gutter: var(--mobile-shell-inset);
+  --mobile-page-width: var(--mobile-shell-width);
+  --mobile-content-bottom-gap: 8px;
+  --mobile-top-clearance: max(88px, calc(env(safe-area-inset-top) + 76px));
+  --practice-mobile-top: 86px;
+  --vocab-library-mobile-top: 112px;
+}
+
+.app-mobile-shell {
+  width: var(--mobile-shell-width);
+  max-width: var(--mobile-shell-width);
+  margin-left: auto;
+  margin-right: auto;
+  box-sizing: border-box;
+}
+
+@media (max-width: 700px) {
+  .app-mobile-shell {
+    width: var(--mobile-shell-width) !important;
+    max-width: var(--mobile-shell-width) !important;
+    margin-right: auto !important;
+    margin-left: auto !important;
+    box-sizing: border-box;
+  }
+
+  #app,
+  .content-wrapper {
+    overflow-x: hidden;
+  }
+
+  .content-wrapper {
+    align-items: center;
+    padding-top: 0;
+    padding-bottom: calc(
+      var(--mobile-bottom-nav-height) + var(--mobile-content-bottom-gap)
+    ) !important;
+  }
+
+  #app.mobile-chat-active .content-wrapper,
+  .content-wrapper:has(.vocabulary-practice.is-test-mode) {
+    padding-bottom: 0 !important;
+  }
+
+  #app.mobile-chat-active .messages-page,
+  #app.mobile-chat-active .messages-layout,
+  #app.mobile-chat-active .messages-conversation {
+    height: calc(100dvh - var(--mobile-bottom-nav-height) + 18px) !important;
+    min-height: calc(100dvh - var(--mobile-bottom-nav-height) + 18px) !important;
+    max-height: calc(100dvh - var(--mobile-bottom-nav-height) + 18px) !important;
+  }
+
+  .practice-screen {
+    width: 100% !important;
+    max-width: none !important;
+    padding-right: 0 !important;
+    padding-left: 0 !important;
+  }
+
+  .practice-screen.grammar-practice-screen {
+    align-items: center !important;
+  }
+
+  .practice-screen.grammar-practice-screen > .grammar-guide-shell,
+  .practice-screen:has(.learning-library-view),
+  .practice-screen:has(.desktop-exercise-workspace) > .desktop-exercise-workspace {
+    width: var(--mobile-shell-width) !important;
+    max-width: var(--mobile-shell-width) !important;
+    margin-right: auto !important;
+    margin-left: auto !important;
+  }
+
+  .practice-screen:has(.desktop-exercise-workspace) {
+    width: 100% !important;
+    max-width: none !important;
+    align-items: center !important;
+  }
+
+  .practice-screen:has(.desktop-exercise-workspace) > .desktop-exercise-workspace {
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+  }
+
+  .practice-screen:has(.desktop-exercise-workspace) .desktop-exercise-main {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  .practice-screen:has(.desktop-exercise-workspace)
+    .desktop-exercise-main
+    :is(.practice-layout, .verb-practice) {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  .practice-screen:has(.desktop-exercise-workspace)
+    .desktop-exercise-main
+    :is(.xp-card, .practice-box) {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  .practice-screen:has(.desktop-exercise-workspace)
+    .desktop-exercise-main
+    > :is(
+      .practice-container,
+      .verb-practice,
+      .adjektiv-practice,
+      .praeposition-practice,
+      .konnektoren-practice,
+      .sich-verben-practice
+    ) {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-height: auto !important;
+    margin-right: 0 !important;
+    margin-left: 0 !important;
+    padding-right: 0 !important;
+    padding-left: 0 !important;
+  }
+
+  .practice-screen.grammar-practice-screen > .grammar-guide-shell {
+    padding-right: 0 !important;
+    padding-left: 0 !important;
+  }
+
+  .practice-screen:has(.learning-library-view) {
+    align-items: stretch !important;
+  }
+
+  .practice-screen:has(.learning-library-view) > .learning-library-view {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding-right: 0 !important;
+    padding-bottom: 0 !important;
+    padding-left: 0 !important;
+  }
+
+  .practice-screen:has(.vocabulary-practice):not(:has(.vocab-pack-library)):not(:has(.vocab-mode-stage)) {
+    height: 100dvh !important;
+    min-height: 100dvh !important;
+    overflow: hidden !important;
+    justify-content: flex-start !important;
+    padding-top: var(--practice-mobile-top) !important;
+    padding-bottom: 0 !important;
+  }
+
+  .practice-screen:has(.vocabulary-practice.is-test-mode):not(:has(.vocab-pack-library)):not(:has(.vocab-mode-stage)) {
+    height: 100dvh !important;
+    min-height: 100dvh !important;
+    overflow: hidden !important;
+    padding-top: 78px !important;
+    padding-bottom: calc(var(--mobile-bottom-nav-height) + 16px) !important;
+  }
+
+  .practice-screen:has(.vocabulary-practice) .vocabulary-practice {
+    width: var(--mobile-shell-width) !important;
+    max-width: var(--mobile-shell-width) !important;
+    margin-right: auto !important;
+    margin-left: auto !important;
+  }
+
+  .practice-screen:has(.vocab-pack-library),
+  .practice-screen:has(.vocab-mode-stage) {
+    height: auto !important;
+    min-height: 100dvh !important;
+    overflow: visible !important;
+    justify-content: flex-start !important;
+    padding-top: var(--vocab-library-mobile-top) !important;
+    padding-bottom: 0 !important;
+  }
+
+  .practice-screen:has(.vocab-pack-library) .vocabulary-practice,
+  .practice-screen:has(.vocab-mode-stage) .vocabulary-practice {
+    height: auto !important;
+    min-height: 0 !important;
+    overflow: visible !important;
+  }
+
+  .practice-screen:has(.vocab-pack-library)
+    .vocabulary-practice
+    .vocab-pack-library,
+  .practice-screen:has(.vocab-mode-stage)
+    .vocabulary-practice
+    .vocab-mode-stage {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin-right: 0 !important;
+    margin-left: 0 !important;
+  }
+
+  .practice-screen:not(.grammar-practice-screen):not(.profile-practice-screen):not(:has(.story-reading)):not(:has(.osd-practice)):not(:has(.vocab-pack-library)):not(:has(.vocab-mode-stage)):not(:has(.daily-challenge-practice)):not(:has(.desktop-exercise-workspace)):not(:has(.learning-library-view)):not(:has(.student-materials-view)) {
+    min-height: auto !important;
+    justify-content: flex-start !important;
+    align-items: center !important;
+    padding-top: var(--practice-mobile-top) !important;
+    padding-bottom: 0 !important;
+  }
+
+  .practice-screen:not(.grammar-practice-screen):not(.profile-practice-screen):not(:has(.story-reading)):not(:has(.osd-practice)):not(:has(.vocab-pack-library)):not(:has(.vocab-mode-stage)):not(:has(.daily-challenge-practice)):not(:has(.desktop-exercise-workspace)):not(:has(.learning-library-view)):not(:has(.student-materials-view))
+    > :is(
+      .practice-container,
+      .verb-practice,
+      .adjektiv-practice,
+      .praeposition-practice,
+      .konnektoren-practice,
+      .sich-verben-practice
+    ) {
+    width: var(--mobile-shell-width) !important;
+    max-width: var(--mobile-shell-width) !important;
+    min-height: auto !important;
+    margin-right: auto !important;
+    margin-left: auto !important;
+    padding-right: 0 !important;
+    padding-left: 0 !important;
+    justify-content: flex-start !important;
+  }
+
+  .practice-screen:not(.grammar-practice-screen):not(.profile-practice-screen):not(:has(.story-reading)):not(:has(.osd-practice)):not(:has(.vocab-pack-library)):not(:has(.vocab-mode-stage)):not(:has(.daily-challenge-practice)):not(:has(.desktop-exercise-workspace)):not(:has(.learning-library-view)):not(:has(.student-materials-view))
+    :is(.practice-layout, .verb-practice)
+    .practice-box {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin-bottom: 10px !important;
+  }
+
+  .desktop-exercise-main
+    > :is(
+      .practice-container,
+      .verb-practice,
+      .adjektiv-practice,
+      .praeposition-practice,
+      .konnektoren-practice,
+      .sich-verben-practice
+    ) {
+    width: 100% !important;
+    max-width: 100% !important;
+    padding-right: 0 !important;
+    padding-left: 0 !important;
+  }
+
+  .student-materials-header,
+  .student-homework-panel > h2,
+  .student-home-person,
+  .student-home-stats,
+  .student-home-main > p {
+    padding-right: 0 !important;
+    padding-left: 0 !important;
+  }
+
+  .student-home-recommendation {
+    padding: 22px !important;
+  }
+
+  .profile-page > *,
+  .teacher-dashboard,
+  .teacher-portal,
+  .teacher-workspace,
+  .grammar-guide,
+  .story-reading :is(.story-page-hero, .story-picker, .story-shell),
+  .daily-challenge-practice :is(.challenge-hero, .practice-layout, .practice-box),
+  .nemet-page-shell > * {
+    max-width: 100% !important;
+  }
+}

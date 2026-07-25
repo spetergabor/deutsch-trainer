@@ -1176,10 +1176,9 @@ textarea.practice-input.input-wrong {
   .practice-container,
   .verb-practice {
     max-width: none !important;
-    width: 99% !important;
-
-    padding-left: 16px;
-    padding-right: 16px;
+    width: var(--mobile-shell-width, calc(100vw - 20px)) !important;
+    padding-left: 0;
+    padding-right: 0;
   }
 
   .practice-screen:has(.student-materials-view) {
@@ -1190,7 +1189,7 @@ textarea.practice-input.input-wrong {
   }
 
   .practice-screen:has(.student-materials-view) > .student-materials-view {
-    width: calc(100% - 20px) !important;
+    width: var(--mobile-shell-width, calc(100vw - 20px)) !important;
     max-width: none !important;
     margin-left: auto !important;
     margin-right: auto !important;

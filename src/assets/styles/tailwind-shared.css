@@ -1,7 +1,10 @@
 @layer components {
   :root {
     --page-shell-desktop-width: min(var(--layout-shell-width), 1180px);
-    --page-shell-mobile-width: var(--mobile-page-width, var(--layout-shell-width, 100%));
+    --page-shell-mobile-width: var(
+      --mobile-shell-width,
+      var(--mobile-page-width, var(--layout-shell-width, 100%))
+    );
   }
 
   #app.with-desktop-sidebar {
@@ -249,21 +252,21 @@
   .profile-practice-screen,
   .teacher-dashboard,
   .teacher-dashboard-shell {
-    width: var(--mobile-page-width, var(--page-shell-mobile-width, 100%)) !important;
-    max-width: var(--mobile-page-width, var(--page-shell-mobile-width, 100%)) !important;
+    width: var(--page-shell-mobile-width, 100%) !important;
+    max-width: var(--page-shell-mobile-width, 100%) !important;
     margin-left: auto !important;
     margin-right: auto !important;
   }
 
   .with-desktop-sidebar .profile-page {
-    width: var(--mobile-page-width, var(--layout-shell-width));
-    max-width: var(--mobile-page-width, var(--layout-shell-width));
+    width: var(--page-shell-mobile-width, var(--layout-shell-width));
+    max-width: var(--page-shell-mobile-width, var(--layout-shell-width));
     padding-bottom: 0;
   }
 
   .profile-page {
-    width: var(--mobile-page-width, var(--layout-shell-width));
-    max-width: var(--mobile-page-width, var(--layout-shell-width));
+    width: var(--page-shell-mobile-width, var(--layout-shell-width));
+    max-width: var(--page-shell-mobile-width, var(--layout-shell-width));
     padding-bottom: 0;
   }
 
