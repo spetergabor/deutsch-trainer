@@ -414,12 +414,13 @@
   }
 
   .messages-archive-header {
-    padding: 0 2px 14px;
+    padding: calc(env(safe-area-inset-top) + 22px) 2px 14px;
     border-bottom: 0;
   }
 
   .messages-archive-header strong {
-    font-size: clamp(2.25rem, 10.5vw, 2.9rem);
+    max-width: calc(100% - 70px);
+    font-size: clamp(2rem, 8.8vw, 2.65rem);
     letter-spacing: 0;
   }
 
