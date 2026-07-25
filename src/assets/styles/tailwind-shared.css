@@ -11,10 +11,8 @@
     );
   }
 
-  .nemet-page-shell,
   .dashboard-layout,
   .welcome-screen,
-  .practice-screen.nemet-page-shell,
   .lesson-room-shell,
   .messages-page,
   .student-materials-view,
@@ -24,7 +22,6 @@
   .teacher-dashboard-shell,
   .profile-page,
   .grammar-guide,
-  .grammar-guide-shell,
   .story-reading.practice-container,
   .daily-challenge-practice,
   .profile-practice-screen {
@@ -238,10 +235,8 @@
 }
 
 @media (max-width: 700px) {
-  .nemet-page-shell,
   .dashboard-layout,
   .welcome-screen,
-  .practice-screen.nemet-page-shell,
   .lesson-room-shell,
   .messages-page,
   .student-materials-view,
@@ -249,7 +244,6 @@
   .learning-library-view,
   .profile-page,
   .welcome-screen.teacher-dashboard-shell,
-  .grammar-guide-shell,
   .story-reading.practice-container,
   .daily-challenge-practice,
   .profile-practice-screen,

@@ -143,14 +143,16 @@ const LIBRARY_UI = {
     "inline-flex w-max max-w-full rounded-full bg-[#80caff]/15 px-3 py-2 text-xs font-black leading-none text-[#80caff]",
   sectionTitle: "m-0 text-3xl font-black leading-tight text-white sm:text-4xl",
   iconSectionTitle: "mb-7 text-3xl font-black leading-tight text-white sm:text-4xl",
-  challengeIconGrid: "flex flex-wrap gap-x-9 gap-y-8",
-  iconGrid: "flex flex-wrap gap-x-10 gap-y-9",
+  challengeIconGrid:
+    "grid grid-cols-3 gap-x-3 gap-y-8 sm:flex sm:flex-wrap sm:gap-x-9",
+  iconGrid:
+    "grid grid-cols-3 gap-x-3 gap-y-9 sm:flex sm:flex-wrap sm:gap-x-10",
   iconButton:
-    "group flex w-28 appearance-none flex-col items-center gap-3 border-0 bg-transparent p-0 text-center text-white outline-none transition hover:-translate-y-1 focus-visible:ring-4 focus-visible:ring-[#ffd56a]/15",
+    "group flex w-full appearance-none flex-col items-center gap-3 border-0 bg-transparent p-0 text-center text-white outline-none transition hover:-translate-y-1 focus-visible:ring-4 focus-visible:ring-[#ffd56a]/15 sm:w-28",
   iconOnlyTile:
-    "flex size-[90px] items-center justify-center rounded-[30px] border border-white/15 text-3xl shadow-xl shadow-black/30 transition group-hover:shadow-[#ffd56a]/15",
+    "flex size-[78px] items-center justify-center rounded-[26px] border border-white/15 text-2xl shadow-xl shadow-black/30 transition group-hover:shadow-[#ffd56a]/15 sm:size-[90px] sm:rounded-[30px] sm:text-3xl",
   iconLabel:
-    "block max-w-full text-sm font-black leading-tight text-white",
+    "block max-w-full text-xs font-black leading-tight text-white sm:text-sm",
   grammarLevel: "mt-7 first:mt-0",
   levelHeader: "mb-4 flex flex-wrap items-baseline gap-3",
   levelBadge:

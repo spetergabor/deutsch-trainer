@@ -1617,7 +1617,22 @@ export default {
     padding-left: 0 !important;
   }
 
+  .practice-screen.grammar-practice-screen {
+    align-items: center !important;
+  }
+
+  .practice-screen.grammar-practice-screen > .grammar-guide-shell {
+    width: calc(100vw - 20px) !important;
+    max-width: calc(100vw - 20px) !important;
+    margin-right: auto !important;
+    margin-left: auto !important;
+    padding-right: 0 !important;
+    padding-left: 0 !important;
+  }
+
   .practice-screen:has(.learning-library-view) {
+    width: calc(100vw - 20px) !important;
+    max-width: calc(100vw - 20px) !important;
     margin-right: auto !important;
     margin-left: auto !important;
     align-items: stretch !important;
@@ -1626,9 +1641,9 @@ export default {
   .practice-screen:has(.learning-library-view) > .learning-library-view {
     width: 100% !important;
     max-width: 100% !important;
-    margin-right: 0 !important;
-    margin-left: 0 !important;
+    margin: 0 !important;
     padding-right: 0 !important;
+    padding-bottom: 0 !important;
     padding-left: 0 !important;
   }
 
@@ -1683,6 +1698,46 @@ export default {
     max-width: 100% !important;
     margin-right: 0 !important;
     margin-left: 0 !important;
+  }
+
+  .content-wrapper:has(
+      .practice-screen:not(.grammar-practice-screen):not(.profile-practice-screen):not(:has(.story-reading)):not(:has(.osd-practice)):not(:has(.vocab-pack-library)):not(:has(.vocab-mode-stage)):not(:has(.daily-challenge-practice)):not(:has(.desktop-exercise-workspace)):not(:has(.learning-library-view)):not(:has(.student-materials-view))
+    ) {
+    padding-bottom: calc(var(--mobile-bottom-nav-height) + 8px) !important;
+  }
+
+  .practice-screen:not(.grammar-practice-screen):not(.profile-practice-screen):not(:has(.story-reading)):not(:has(.osd-practice)):not(:has(.vocab-pack-library)):not(:has(.vocab-mode-stage)):not(:has(.daily-challenge-practice)):not(:has(.desktop-exercise-workspace)):not(:has(.learning-library-view)):not(:has(.student-materials-view)) {
+    min-height: auto !important;
+    justify-content: flex-start !important;
+    align-items: center !important;
+    padding-top: 86px !important;
+    padding-bottom: 0 !important;
+  }
+
+  .practice-screen:not(.grammar-practice-screen):not(.profile-practice-screen):not(:has(.story-reading)):not(:has(.osd-practice)):not(:has(.vocab-pack-library)):not(:has(.vocab-mode-stage)):not(:has(.daily-challenge-practice)):not(:has(.desktop-exercise-workspace)):not(:has(.learning-library-view)):not(:has(.student-materials-view))
+    > :is(
+      .practice-container,
+      .verb-practice,
+      .adjektiv-practice,
+      .praeposition-practice,
+      .konnektoren-practice,
+      .sich-verben-practice
+    ) {
+    width: calc(100vw - 20px) !important;
+    max-width: calc(100vw - 20px) !important;
+    min-height: auto !important;
+    margin-right: auto !important;
+    margin-left: auto !important;
+    padding-right: 0 !important;
+    padding-left: 0 !important;
+    justify-content: flex-start !important;
+  }
+
+  .practice-screen:not(.grammar-practice-screen):not(.profile-practice-screen):not(:has(.story-reading)):not(:has(.osd-practice)):not(:has(.vocab-pack-library)):not(:has(.vocab-mode-stage)):not(:has(.daily-challenge-practice)):not(:has(.desktop-exercise-workspace)):not(:has(.learning-library-view)):not(:has(.student-materials-view))
+    :is(.practice-layout, .verb-practice)
+    .practice-box {
+    width: 100% !important;
+    margin-bottom: 10px !important;
   }
 
   .desktop-exercise-main
